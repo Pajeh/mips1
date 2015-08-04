@@ -44,7 +44,7 @@ architecture behavioural of instruction_decode is
             when regdest_mem => reg_b <= writeback;
             when regdest_ex => reg_b <= alu_result;
             when others => reg_b <= register_file(rt);
-        end;
+        end case;
     end process;
 
     -- Process for clocked writebacks to the register file and the asynchronous reset
