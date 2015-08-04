@@ -33,7 +33,13 @@ architecture memory_stage of MemoryStage is
 	begin
 	output: process ( clk, rst, data_in, aluResult_in, memory_data_in, reg_dest_in) is
 		begin
+<<<<<<< HEAD
 			if (!rst) then
 				writeback <= 0;
 	end output
 end architecture behavioral;
+=======
+	
+end output
+end architecture behavioral
+>>>>>>> 0394b91a7e49dac524cd192ab1411d07be89cc13
