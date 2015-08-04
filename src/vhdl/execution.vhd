@@ -68,7 +68,7 @@ begin
     
   end process;
   
-  alu1: entity work.alu(behave) port map(in_a, in_b, in_alu_instruction, ex_alu, ex_alu_zero);
+  alu1: entity work.alu(behave) port map(mux1_out, mux2_out, in_alu_instruction, ex_alu, ex_alu_zero);
   
 end behave;
 
