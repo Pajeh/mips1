@@ -86,12 +86,6 @@ package cpu_pack is
   --
   subtype t_cpu_mem_word               is std_logic_vector(CPU_MEM_CELL_WIDTH    - 1 downto 0);
 
-  --
-  -- MEMORY STAGE
-  --
-  -- 04.08.2015 Carlos Minamisava Faria
-  subtype t_memory_rw                  is  std_logic_vector(2 downto 0);
-
   -- --------------------------------------------------------------------
   -- _  _ ____ _  _ ____ ____ _   _    ____ ____ ___  _ _  _ ____
   -- |\/| |___ |\/| |  | |__/  \_/     |    |  | |  \ | |\ | | __
@@ -111,15 +105,6 @@ package cpu_pack is
   constant CPU_MASK_WRITE16            : t_cpu_mask         := b"0011";
   constant CPU_MASK_WRITE8             : t_cpu_mask         := b"0001";
 
-  --
-  -- FSS sequence control
-  --
-  -- 04.08.2015 Carlos Minamisava Faria
-  constant FSS_byte_0            : t_memory_rw         := b"001";               -- FSS read/write least significant byte
-  constant FSS_byte_1            : t_memory_rw         := b"010";               -- FSS read/write least significant byte + 1
-  constant FSS_byte_2            : t_memory_rw         := b"011";               -- FSS read/write least significant byte + 2
-  constant FSS_byte_3            : t_memory_rw         := b"100";               -- FSS read/write most significant byte
-  constant FSS_NOP            : t_memory_rw         := b"000";               -- NOP
 
 
 
