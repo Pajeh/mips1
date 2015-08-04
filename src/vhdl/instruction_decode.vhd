@@ -40,18 +40,26 @@ architecture behavioural of instruction_decode is
             -- No forwarding required, reg_a is just read from the register file
             when others => reg_a <= register_file(rs);
         end case;
+        
         case rt is
             -- Works analogously to the determination of reg_a.
             when regdest_mem => reg_b <= writeback;
             when regdest_ex => reg_b <= alu_result;
             when others => reg_b <= register_file(rt);
         end case;
+        
         case regshift_mux is    -- Determines the output at shift_out
             when '00' => shift_out <= shift;
             when '01' => shift_out <= '10000';
             -- TODO: Add the branch logic wire!
             when others => shift_out <= '00000';
         end case;
+        
+        case regdest_mux is     -- Determines the output at reg_dest
+            when '00' => reg_dest <= rd;
+            when '01' => reg_dest <= 11111;
+            when '10' => reg_dest <= rt;
+            when others => reg_dest <= 00000;
     end process;
 
     -- Process for clocked writebacks to the register file and the asynchronous reset
