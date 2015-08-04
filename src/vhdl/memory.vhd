@@ -1,59 +1,64 @@
 -- Revision history:
 -- 03.08.2015	Carlos Minamisava Faria	created 
 -- 03.08.2015	Carlos Minamisava Faria	entity MemoryStage
+-- 04.08.2015	Carlos Minamisava Faria architecture MemoryStage
 
 library IEEE;
 use IEEE.std_logic_1164.ALL;
 
 entity MemoryStage is
 port(
-clk: in std_logic;
-rst: in std_logic;
+	clk: in std_logic;
+	rst: in std_logic;
 
-aluResult_in: in std_logic_vector( CPU_DATA_WIDTH-1 downto 0);			-- ALU results from Execution Stage
+	aluResult_in: in std_logic_vector( CPU_DATA_WIDTH-1 downto 0);			-- ALU results from Execution Stage
 
-data_in: in std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				-- Data from execution stage
-																		-- Memory Read/Write decision comes from the FSS
-memory_address: out std_logic_vector(CPU_MEM_CELL_WIDTH-1 downto 0);	-- Memory address output for memory r/w
-memory_data_out: out std_logic_vector(CPU_MEM_CELL_WIDTH-1 downto 0);	-- Memory data out. This is a CPU_MEM_CELL_WIDTH (8) long register. Mostly 4 clocks needed for 32 bits r/w.
-memory_data_in: in std_logic_vector(CPU_MEM_CELL_WIDTH-1 downto 0);		-- Read data from memory. This is a CPU_MEM_CELL_WIDTH (8) long register. Mostly 4 clocks needed for 32 bits r.
+	data_in: in std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				-- Data from execution stage
+																			-- Memory Read/Write decision comes from the FSS
+	data_addr: out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);	-- Memory address output for memory r/w
+	data_from_cpu: out std_logic_vector(CPU_DATA_WIDTH-1 downto 0);	-- Memory data out. 
+	data_to_cpu: in std_logic_vector(CPU_DATA_WIDTH-1 downto 0);		-- Read data from memory.
 
-memory_data_reg: in std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0); 	-- Register control of the memory read process. (time control)
 
-mux_decision: in std_logic;												-- FSS decision for writeback output. ALU results or memory data can be forwarded to writeback
-fss_memory: in std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0);			-- FSS decision for data access: r/w.
+    data_stall              : in  std_logic;							-- data stall - cpu input
 
-writeback: out std_logic_vector( CPU_DATA_WIDTH-1 downto 0);			-- Data to send to next stage: Writeback
+	mux_decision: in std_logic;												-- FSS decision for writeback output. ALU results or memory data can be forwarded to writeback
 
-reg_dest_in: in std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0);		-- k.A.
-reg_dest_out: out std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0));		-- k.A.
+	writeback: out std_logic_vector( CPU_DATA_WIDTH-1 downto 0);			-- Data to send to next stage: Writeback
+
+	reg_dest_in: in std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0);		-- k.A.
+	reg_dest_out: out std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0));		-- k.A.
 end entity MemoryStage
 
-architecture memory_stage of MemoryStage is
+architecture behavioral of MemoryStage is
 	signal memory_buffer: std_logic_vector(CPU_DATA_WIDTH-1 downto 0);
 	begin
-		process
+	
+		--	Data address and data are always routed out.
+		data_addr <= data_in;
+		data_from_cpu <= aluResult_in;
+		
+		-- reg_dest is forwarded
+		reg_dest_out <= reg_dest_in;
+		
+		output: process (rst) is
 		begin
-			if (!rst) then
+			if (rst) then												-- reset condition
 				writeback <= 0;
 			else 
-				memory_address <= data_in;
-				
-				memory_data_out
-				
+				if (mux_decision ='1') then								-- mux_decision choses between the two possible outputs: the result from ALU of the read memory	
+					writeback <= aluResult_in;							-- output is the aluResult_in
+				else
+					writeback <= memory_buffer;							-- output is the memory_buffer, which carries the memory read value.
+				end
 			end
-		end process
+		end process output
 		
-		memdata: process(fss_memory) 
-			begin
-				case (fss_memory) is
-					when "FSS_byte_3" =>
-						memory_buffer (CPU_DATA_WIDTH-1 downto CPU_DATA_WIDTH-1-7)<= memory_data_in;
-					when "FSS_byte_2" =>
-						memory_buffer (CPU_DATA_WIDTH-1-8 downto CPU_DATA_WIDTH-1-15)<= memory_data_in;
-					when "FSS_byte_1" =>
-						memory_buffer (CPU_DATA_WIDTH-1-16 downto CPU_DATA_WIDTH-1-23)<= memory_data_in;
-					when "FSS_byte_0" =>
-						memory_buffer (CPU_DATA_WIDTH-1-24 downto 0)<= memory_data_in;
-			end process memdata
+		
+		memoryRead: process (data_stall) is								-- shift data to buffer when stall flag goes down
+		begin
+			if (data_stall='0') then
+				memory_buffer <= data_to_cpu;
+			end
+		end process memoryRead: 
 end architecture behavioral
