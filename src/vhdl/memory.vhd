@@ -30,6 +30,7 @@ reg_dest_out: out std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0));		-- k.A.
 end entity MemoryStage
 
 architecture memory_stage of MemoryStage is
+	signal memory_buffer: std_logic_vector(CPU_DATA_WIDTH-1 downto 0);
 	begin
 		process
 		begin
@@ -46,6 +47,13 @@ architecture memory_stage of MemoryStage is
 		memdata: process(fss_memory) 
 			begin
 				case (fss_memory) is
-					when 
+					when "FSS_byte_3" =>
+						memory_buffer (CPU_DATA_WIDTH-1 downto CPU_DATA_WIDTH-1-7)<= memory_data_in;
+					when "FSS_byte_2" =>
+						memory_buffer (CPU_DATA_WIDTH-1-8 downto CPU_DATA_WIDTH-1-15)<= memory_data_in;
+					when "FSS_byte_1" =>
+						memory_buffer (CPU_DATA_WIDTH-1-16 downto CPU_DATA_WIDTH-1-23)<= memory_data_in;
+					when "FSS_byte_0" =>
+						memory_buffer (CPU_DATA_WIDTH-1-24 downto 0)<= memory_data_in;
 			end process memdata
 end architecture behavioral
