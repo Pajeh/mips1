@@ -10,24 +10,30 @@ port(
 clk: in std_logic;
 rst: in std_logic;
 
-aluResult_in: in std_logic_vector( 31 downto 0);
+aluResult_in: in std_logic_vector( CPU_DATA_WIDTH-1 downto 0);			-- ALU results from Execution Stage
 
-data_in: in std_logic_vector(31 downto 0);
-memory_rw: out std_logic;
-memory_address: out std_logic_vector(31 downto 0);
-memory_data_out: out std_logic_vector(31 downto 0);
-memory_data_in: in std_logic_vector(31 downto 0);
+data_in: in std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				-- Data from execution stage
+																		-- Memory Read/Write decision comes from the FSS
+memory_address: out std_logic_vector(CPU_MEM_CELL_WIDTH-1 downto 0);	-- Memory address output for memory r/w
+memory_data_out: out std_logic_vector(CPU_MEM_CELL_WIDTH-1 downto 0);	-- Memory data out. This is a CPU_MEM_CELL_WIDTH (8) long register. Mostly 4 clocks needed for 32 bits r/w.
+memory_data_in: in std_logic_vector(CPU_MEM_CELL_WIDTH-1 downto 0);		-- Read data from memory. This is a CPU_MEM_CELL_WIDTH (8) long register. Mostly 4 clocks needed for 32 bits r.
 
-writeback: out std_logic_vector( 31 downto 0);
+memory_data_reg: in std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0); 	-- Register control of the memory read process. (time control)
 
-reg_dest_in: in std_logic_vector(4 downto 0);
-reg_dest_out: out std_logic_vector(4 downto 0));
+mux_decision: in std_logic;												-- FSS decision for writeback output. ALU results or memory data can be forwarded to writeback
+
+
+writeback: out std_logic_vector( CPU_DATA_WIDTH-1 downto 0);			-- Data to send to next stage: Writeback
+
+reg_dest_in: in std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0);		-- k.A.
+reg_dest_out: out std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0));		-- k.A.
 end entity MemoryStage
 
-architecture behavioral of MemoryStage is
+architecture memory_stage of MemoryStage is
 	begin
 	output: process ( clk, rst, data_in, aluResult_in, memory_data_in, reg_dest_in) is
 		begin
-	
-
+			if (!rst) then
+				writeback <= 0;
+	end output
 end architecture behavioral;
