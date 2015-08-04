@@ -13,12 +13,11 @@ architecture behavioural of instruction_decode_tb is
     --  DUT
     component instruction_decode
     port(instr,ip_in, writeback, alu_result: in std_logic_vector (31 downto 0);
-        writeback_reg : in std_logic_vector (4 downto 0);
+        writeback_reg, regdest_ex, regdest_mem : in std_logic_vector (4 downto 0);
         regdest_mux, regshift_mux: in std_logic_vector (1 downto 0);
         clk, reset, enable_regs: in std_logic;
-        reg_a, reg_b : out std_logic_vector (31 downto 0);
-        reg_dest, shift_out : out std_logic_vector (4 downto 0);
-        imm : out std_logic_vector (15 downto 0)
+        reg_a, reg_b, imm : out std_logic_vector (31 downto 0);
+        reg_dest, shift_out : out std_logic_vector (4 downto 0)
         );
     end component;
     
@@ -26,7 +25,9 @@ architecture behavioural of instruction_decode_tb is
     signal ip_in : std_logic_vector (31 downto 0) := x"00000000";
     signal writeback : std_logic_vector (31 downto 0) := x"00000000";
     signal alu_result : std_logic_vector (31 downto 0) := x"00000000";
-    signal writeback_reg : std_logic_vector (5 downto 0) := '00001';
+    signal writeback_reg : std_logic_vector (4 downto 0) := '00001';
+    signal regdest_mem : std_logic_vector (4 downto 0) := '00000';
+    signal regdest_ex : std_logic_vector (4 downto 0) := '00000';
     signal regdest_mux : std_logic_vector (1 downto 0) := '00';
     signal regshift_mux : std_logic_vector (1 downto 0) := '00';
     signal clk : std_logic := '0';
