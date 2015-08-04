@@ -1,6 +1,5 @@
 -- Revision history:
--- 03.08.2015	Carlos Minamisava Faria	created 
--- 03.08.2015	Carlos Minamisava Faria	entity MemoryStage
+-- 03.08.2015	Carlos Minamisava Faria	created and defined entity MemoryStage
 
 library IEEE;
 use IEEE.std_logic_1164.ALL;
