@@ -14,3 +14,9 @@ entity instruction_decode is
         imm : out std_logic_vector (15 downto 0)
         );
 end entity;
+
+architecture behavioural of instruction_decode is
+
+process is
+begin
+end process;
