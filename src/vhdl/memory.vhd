@@ -29,5 +29,5 @@ architecture behavioral of MemoryStage is
 	output: process ( clk, rst, data_in, aluResult_in, memory_data_in, reg_dest_in) is
 		begin
 	
-
+end output;
 end architecture behavioral;
