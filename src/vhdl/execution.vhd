@@ -1,6 +1,7 @@
 -- revision history:
 -- 03.08.2015     Patrick Appenheimer    created
--- 04.08.2015     Patrick Appenheimer    added alu_behav
+-- 04.08.2015     Patrick Appenheimer    added alu1
+-- 04.08.2015     Patrick Appenheimer    mux1, mux2
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -29,17 +30,48 @@ entity execution is
     );
 end entity execution;
 
-architecture regdest of execution is
-BEGIN 
-      PROCESS
-      BEGIN
-         ex_destreg <= in_destreg;
-      END PROCESS;
-END regdest;
-
-architecture alu_behav of execution is
+architecture behave of execution is
 begin
+  signal mux1_out, mux2_out: std_logic_vector(31 downto 0);
+  
+  process
+  begin
+    ex_destreg <= in_destreg;
+  
+    case in_mux1 is
+      -- 00
+      when "00" =>
+      mux1_out <= b"000_0000_0000_0000_0000_0000_0000" & in_shift;
+      -- 01
+      when "01" =>
+      mux1_out <= x"0000_0004";
+      -- 10
+      when "10" =>
+      mux1_out <= in_a;
+      -- others
+      when others => mux1_out <= (others => 'X');
+    end case;
+    
+    case in_mux2 is
+      -- 00
+      when "00" =>
+      mux2_out <= in_b;
+      -- 01
+      when "01" =>
+      mux2_out <= in_imm;
+      -- 10
+      when "10" =>
+      mux2_out <= in_ip;
+      -- others
+      when others => mux2_out <= (others => 'X');
+    end case;
+    
+  end process;
+  
   alu1: entity work.alu(behave) port map(in_a, in_b, in_alu_instruction, ex_alu, ex_alu_zero);
-end alu_behav;
+  
+end behave;
+
+
 
 
