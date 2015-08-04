@@ -1,5 +1,6 @@
 -- revision history:
--- 06.07.2015     Alex Schönberger    created
+-- 06.07.2015     Alex Schönberger      created
+-- 04.08.2015     Patrick Appenheimer   added entity and architecture behave
 
 entity alu is
 
