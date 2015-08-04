@@ -3,23 +3,33 @@
 
 entity alu is
 
-
-
-
+    port(
+      in_a                     : in  std_logic_vector(31 downto 0);
+      in_b                     : in  std_logic_vector(31 downto 0);
+      instruction              : in std_logic_vector(31 downto 0);
+      result                   : out std_logic_vector(31 downto 0);
+      zero                     : out std_logic
+    );
 
 end entity alu;
 
+architecture behave of alu is
+begin
+  process(a, b, instruction)
+  -- declaration of variables
+  variable a_uns : unsigned(31 downto 0);
+  variable b_uns : unsigned(31 downto 0);
+  variable r_uns : unsigned(31 downto 0);
+  variable z_uns : unsigned(0 downto 0);
+  begin
+    -- initialize values
+    a_uns := unsigned(a);
+    b_uns := unsigned(b);
+    r_uns := (others => '0');
+    z_uns := '0';
 
-entity add is
+end architecture behave;
 
-
-port( Op1: in bit_vector (31 downto 26);
-s: in bit_vector (25 downto 21); 
-t: in bit_vector (20 downto 16); 
-d: in bit_vector (15 downto 11); 
-Op2: in bit_vector (10 downto 0));
-
-end entity add;
 
 
 architecture structure_alu of alu is
