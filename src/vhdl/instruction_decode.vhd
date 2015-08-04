@@ -32,6 +32,7 @@ architecture behavioural of instruction_decode is
     rs <= instr (25 downto 21);
     shift <= instr (20 downto 6);
     pc_imm <= imm (31 downto 2) & '00';
+    ip_out <= std_logic_vector(unsigned (pc_imm) - 4);
     
     -- Defines the instruction decode logic
     logic : process is
