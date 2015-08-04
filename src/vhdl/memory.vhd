@@ -38,4 +38,3 @@ architecture memory_stage of MemoryStage is
 	end output
 end output
 end architecture behavioral
-end architecture behavioral
