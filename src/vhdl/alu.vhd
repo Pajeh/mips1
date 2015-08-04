@@ -2,6 +2,12 @@
 -- 06.07.2015     Alex Schönberger      created
 -- 04.08.2015     Patrick Appenheimer   added entity and architecture behave
 
+library IEEE;
+  use IEEE.std_logic_1164.ALL;
+
+library WORK;
+  use WORK.cpu_pack.all;
+
 entity alu is
 
     port(
