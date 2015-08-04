@@ -53,7 +53,7 @@ architecture behavioural of instruction_decode is
         if (reset= '1') then    -- asynchronous reset
             for index in 0 to 31 loop
                 register_file(i) <= x"00000000";
-        else if (clk = '1') then   -- If register file is enabled, write back result
+        else if (clk = '1' & enable_regs = '1') then   -- If register file is enabled, write back result
             register_file(writeback_reg) <= writeback;
         end if;
     end process;
