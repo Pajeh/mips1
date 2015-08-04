@@ -9,15 +9,15 @@ library WORK;
 
 entity execution is
     port(
-      clk                     : in  std_logic;
-      rst                     : in  std_logic;
-      ex_alu                  : out std_logic_vector(31 downto 0);
-      ex_data                 : out std_logic_vector(31 downto 0);
-      ex_destreg              : out std_logic_vector(4  downto 0);
-      ex_alu_zero             : out std_logic_vector(0  downto 0);
-      in_a	                  : in  std_logic_vector(31 downto 0);
-      in_b	                  : in  std_logic_vector(31 downto 0);
-      in_destreg              : in  std_logic_vector(4 downto 0);
+      clk                   : in  std_logic;
+      rst                   : in  std_logic;
+      ex_alu                : out std_logic_vector(31 downto 0);
+      ex_data               : out std_logic_vector(31 downto 0);
+      ex_destreg            : out std_logic_vector(4  downto 0);
+      ex_alu_zero           : out std_logic_vector(0  downto 0);
+      in_a                  : in  std_logic_vector(31 downto 0);
+      in_b                  : in  std_logic_vector(31 downto 0);
+      in_destreg            : in  std_logic_vector(4 downto 0);
       in_imm	                : in  std_logic_vector(31 downto 0);
       in_ip	                  : in  std_logic_vector(31 downto 0);
       in_shift	              : in  std_logic_vector(4 downto 0);
