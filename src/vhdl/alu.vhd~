@@ -1,0 +1,13 @@
+-- revision history:
+-- 06.07.2015     Alex Schönberger    created
+
+entity alu is
+
+end entity alu;
+
+
+architecture structure_alu of alu is
+
+begin
+
+end architecture structure_alu;

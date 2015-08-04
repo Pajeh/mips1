@@ -1,0 +1,84 @@
+
+counter.axf:     file format elf32-bigmips
+
+
+Disassembly of section .text:
+
+00000000 <.text>:
+   0:	3c1c0001 	lui	gp,0x1
+   4:	279c8070 	addiu	gp,gp,-32656
+   8:	08000004 	j	0x10
+   c:	3c1d00a2 	lui	sp,0xa2
+  10:	8f828010 	lw	v0,-32752(gp)
+  14:	00000000 	nop
+  18:	a0400000 	sb	zero,0(v0)
+  1c:	af80800c 	sw	zero,-32756(gp)
+  20:	8f82800c 	lw	v0,-32756(gp)
+  24:	00000000 	nop
+  28:	28420010 	slti	v0,v0,16
+  2c:	1040000a 	beqz	v0,0x58
+  30:	00000000 	nop
+  34:	8f82800c 	lw	v0,-32756(gp)
+  38:	00000000 	nop
+  3c:	24420001 	addiu	v0,v0,1
+  40:	af82800c 	sw	v0,-32756(gp)
+  44:	8f82800c 	lw	v0,-32756(gp)
+  48:	00000000 	nop
+  4c:	28420010 	slti	v0,v0,16
+  50:	1440fff8 	bnez	v0,0x34
+  54:	00000000 	nop
+  58:	8f838010 	lw	v1,-32752(gp)
+  5c:	00000000 	nop
+  60:	90620000 	lbu	v0,0(v1)
+  64:	00000000 	nop
+  68:	24420001 	addiu	v0,v0,1
+  6c:	304200ff 	andi	v0,v0,0xff
+  70:	a0620000 	sb	v0,0(v1)
+  74:	08000007 	j	0x1c
+  78:	00000000 	nop
+
+Disassembly of section .sdata:
+
+0000007c <.sdata>:
+  7c:	76543210 	jalx	0x950c840
+  80:	00000084 	0x84
+
+Disassembly of section .reginfo:
+
+00000000 <.reginfo>:
+   0:	30000000 	andi	zero,zero,0x0
+   4:	00000000 	nop
+   8:	00000000 	nop
+   c:	00000000 	nop
+  10:	00000000 	nop
+  14:	00008070 	0x8070
+
+Disassembly of section .pdr:
+
+00000000 <.pdr>:
+   0:	00000010 	mfhi	zero
+   4:	00000000 	nop
+   8:	00000000 	nop
+   c:	00000000 	nop
+  10:	00000000 	nop
+  14:	00000000 	nop
+  18:	0000001d 	0x1d
+  1c:	0000001f 	0x1f
+
+Disassembly of section .comment:
+
+00000000 <.comment>:
+   0:	4743433a 	c1	0x143433a
+   4:	2028474e 	addi	t0,at,18254
+   8:	55292034 	0x55292034
+   c:	2e392e30 	sltiu	t9,s1,11824
+  10:	Address 0x0000000000000010 is out of bounds.
+
+
+Disassembly of section .gnu.attributes:
+
+00000000 <.gnu.attributes>:
+   0:	41000000 	bc0f	0x4
+   4:	0f676e75 	jal	0xd9db9d4
+   8:	00010000 	sll	zero,at,0x0
+   c:	00070403 	sra	zero,a3,0x10

@@ -1,0 +1,192 @@
+
+Discarded input sections
+
+ .reginfo       0x0000000000000000       0x18 counter.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x0000000000000000                PROVIDE (__executable_start, 0x0)
+                0x0000000000000000                . = 0x0
+
+.text           0x0000000000000000       0x7c
+                0x0000000000000000                _ftext = .
+ *(.text.startup .text.startup.*)
+ .text.startup  0x0000000000000000       0x10 boot.o
+                0x0000000000000000                main
+ *(.text.unlikely .text.*_unlikely .text.unlikely.*)
+ *(.text.exit .text.exit.*)
+ *(.text.hot .text.hot.*)
+ *(.text .stub .text.* .gnu.linkonce.t.*)
+ .text          0x0000000000000010        0x0 boot.o
+ .text          0x0000000000000010       0x6c counter.o
+                0x0000000000000010                main_user
+ *(.gnu.warning)
+ *(.mips16.fn.*)
+ *(.mips16.call.*)
+
+.fini
+ *(SORT(.fini))
+                0x000000000000007c                PROVIDE (__etext, .)
+                0x000000000000007c                PROVIDE (_etext, .)
+                0x000000000000007c                PROVIDE (etext, .)
+
+.rodata
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+
+.rodata1
+ *(.rodata1)
+
+.sdata2
+ *(.sdata2 .sdata2.* .gnu.linkonce.s2.*)
+
+.sbss2
+ *(.sbss2 .sbss2.* .gnu.linkonce.sb2.*)
+
+.eh_frame_hdr
+ *(.eh_frame_hdr)
+
+.eh_frame
+ *(.eh_frame)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+                0x000000000000007c                . = .
+
+.eh_frame
+ *(.eh_frame)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+
+.tdata
+ *(.tdata .tdata.* .gnu.linkonce.td.*)
+
+.tbss
+ *(.tbss .tbss.* .gnu.linkonce.tb.*)
+ *(.tcommon)
+
+.preinit_array  0x000000000000007c        0x0
+                0x000000000000007c                PROVIDE (__preinit_array_start, .)
+ *(.preinit_array)
+                0x000000000000007c                PROVIDE (__preinit_array_end, .)
+
+.init_array     0x000000000000007c        0x0
+                0x000000000000007c                PROVIDE (__init_array_start, .)
+ *(SORT(.init_array.*))
+ *(.init_array)
+                0x000000000000007c                PROVIDE (__init_array_end, .)
+
+.fini_array     0x000000000000007c        0x0
+                0x000000000000007c                PROVIDE (__fini_array_start, .)
+ *(SORT(.fini_array.*))
+ *(.fini_array)
+                0x000000000000007c                PROVIDE (__fini_array_end, .)
+
+.ctors
+ *crtbegin.o(.ctors)
+ *crtbegin?.o(.ctors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+ *(SORT(.ctors.*))
+ *(.ctors)
+
+.dtors
+ *crtbegin.o(.dtors)
+ *crtbegin?.o(.dtors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+ *(SORT(.dtors.*))
+ *(.dtors)
+
+.jcr
+ *(.jcr)
+
+.data.rel.ro
+ *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
+ *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
+
+.data           0x000000000000007c        0x0
+                0x000000000000007c                _fdata = .
+ *(.data .data.* .gnu.linkonce.d.*)
+ .data          0x000000000000007c        0x0 boot.o
+ .data          0x000000000000007c        0x0 counter.o
+
+.data1
+ *(.data1)
+
+.got.plt
+ *(.got.plt)
+                0x000000000000007c                . = .
+                0x000000000000007c                . = .
+                0x0000000000008070                _gp = (ALIGN (0x10) + 0x7ff0)
+
+.got
+ *(.got)
+
+.sdata          0x000000000000007c        0x8
+ *(.sdata .sdata.* .gnu.linkonce.s.*)
+ .sdata         0x000000000000007c        0x8 counter.o
+                0x000000000000007c                i
+                0x0000000000000080                addr
+
+.lit8
+ *(.lit8)
+
+.lit4
+ *(.lit4)
+                0x0000000000000084                _edata = .
+                0x0000000000000084                PROVIDE (edata, .)
+                0x0000000000000084                . = .
+                0x0000000000000084                __bss_start = .
+                0x0000000000000084                _fbss = .
+
+.sbss
+ *(.dynsbss)
+ *(.sbss .sbss.* .gnu.linkonce.sb.*)
+ *(.scommon)
+
+.bss            0x0000000000000084        0x0
+ *(.dynbss)
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x0000000000000084        0x0 boot.o
+ .bss           0x0000000000000084        0x0 counter.o
+ *(COMMON)
+                0x0000000000000084                . = ALIGN ((. != 0x0)?0x4:0x1)
+                0x0000000000000084                . = ALIGN (0x4)
+                0x0000000000000084                . = SEGMENT_START ("ldata-segment", .)
+                0x0000000000000084                . = ALIGN (0x4)
+                0x0000000000000084                _end = .
+                0x0000000000000084                PROVIDE (end, .)
+LOAD boot.o
+LOAD counter.o
+LOAD /home/alexs/DEV/software/platform/MIPS/lib/libmipsS.a
+LOAD /home/alexs/DEV/software/platform/MIPS/compiler/mips-elf-4.9.0/lib/gcc/mips-elf/4.9.0/soft-float/libgcc.a
+OUTPUT(counter.axf elf32-bigmips)
+
+.reginfo        0x0000000000000000       0x18
+ .reginfo       0x0000000000000000       0x18 boot.o
+
+.pdr            0x0000000000000000       0x20
+ .pdr           0x0000000000000000        0x0 boot.o
+ .pdr           0x0000000000000000       0x20 counter.o
+
+.mdebug.abi32   0x0000000000000000        0x0
+ .mdebug.abi32  0x0000000000000000        0x0 counter.o
+
+.comment        0x0000000000000000       0x11
+ .comment       0x0000000000000000       0x11 counter.o
+                                         0x12 (size before relaxing)
+
+.gnu.attributes
+                0x0000000000000000       0x10
+ .gnu.attributes
+                0x0000000000000000       0x10 counter.o
