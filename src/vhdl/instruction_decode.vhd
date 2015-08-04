@@ -19,14 +19,15 @@ end entity;
 architecture behavioural of instruction_decode is
     -- The MIPS' register file
     variable register_file  is array (32) of std_logic_vector (31 downto 0);
-    signal rd, rs, rt : std_logic_vector(4 downto 0);
+    signal rd, rs, rt, shift : std_logic_vector(4 downto 0);
     signal imm_16 : std_logic_vector (15 downto 0) := instr (15 downto 0);
-    imm := X"0000" & imm_16;        -- Imm is the subvector of instr from 15 to 0 and it is padded with leading zeros for further processing.
+    imm <= X"0000" & imm_16;        -- Imm is the subvector of instr from 15 to 0 and it is padded with leading zeros for further processing.
     
     -- Splitting registers for R-type-instructions
-    rd := instr (15 downto 11);
-    rt := instr (20 downto 16);
-    rs := instr (25 downto 21);
+    rd <= instr (15 downto 11);
+    rt <= instr (20 downto 16);
+    rs <= instr (25 downto 21);
+    shift <= instr (20 downto 6);
     
     -- Defines the instruction decode logic
     process logic is
@@ -44,6 +45,12 @@ architecture behavioural of instruction_decode is
             when regdest_mem => reg_b <= writeback;
             when regdest_ex => reg_b <= alu_result;
             when others => reg_b <= register_file(rt);
+        end case;
+        case regshift_mux is    -- Determines the output at shift_out
+            when '00' => shift_out <= shift;
+            when '01' => shift_out <= '10000';
+            -- TODO: Add the branch logic wire!
+            when others => shift_out <= '00000';
         end case;
     end process;
 

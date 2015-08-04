@@ -1,5 +1,6 @@
 -- Testbench for the instruction decode stage
 -- 2015-08-04   Lukas Jäger     created
+-- 2015-08-04   Lukas Jäger     added test cases for forwarding
 libary IEEE;
     use IEEE.std_logic_1164.all;
 library WORK;
@@ -165,6 +166,17 @@ begin
         wait for clk_time;
         regdest_mem <= '00000';
         regdest_ex <= '00000';
+        
+        -- inserting an addi instruction that adds abcd in hex notation to r1 and stores it in r2
+        -- outputs should be (all vals in hex notation):
+        -- reg_a: 01234567
+        -- reg_b: 00000000;
+        -- reg_dest: 2;
+        -- imm: 0000abcd
+        -- shift: 0
+        instr <= x"2422abcd";
+        wait for clk_time;
+        
     end process;
 end;
             
