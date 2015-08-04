@@ -2,10 +2,10 @@
 -- 2015-08-03   Lukas Jäger     created
 -- 2015-08-04   Lukas Jäger     added architecture and started to implement both processes
 -- 2015-08-04   Lukas Jäger     added asynchronous reset
-library IEEE:
+library IEEE;
     use IEEE.std_logic_1164.all;
-library WORK;
-    use WORK.cpu_pack.all;
+--library WORK;
+--    use WORK.cpu_pack.all;
 entity instruction_decode is
     port(instr,ip_in, writeback, alu_result: in std_logic_vector (31 downto 0);
         writeback_reg, regdest_ex, regdest_mem : in std_logic_vector (4 downto 0);
@@ -18,7 +18,10 @@ end entity;
 
 architecture behavioural of instruction_decode is
     -- The MIPS' register file
+    begin
     variable register_file  is array (32) of std_logic_vector (31 downto 0);
+    variable shift_offset : std_logic_vector(31 downto 0);
+    signal pc_imm : std_logic_vector (31 downto 0);
     signal rd, rs, rt, shift : std_logic_vector(4 downto 0);
     signal imm_16 : std_logic_vector (15 downto 0) := instr (15 downto 0);
     imm <= X"0000" & imm_16;        -- Imm is the subvector of instr from 15 to 0 and it is padded with leading zeros for further processing.
@@ -28,10 +31,12 @@ architecture behavioural of instruction_decode is
     rt <= instr (20 downto 16);
     rs <= instr (25 downto 21);
     shift <= instr (20 downto 6);
+    pc_imm <= imm (31 downto 2) & '00';
     
     -- Defines the instruction decode logic
-    process logic is
+    logic : process is
     begin
+        
         case rs is                                      -- Determining the output at reg_a
             -- If regdest is still used in the writeback stage, its input is forwarded
             when regdest_mem => reg_a <= writeback;  
@@ -60,14 +65,16 @@ architecture behavioural of instruction_decode is
             when '01' => reg_dest <= 11111;
             when '10' => reg_dest <= rt;
             when others => reg_dest <= 00000;
+        end case;
     end process;
 
     -- Process for clocked writebacks to the register file and the asynchronous reset
-    process register_file_write (clk,reset) is
+    register_file_write : process (clk,reset) is
     begin
-        if (reset= '1') then    -- asynchronous reset
-            for index in 0 to 31 loop
+        if (reset= '0') then    -- asynchronous reset
+            for i in 0 to 31 loop
                 register_file(i) <= x"00000000";
+            end loop;
         elsif (clk = '1' & enable_regs = '1') then  -- If register file is enabled, write back result
             register_file(writeback_reg) <= writeback;
         end if;
