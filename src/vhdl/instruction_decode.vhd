@@ -56,5 +56,6 @@ architecture behavioural of instruction_decode is
         else if (clk = '1' & enable_regs = '1') then   -- If register file is enabled, write back result
             register_file(writeback_reg) <= writeback;
         end if;
+        end if;
     end process;
 end architecture;
