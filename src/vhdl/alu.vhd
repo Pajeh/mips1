@@ -24,8 +24,8 @@ begin
   variable z_uns : unsigned(0 downto 0);
   begin
     -- initialize values
-    a_uns := unsigned(a);
-    b_uns := unsigned(b);
+    a_uns := unsigned(in_a);
+    b_uns := unsigned(in_b);
     r_uns := (others => '0');
     z_uns := '0';
     -- select operation
