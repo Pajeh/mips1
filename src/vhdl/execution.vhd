@@ -31,7 +31,6 @@ architecture regdest of execution is
 BEGIN 
       PROCESS
       BEGIN
-         WAIT UNTIL clk'EVENT AND clk='1';
          ex_destreg <= in_destreg;
       END PROCESS;
 END regdest;
