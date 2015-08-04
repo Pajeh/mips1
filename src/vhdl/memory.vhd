@@ -21,7 +21,7 @@ memory_data_in: in std_logic_vector(CPU_MEM_CELL_WIDTH-1 downto 0);		-- Read dat
 memory_data_reg: in std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0); 	-- Register control of the memory read process. (time control)
 
 mux_decision: in std_logic;												-- FSS decision for writeback output. ALU results or memory data can be forwarded to writeback
-
+fss_memory: in std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0);			-- FSS decision for data access: r/w.
 
 writeback: out std_logic_vector( CPU_DATA_WIDTH-1 downto 0);			-- Data to send to next stage: Writeback
 
@@ -31,10 +31,21 @@ end entity MemoryStage
 
 architecture memory_stage of MemoryStage is
 	begin
-	output: process ( clk, rst, data_in, aluResult_in, memory_data_in, reg_dest_in) is
+		process
 		begin
 			if (!rst) then
 				writeback <= 0;
-	end output
-end output
+			else 
+				memory_address <= data_in;
+				
+				memory_data_out
+				
+			end
+		end process
+		
+		memdata: process(fss_memory) 
+			begin
+				case (fss_memory) is
+					when 
+			end process memdata
 end architecture behavioral
