@@ -14,14 +14,15 @@ entity execution is
       ex_alu                  : out std_logic_vector(31 downto 0);
       ex_data                 : out std_logic_vector(31 downto 0);
       ex_destreg              : out std_logic_vector(4  downto 0);     
-      in_a	              : in  std_logic_vector(31 downto 0);
-      in_b	              : in  std_logic_vector(31 downto 0);
+      in_a	                  : in  std_logic_vector(31 downto 0);
+      in_b	                  : in  std_logic_vector(31 downto 0);
       in_destreg              : in  std_logic_vector(4 downto 0);
-      in_imm	              : in  std_logic_vector(31 downto 0);
-      in_ip	              : in  std_logic_vector(31 downto 0);
+      in_imm	                : in  std_logic_vector(31 downto 0);
+      in_ip	                  : in  std_logic_vector(31 downto 0);
       in_shift	              : in  std_logic_vector(4 downto 0);
-      in_mux1		      : in  std_logic_vector(1 downto 0);
-      in_mux2		      : in  std_logic_vector(1 downto 0);
+      in_mux1		              : in  std_logic_vector(1 downto 0);
+      in_mux2		              : in  std_logic_vector(1 downto 0);
+      in_alu_instruction	    : in  std_logic_vector(31 downto 0)
       
     );
 end entity execution;
