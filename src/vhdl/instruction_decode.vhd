@@ -4,6 +4,7 @@
 -- 2015-08-04   Lukas Jäger     added asynchronous reset
 library IEEE;
     use IEEE.std_logic_1164.all;
+	use IEEE.numeric_std.all;
 --library WORK;
 --    use WORK.cpu_pack.all;
 entity instruction_decode is
@@ -16,68 +17,67 @@ entity instruction_decode is
         );
 end entity;
 
-architecture behavioural of instruction_decode is
-    -- The MIPS' register file
-    begin
-    variable register_file  is array (32) of std_logic_vector (31 downto 0);
-    variable shift_offset : std_logic_vector(31 downto 0);
-    signal pc_imm : std_logic_vector (31 downto 0);
-    signal rd, rs, rt, shift : std_logic_vector(4 downto 0);
-    signal imm_16 : std_logic_vector (15 downto 0) := instr (15 downto 0);
-    imm <= X"0000" & imm_16;        -- Imm is the subvector of instr from 15 to 0 and it is padded with leading zeros for further processing.
-    
-    -- Splitting registers for R-type-instructions
-    rd <= instr (15 downto 11);
-    rt <= instr (20 downto 16);
-    rs <= instr (25 downto 21);
-    shift <= instr (20 downto 6);
-    pc_imm <= imm (31 downto 2) & '00';
-    ip_out <= std_logic_vector(unsigned (pc_imm) - 4);
-    
-    -- Defines the instruction decode logic
-    logic : process is
-    begin
-        
-        case rs is                                      -- Determining the output at reg_a
-            -- If regdest is still used in the writeback stage, its input is forwarded
-            when regdest_mem => reg_a <= writeback;  
-            -- If regdest is still used in the memory stage, its input is forwarded
-            when regdest_ex => reg_a <= alu_result;
-            -- No forwarding required, reg_a is just read from the register file
-            when others => reg_a <= register_file(rs);
-        end case;
-        
-        case rt is
-            -- Works analogously to the determination of reg_a.
-            when regdest_mem => reg_b <= writeback;
-            when regdest_ex => reg_b <= alu_result;
-            when others => reg_b <= register_file(rt);
-        end case;
-        
-        case regshift_mux is    -- Determines the output at shift_out
-            when '00' => shift_out <= shift;
-            when '01' => shift_out <= '10000';
-            -- TODO: Add the branch logic wire!
-            when others => shift_out <= '00000';
-        end case;
-        
-        case regdest_mux is     -- Determines the output at reg_dest
-            when '00' => reg_dest <= rd;
-            when '01' => reg_dest <= 11111;
-            when '10' => reg_dest <= rt;
-            when others => reg_dest <= 00000;
-        end case;
-    end process;
+architecture behavioral of instruction_decode is
+	type regfile is array (31 downto 0) of std_logic_vector (31 downto 0);
+    	signal register_file : regfile;
+    	signal shift_offset, imm_internal : std_logic_vector(31 downto 0);
+    	signal pc_imm : std_logic_vector (31 downto 0);
+    	signal rd, rs, rt, shift : std_logic_vector(4 downto 0);
+    	signal imm_16 : std_logic_vector (15 downto 0);
+begin
+	imm_16  <= instr (15 downto 0);
+	imm_internal <= X"0000" & imm_16;
+	imm <= imm_internal;        -- Imm is the subvector of instr from 15 to 0 and it is padded with leading zeros for further processing.
+ 	-- Splitting registers for R-type-instructions
+    	rd <= instr (15 downto 11);
+    	rt <= instr (20 downto 16);
+    	rs <= instr (25 downto 21);
+    	shift <= instr (10 downto 6);
+    	pc_imm <= imm_internal (31 downto 2) & "00";
+	-- Defines the instruction decode logic
+    	logic : process is
+    		begin
 
-    -- Process for clocked writebacks to the register file and the asynchronous reset
-    register_file_write : process (clk,reset) is
-    begin
-        if (reset= '0') then    -- asynchronous reset
-            for i in 0 to 31 loop
-                register_file(i) <= x"00000000";
-            end loop;
-        elsif (clk = '1' & enable_regs = '1') then  -- If register file is enabled, write back result
-            register_file(writeback_reg) <= writeback;
-        end if;
-    end process;
+		-- Forwarding logic for reg_a
+		-- If the destination register is still used by the writeback-phase, the writeback-output is forwarded
+        	if (rs = regdest_mem) then reg_a <= writeback;
+		-- If the destination register is still used by the memory-phase, the alu-result is forwarded
+		elsif (rs = regdest_ex) then reg_a <= alu_result;
+		-- Otherwise, no forwarding is required and the register specified by rs is read
+		else reg_a <= register_file(to_integer(unsigned (rs)));
+		end if;
+
+		
+		--Forwarding logic for reg_b. Works analogously to the reg_a block above
+		if (rt = regdest_mem) then reg_b <= writeback;
+		elsif (rt = regdest_ex) then reg_b <= alu_result;
+		else reg_b <= register_file(to_integer(unsigned (rt)));
+		end if;
+        
+        	case regshift_mux is    -- Determines the output at shift_out
+            		when "00" => shift_out <= shift;
+            		when "01" => shift_out <= "00000";
+            		-- TODO: Add the branch logic wire!
+            		when others => shift_out <= "00000";
+        	end case;
+        
+        	case regdest_mux is     -- Determines the output at reg_dest
+            		when "00" => reg_dest <= rd;
+            		when "01" => reg_dest <= "11111";
+            		when "10" => reg_dest <= rt;
+            		when others => reg_dest <= "00000";
+        	end case;
+    	end process;
+
+	-- Process for clocked writebacks to the register file and the asynchronous reset
+	register_file_write : process (clk,reset) is
+    	begin
+    		if (reset= '0') then    -- asynchronous reset
+            	for i in 0 to 31 loop
+                	register_file(i) <= x"00000000";
+            	end loop;
+        	elsif (clk = '1') and (enable_regs = '1') then  -- If register file is enabled, write back result
+            		register_file(to_integer(unsigned (writeback_reg))) <= writeback;
+        	end if;
+    	end process;
 end architecture;
