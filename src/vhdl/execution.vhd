@@ -1,5 +1,6 @@
 -- revision history:
 -- 03.08.2015     Patrick Appenheimer    created
+-- 04.08.2015     Patrick Appenheimer    added alu_behav
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
