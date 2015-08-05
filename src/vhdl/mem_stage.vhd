@@ -45,7 +45,7 @@ architecture behavioral of MemoryStage is
 		-- reg_dest is forwarded
 		reg_dest_out <= reg_dest_in;
 		
-		output: process (rst, aluResult_in,data_in, data_addr, data_from_cpu, mux_decision, reg_dest_in)is
+		output: process (rst, aluResult_in,data_in, data_to_cpu, mux_decision, reg_dest_in)is
 		begin
 			if (rst='0') then                                   -- reset condition
 				writeback <= x"00_00_00_00";
