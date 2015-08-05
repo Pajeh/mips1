@@ -6,6 +6,9 @@ library IEEE;
   
 library IEEE;
   use IEEE.STD_LOGIC_UNSIGNED.ALL;
+  
+library WORK;
+  use WORK.all;
 
 
 entity instruction_fetch is
@@ -17,7 +20,7 @@ rst : in std_logic;
 PC : in std_logic_vector(31 downto 0);      --PC : in std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);                        	--PC(32 bit)
 InstrData : in std_logic_vector(31 downto 0);			--InstrData : in std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				 	    --InstrData, Adress information comes from Memory(32 bit)
 
-StallData : in std_logic;
+--StallData : in std_logic;
 
 IR : out std_logic_vector(31 downto 0);    --IR : out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);   					    --IR, Next PC goes to Execution Stage(32 bit)
 InstrAddr: out std_logic_vector(31 downto 0); --InstrAddr: out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);  					--InstrAddr, PC goes to Memory(32 bit)
