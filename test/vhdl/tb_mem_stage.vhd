@@ -21,7 +21,7 @@ architecture behav_tb_mem_stage of tb_mem_stage is
   signal clk                  : std_logic         := '0';
   signal rst                  : std_logic;
   signal test_alu          : std_logic_vector(31 downto 0);
-  signal test_in_data_in      : std_logic_vector(31 downto 0);
+  signal test_data_in      : std_logic_vector(31 downto 0);
 
   signal test_data_addr          : std_logic_vector(31  downto 0);
   signal test_data_from_cpu          : std_logic_vector(31  downto 0);
@@ -45,26 +45,28 @@ architecture behav_tb_mem_stage of tb_mem_stage is
   rst   <= '1', '0'     after RST_TIME;
 
   -- MEM_STAGE
-  u1_mem_stage: entity work.mem_stage(behave)
-    PORT MAP(clk, rst, test_alu, test_data, test_data_addr, test_data_from_cpu, test_data_to_cpu,
-		test_mux, test_dest_in, test_dest_out);
+  u1_mem_stage: entity work.MemoryStage(behavioral)
+    PORT MAP(clk, rst, test_alu, test_data_in, test_data_addr, test_data_from_cpu, test_data_to_cpu,
+		test_mux, test_writeback, test_dest_in, test_dest_out);
 
   -- TEST PROCESS
   test_process:
   process
   begin
-    sim_finish   <= '0';
+    sim_finish   <= '1';
+wait for 1 ns;
+	sim_finish <='0';
     test_alu <= x"0000_0001";
-    test_data <= x"0000_0010";
+    test_data_in <= x"0000_0010";
     test_data_to_cpu <= x"0101_0100";	
-    test_mux <= b"0";
-    wait for 1 ns;
-    test_mux <= b"1";
-    wait for 1 ns;
-    test_data_to_cpu <= x"000_0000";	
-    wait for 1 ns;
-    test_mux <= b"0";
-    wait for 1 ns;
+    test_mux <= '0';
+    wait for 3 ns;
+    test_mux <= '1';
+    wait for 3 ns;
+    test_data_to_cpu <= x"0000_0000";	
+    wait for 3 ns;
+    test_mux <= '0';
+    wait for 3 ns;
     sim_finish  <= '1';
     wait;
   end process;
