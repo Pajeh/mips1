@@ -41,7 +41,8 @@ Instr : out std_logic_vector(31 downto 0)	--Instr : out std_logic_vector(CPU_DAT
   signal PC :std_logic_vector(31 downto 0) := x"0000_0000";
   signal InstrData : std_logic_vector(31 downto 0) := x"0000_0000";
   
-  
+  -- Tweak clock frequency here
+    constant clk_time : time := 10 ns;
 
 begin
 
@@ -52,11 +53,24 @@ begin
 	PC => PC,
 	InstrData => InstrData
     );
+	
+	
+	  clk_process : process
+    begin
+        clk <= '0';
+        wait for clk_time / 2;
+        clk <= '1';
+        wait for clk_time / 2;
+    end process;
+	
+	
+	
+	
 
-  process
-  begin
+--  process
+ -- begin
 
-    wait;
-  end process;
+ --   wait;
+ -- end process;
 
 end architecture behav_tb_instruction_fetch;
