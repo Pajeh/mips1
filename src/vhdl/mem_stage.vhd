@@ -44,7 +44,7 @@ architecture behavioral of MemoryStage is
 		output: process is
 		begin
 			if (rst='0') then                                   -- reset condition
-				writeback <= 0;
+				writeback <= x"00_00_00_00";
 			else 
 				if (mux_decision ='1') then		-- mux_decision choses between the two possible outputs: the result from ALU of the read memory	
 					writeback <= aluResult_in;	-- output is the aluResult_in
