@@ -74,7 +74,7 @@ begin
         
         -- r2 becomes 76543210
         writeback_reg <= "00010";
-        writeback <= x"76543210";
+        writeback <= x"7654321";
         wait for clk_time;
         
         -- Real testing starts here
