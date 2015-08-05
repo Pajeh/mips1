@@ -189,6 +189,18 @@ begin
         instr <= x"2422abcd";
         wait for clk_time;
         
+	-- Jump Register - Jump to the address contained in register $s
+	-- encoding 0000 00ss sss0 0000 0000 0000 0000 1000
+	-- Test: jump using register 1 value. Encoding 0020_0008
+        -- reg_a: 01234567
+        -- reg_b: 00000000;
+        -- reg_dest: 2;
+        -- imm: 0000abcd
+        -- shift: 0
+	-- ip_out: 01234567
+        instr <= x"00200008";
+        wait for clk_time;
+        
     end process;
 end;
             
