@@ -43,9 +43,9 @@ architecture behavioral of instruction_fetch is
 	begin
 
 		if(rst = '1') then
-		InstrAddr <= X"0000_0100";		-- If reset comes PC goes to at the beginning, its value is 100
-		IR <= X"0000_0100";
-		Instr <= X"0000_0100";
+		InstrAddr <= X"0000_0000";		-- If reset comes PC goes to at the beginning, its value is 100
+		IR <= X"0000_0000";
+		Instr <= X"0000_0000";
 		
 		
 			else
@@ -54,7 +54,7 @@ architecture behavioral of instruction_fetch is
 		
 		
 				InstrAddr <= PC;
-				IR <= PC + X"0000_0100";
+				IR <= PC + X"0000_0004";
 				Instr <= InstrData;
 				
 			
