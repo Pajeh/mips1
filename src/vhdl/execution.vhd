@@ -2,12 +2,13 @@
 -- 03.08.2015     Patrick Appenheimer    created
 -- 04.08.2015     Patrick Appenheimer    added alu1
 -- 04.08.2015     Patrick Appenheimer    mux1, mux2
+-- 05.08.2015     Patrick Appenheimer    bugfixes
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
 
 library WORK;
-  use WORK.cpu_pack.all;
+  use WORK.all;
 
 entity execution is
     port(
@@ -25,14 +26,15 @@ entity execution is
       in_shift              : in  std_logic_vector(4 downto 0);
       in_mux1               : in  std_logic_vector(1 downto 0);
       in_mux2               : in  std_logic_vector(1 downto 0);
-      in_alu_instruction    : in  std_logic_vector(31 downto 0)
+      in_alu_instruction    : in  std_logic_vector(5 downto 0)
       
     );
 end entity execution;
 
 architecture behave of execution is
+signal mux1_out, mux2_out: std_logic_vector(31 downto 0);
 begin
-  signal mux1_out, mux2_out: std_logic_vector(31 downto 0);
+  
   
   process
   begin
@@ -71,7 +73,6 @@ begin
   alu1: entity work.alu(behave) port map(mux1_out, mux2_out, in_alu_instruction, ex_alu, ex_alu_zero);
   
 end behave;
-
 
 
 
