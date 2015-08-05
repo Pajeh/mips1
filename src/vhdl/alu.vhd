@@ -1,13 +1,14 @@
 -- revision history:
 -- 06.07.2015     Alex Schönberger      created
 -- 04.08.2015     Patrick Appenheimer   added entity and architecture behave
+-- 05.08.2015     Patrick Appenheimer   bugfixes
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
   USE IEEE.numeric_std.ALL;
 
---library WORK;
-  --use WORK.cpu_pack.all;
+library WORK;
+  use WORK.all;
 
 entity alu is
 
@@ -16,7 +17,7 @@ entity alu is
       in_b                     : in  std_logic_vector(31 downto 0);
       function_code            : in std_logic_vector(5 downto 0);
       result                   : out std_logic_vector(31 downto 0);
-      zero                     : out std_logic
+      zero                     : out std_logic_vector(0 downto 0)
     );
 
 end entity alu;
@@ -34,12 +35,12 @@ begin
     a_uns := in_a;
     b_uns := in_b;
     r_uns := (others => '0');
-    z_uns := b"10_0000";
+    z_uns := b"0";
     -- select operation
     case function_code is
     -- add
-    when b"10_0000" =>
-    r_uns <= a_uns + b_uns;
+    when b"10_0000" =>    
+    r_uns := std_logic_vector(unsigned(a_uns) + unsigned(b_uns));
     -- others
     when others => r_uns := (others => 'X');
     end case;
@@ -50,6 +51,6 @@ begin
     end if;
     -- assign variables to output signals
     result <= r_uns;
-    zero <= z_uns;
+    zero <= std_logic_vector(unsigned(z_uns));
 end process;
 end architecture behave;
