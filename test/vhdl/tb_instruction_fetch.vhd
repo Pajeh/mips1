@@ -62,14 +62,11 @@ begin
   test_process:
   process
   begin
-  rst <= '0';
-  wait for 5 ns;
-  rst <= '1';
-  wait for 5 ns;
+  
     PC <= x"0000_0000";
 	InstrData <= x"0000_0100";
     wait for 1 ns;
-  --  PC <= IR;
+    PC <= IR;
 	InstrData <= x"0000_0110";
     wait for 1 ns;
     
