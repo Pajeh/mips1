@@ -35,8 +35,9 @@ architecture behave of execution is
 signal mux1_out, mux2_out: std_logic_vector(31 downto 0);
 begin
   
-  
-  process
+	
+
+  process(in_destreg, in_b, in_mux1, in_shift, in_a, in_mux2, in_imm, in_ip)
   begin
     ex_destreg <= in_destreg;
     ex_data <= in_b;
@@ -71,9 +72,9 @@ begin
     
   end process;
   
-  alu1: entity work.alu(behave) port map(mux1_out, mux2_out, in_alu_instruction, ex_alu, ex_alu_zero);
+  alu1: entity work.alu(behave) port map(mux1_out, mux2_out,
+	in_alu_instruction, ex_alu, ex_alu_zero);  
   
-end behave;
-
+end architecture behave;
 
 
