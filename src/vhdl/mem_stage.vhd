@@ -27,7 +27,7 @@ port(
 	writeback: out std_logic_vector( 31 downto 0);--CPU_DATA_WIDTH-1 downto 0);	-- Data to send to next stage: Writeback
 
 	reg_dest_in: in std_logic_vector(31 downto 0);--CPU_REG_ADDR_WIDTH-1 downto 0);        -- k.A.
-	reg_dest_out: out std_logic_vector(31 downto 0);--CPU_REG_ADDR_WIDTH-1 downto 0));     -- k.A.
+	reg_dest_out: out std_logic_vector(31 downto 0));--CPU_REG_ADDR_WIDTH-1 downto 0));     -- k.A.
 end entity MemoryStage
 
 architecture behavioral of MemoryStage is
