@@ -14,7 +14,7 @@ end entity tb_execution;
 architecture behav_tb_execution of tb_execution is
   
   -- -------- SIMULATION CONSTANTS -----
-  constant CLK_TIME           : time              := 2 ns;
+  constant CLK_TIME           : time              := 2500 ps;
   constant RST_TIME           : time              := 30 ns;
 
   -- -------- ALU INTERFACE -----------------
