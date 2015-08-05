@@ -39,6 +39,7 @@ begin
   process
   begin
     ex_destreg <= in_destreg;
+    ex_data <= in_b;
   
     case in_mux1 is
       -- 00
