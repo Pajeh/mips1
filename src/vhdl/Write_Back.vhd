@@ -17,12 +17,12 @@ Writeback_out, Regdest_out : out std_logic_vector(31 downto 0));
 end entity write_back;
 
 
-architecture behavior of write_back
+architecture behavioral of write_back is
 begin
 
 
 Writeback_out <= Writeback_in;
-Regdesk_out <= Regdesk_in;
+Regdest_out <= Regdest_in;
 
 
 end architecture behavioral;
