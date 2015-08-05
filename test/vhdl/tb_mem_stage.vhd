@@ -69,4 +69,4 @@ architecture behav_tb_mem_stage of tb_mem_stage is
     wait;
   end process;
 
-end architecture behav_mem_stage;
+end architecture behav_tb_mem_stage;
