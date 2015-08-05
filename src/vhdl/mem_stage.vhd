@@ -49,9 +49,9 @@ architecture behavioral of MemoryStage is
 				if (mux_decision ='1') then		-- mux_decision choses between the two possible outputs: the result from ALU of the read memory	
 					writeback <= aluResult_in;	-- output is the aluResult_in
 				else
-					writeback <= memory_buffer;	-- output is the memory_buffer, which carries the memory read value.
+					writeback <= data_to_cpu;	-- output is the memory_buffer, which carries the memory read value.
 				end
 			end
 		end process output
 		
-end architecture behavioral
+end architecture behavioral;
