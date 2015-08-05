@@ -1,5 +1,6 @@
 -- revision history:
 -- 05.08.2015     Patrick Appenheimer    created
+-- 05.08.2015     Patrick Appenheimer    testcase added
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
