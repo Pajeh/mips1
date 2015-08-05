@@ -2,7 +2,7 @@
 -- 06.07.2015     Alex Schönberger      created
 -- 04.08.2015     Patrick Appenheimer   added entity and architecture behave
 -- 05.08.2015     Patrick Appenheimer   bugfixes
--- 05.08.2015     Patrick Appenheimer   and added
+-- 05.08.2015     Patrick Appenheimer   subu, and, or added
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -13,7 +13,9 @@ library WORK;
   
 -- -- ALU FUNCTION CODES: -- --
 -- ADDU ==> 10_0000
+-- SUBU ==> 10_0011
 -- AND ==> 10_0100
+-- OR ==> 10_0101
 
 entity alu is
 
@@ -46,9 +48,15 @@ begin
     -- addu
     when b"10_0000" =>    
     r_uns := std_logic_vector(unsigned(a_uns) + unsigned(b_uns));
+    -- subu
+    when b"10_0011" =>    
+    r_uns := std_logic_vector(unsigned(a_uns) - unsigned(b_uns));
     -- and
     when b"10_0100" =>    
     r_uns := std_logic_vector(unsigned(a_uns) AND unsigned(b_uns));
+    -- or
+    when b"10_0101" =>    
+    r_uns := std_logic_vector(unsigned(a_uns) OR unsigned(b_uns));
     -- others
     when others => r_uns := (others => 'X');
     end case;
