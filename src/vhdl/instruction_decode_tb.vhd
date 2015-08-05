@@ -35,7 +35,7 @@ architecture behavioural of instruction_decode_tb is
     signal reset : std_logic := '0';
     signal enable_regs : std_logic := '0';
     -- Tweak clock frequency here
-    constant clk_time :time := 10ns;
+    constant clk_time : time := 10 ns;
 begin
     dut: instruction_decode port map(
         instr => instr, 
@@ -76,9 +76,12 @@ begin
         writeback_reg <= "00010";
         writeback <= x"76543210";
         wait for clk_time;
-        
-        -- Real testing starts here
         enable_regs <= '0';
+	writeback_reg <= "00000";
+	wait for clk_time;
+        -- Real testing starts here
+        
+
         
         --inserting an add-instruction that adds r1 and r2 to r3
         --outputs should be (all vals in hex notation):

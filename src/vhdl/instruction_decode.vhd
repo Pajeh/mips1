@@ -22,49 +22,50 @@ architecture behavioral of instruction_decode is
     	signal register_file : regfile;
     	signal shift_offset, imm_internal : std_logic_vector(31 downto 0);
     	signal pc_imm : std_logic_vector (31 downto 0);
-    	signal rd, rs, rt, shift : std_logic_vector(4 downto 0);
     	signal imm_16 : std_logic_vector (15 downto 0);
 begin
 	imm_16  <= instr (15 downto 0);
 	imm_internal <= X"0000" & imm_16;
 	imm <= imm_internal;        -- Imm is the subvector of instr from 15 to 0 and it is padded with leading zeros for further processing.
  	-- Splitting registers for R-type-instructions
-    	rd <= instr (15 downto 11);
-    	rt <= instr (20 downto 16);
-    	rs <= instr (25 downto 21);
-    	shift <= instr (10 downto 6);
     	pc_imm <= imm_internal (31 downto 2) & "00";
 	-- Defines the instruction decode logic
-    	logic : process is
+    	logic : process (instr, ip_in, writeback, alu_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux)  is
     		begin
 
 		-- Forwarding logic for reg_a
 		-- If the destination register is still used by the writeback-phase, the writeback-output is forwarded
-        	if (rs = regdest_mem) then reg_a <= writeback;
+        	if instr (25 downto 21) = regdest_mem then 
+			reg_a <= writeback;
 		-- If the destination register is still used by the memory-phase, the alu-result is forwarded
-		elsif (rs = regdest_ex) then reg_a <= alu_result;
+		elsif instr (25 downto 21) = regdest_ex then 
+			reg_a <= alu_result;
 		-- Otherwise, no forwarding is required and the register specified by rs is read
-		else reg_a <= register_file(to_integer(unsigned (rs)));
+		else 
+			reg_a <= register_file(to_integer(unsigned (instr (25 downto 21))));
 		end if;
 
 		
 		--Forwarding logic for reg_b. Works analogously to the reg_a block above
-		if (rt = regdest_mem) then reg_b <= writeback;
-		elsif (rt = regdest_ex) then reg_b <= alu_result;
-		else reg_b <= register_file(to_integer(unsigned (rt)));
+		if (instr (20 downto 16) = regdest_mem) then 
+			reg_b <= writeback;
+		elsif (instr (20 downto 16) = regdest_ex) then 
+			reg_b <= alu_result;
+		else 
+			reg_b <= register_file(to_integer(unsigned (instr (20 downto 16))));
 		end if;
         
         	case regshift_mux is    -- Determines the output at shift_out
-            		when "00" => shift_out <= shift;
+            		when "00" => shift_out <= instr(10 downto 6);
             		when "01" => shift_out <= "00000";
             		-- TODO: Add the branch logic wire!
             		when others => shift_out <= "00000";
         	end case;
         
         	case regdest_mux is     -- Determines the output at reg_dest
-            		when "00" => reg_dest <= rd;
+            		when "00" => reg_dest <= instr (15 downto 11);
             		when "01" => reg_dest <= "11111";
-            		when "10" => reg_dest <= rt;
+            		when "10" => reg_dest <= instr (20 downto 16);
             		when others => reg_dest <= "00000";
         	end case;
     	end process;
