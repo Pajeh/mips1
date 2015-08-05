@@ -62,4 +62,4 @@ architecture behav_tb_alu of tb_alu is
     wait;
   end process;
 
-end architecture behav_tb_cpu;
+end architecture behav_tb_alu;
