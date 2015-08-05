@@ -15,79 +15,68 @@ end entity tb_instruction_fetch;
 architecture behav_tb_instruction_fetch of tb_instruction_fetch is
 
 
-  component instruction_fetch
+ -- -------- SIMULATION CONSTANTS -----
+  constant CLK_TIME           : time              := 2500 ps;
+  constant RST_TIME           : time              := 15 ns;
+  --component instruction_fetch
 
-port(
+--port(
 
-clk : in std_logic;
-rst : in std_logic;
+--clk : in std_logic;
+--rst : in std_logic;
 
-test_PC : in std_logic_vector(31 downto 0);      --PC : in std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);                        	--PC(32 bit)
-test_InstrData : in std_logic_vector(31 downto 0);			--InstrData : in std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				 	    --InstrData, Adress information comes from Memory(32 bit)
+--test_PC : in std_logic_vector(31 downto 0);      --PC : in std_logic_vector--(CPU_ADDR_WIDTH-1 downto 0);                        	--PC(32 bit)
+--test_InstrData : in std_logic_vector(31 downto 0);			--InstrData : in std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				 	    --InstrData, Adress information comes from Memory(32 bit)
 
 --StallData : in std_logic;
 
-test_IR : out std_logic_vector(31 downto 0);    --IR : out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);   					    --IR, Next PC goes to Execution Stage(32 bit)
-test_InstrAddr: out std_logic_vector(31 downto 0); --InstrAddr: out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);  					--InstrAddr, PC goes to Memory(32 bit)
-test_Instr : out std_logic_vector(31 downto 0)	--Instr : out std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				    	--Instr, Adress information from Memory goes to Instruction Decoder(32 bit)
+--test_IR : out std_logic_vector(31 downto 0);    --IR : out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);   					    --IR, Next PC goes to Execution Stage(32 bit)
+--test_InstrAddr: out std_logic_vector(31 downto 0); --InstrAddr: out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);  					--InstrAddr, PC goes to Memory(32 bit)
+--test_Instr : oORT MAPut std_logic_vector(31 downto 0)	--Instr : out std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				    	--Instr, Adress information from Memory goes to Instruction Decoder(32 bit)
 
 
-);
+--);
   
-  end component instruction_fetch;
+  --end component instruction_fetch;
 
   signal clk : std_logic := '0';
   signal rst : std_logic := '0';
   signal PC :std_logic_vector(31 downto 0) := x"0000_0000";
   signal InstrData : std_logic_vector(31 downto 0) := x"0000_0000";
-  
-  -- Tweak clock frequency here
-    constant clk_time : time := 10 ns;
+signal IR : std_logic_vector(31 downto 0);
+signal InstrAddr : std_logic_vector(31 downto 0);
+signal Instr : std_logic_vector(31 downto 0);  
+
+ 
 
 begin
 
-  uut: instruction_fetch
-    PORT MAP(
-	clk => clk,
-	rst => rst,
-	PC => PC,
-	InstrData => InstrData
-    );
-	
-	
-	  clk_process : process
-    begin
-        clk <= '0';
-        wait for clk_time / 2;
-        clk <= '1';
-        wait for clk_time / 2;
-    end process;
-	
-	
-	
-	
+ -- GENERAL CONTROL SIGNALS
+  clk   <= not clk      after CLK_TIME;
+  rst   <= '1', '0'     after RST_TIME;
+
+  u1_instruction_fetch : entity work.instruction_fetch(behavioral)
+    PORT MAP(clk,rst,PC,InstrData,IR,InstrAddr,Instr);
+		
 	 -- TEST PROCESS
   test_process:
   process
   begin
-  reset <= '0';
+  rst <= '0';
   wait for 5 ns;
-  reset <= '1';
+  rst <= '1';
   wait for 5 ns;
     PC <= x"0000_0000";
-	InstrData <= x"0000_0100"
+	InstrData <= x"0000_0100";
     wait for 1 ns;
-    PC <= IR;
-	InstrData <= x"0000_0110"
+  --  PC <= IR;
+	InstrData <= x"0000_0110";
     wait for 1 ns;
     
     wait;
   end process;
 
---  process
- -- begin
 
- --   wait;
- -- end process;
+
 
 end architecture behav_tb_instruction_fetch;
