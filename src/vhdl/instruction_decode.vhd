@@ -2,17 +2,18 @@
 -- 2015-08-03   Lukas Jäger     created
 -- 2015-08-04   Lukas Jäger     added architecture and started to implement both processes
 -- 2015-08-04   Lukas Jäger     added asynchronous reset
+-- 2015-08-05	Lukas Jaeger	 fixed bugs that resulted from me not knowing any VHDL
+-- 2015-08-05	Lukas Jaeger	 added functionality for branch logic
 library IEEE;
     use IEEE.std_logic_1164.all;
 	use IEEE.numeric_std.all;
---library WORK;
---    use WORK.cpu_pack.all;
+
 entity instruction_decode is
     port(instr,ip_in, writeback, alu_result: in std_logic_vector (31 downto 0);
         writeback_reg, regdest_ex, regdest_mem : in std_logic_vector (4 downto 0);
         regdest_mux, regshift_mux: in std_logic_vector (1 downto 0);
         clk, reset, enable_regs: in std_logic;
-        reg_a, reg_b, imm : out std_logic_vector (31 downto 0);
+        reg_a, reg_b, imm, ip_out : out std_logic_vector (31 downto 0);
         reg_dest, shift_out : out std_logic_vector (4 downto 0)
         );
 end entity;
@@ -20,7 +21,7 @@ end entity;
 architecture behavioral of instruction_decode is
 	type regfile is array (31 downto 0) of std_logic_vector (31 downto 0);
     	signal register_file : regfile;
-    	signal shift_offset, imm_internal : std_logic_vector(31 downto 0);
+    	signal imm_internal : std_logic_vector(31 downto 0);
     	signal pc_imm : std_logic_vector (31 downto 0);
     	signal imm_16 : std_logic_vector (15 downto 0);
 begin
@@ -58,7 +59,6 @@ begin
         	case regshift_mux is    -- Determines the output at shift_out
             		when "00" => shift_out <= instr(10 downto 6);
             		when "01" => shift_out <= "00000";
-            		-- TODO: Add the branch logic wire!
             		when others => shift_out <= "00000";
         	end case;
         
@@ -81,4 +81,17 @@ begin
             		register_file(to_integer(unsigned (writeback_reg))) <= writeback;
         	end if;
     	end process;
+
+	-- Process that defines the branch logic
+	branch_logic : process (instr) is
+	variable offset : integer;
+	begin
+		-- The new program counter is calulated by taking the immediate value,
+		-- multiplying it with 2 and subtract 4 from it (to anticipate the PC's addition
+		-- in the IF-stage). This is mixed with some VHDL-typecasting below.
+		offset := to_integer(signed(instr(15 downto 0)));
+		offset := offset * 4;
+		offset := offset + to_integer (unsigned(ip_in));
+		ip_out <= std_logic_vector(to_signed(offset,32));
+	end process;
 end architecture;

@@ -1,11 +1,10 @@
 -- Testbench for the instruction decode stage
 -- 2015-08-04   Lukas Jäger     created
 -- 2015-08-04   Lukas Jäger     added test cases for forwarding
+-- 2015-08-05	Lukas Jaeger	 adjusted dut to new interface
+-- 2015-08-05	Lukas Jaeger	 added expected data for ip_out
 library IEEE;
     use IEEE.std_logic_1164.all;
---library WORK;
---    use WORK.cpu_pack.all;
---use textio.all;
 
 entity instruction_decode_tb is
 end instruction_decode_tb;
@@ -17,7 +16,7 @@ architecture behavioural of instruction_decode_tb is
         writeback_reg, regdest_ex, regdest_mem : in std_logic_vector (4 downto 0);
         regdest_mux, regshift_mux: in std_logic_vector (1 downto 0);
         clk, reset, enable_regs: in std_logic;
-        reg_a, reg_b, imm : out std_logic_vector (31 downto 0);
+        reg_a, reg_b, imm, ip_out : out std_logic_vector (31 downto 0);
         reg_dest, shift_out : out std_logic_vector (4 downto 0)
         );
     end component;
@@ -90,6 +89,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
+	--  ip_out: 0000303C
         instr <= x"00221820";
         wait for clk_time;
         
@@ -100,6 +100,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
+	--  ip_out: 0000303C
         alu_result <= x"fedcba98";
         regdest_ex <= "00010";
         instr <= x"00221820";
@@ -113,6 +114,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
+	--  ip_out: 0000303C
         writeback <= x"01101001";
         regdest_mem <= "00010";
         instr <= x"00221820";
@@ -126,6 +128,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
+	--  ip_out: 0000303C
         regdest_ex <= "00010";
         regdest_mem <= "00010";
         instr <= x"00221820";
@@ -140,6 +143,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
+	--  ip_out: 0000303C
         regdest_ex <= "00001";
         instr <= x"00221820";
         wait for clk_time;
@@ -152,6 +156,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
+	--  ip_out: 0000303C
         writeback <= x"01101001";
         regdest_mem <= "00001";
         instr <= x"00221820";
@@ -165,6 +170,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
+	--  ip_out: 0000303C
         regdest_ex <= "00001";
         regdest_mem <= "00001";
         instr <= x"00221820";
@@ -179,6 +185,7 @@ begin
         -- reg_dest: 2;
         -- imm: 0000abcd
         -- shift: 0
+	-- ip_out: fffeaf34
         instr <= x"2422abcd";
         wait for clk_time;
         
