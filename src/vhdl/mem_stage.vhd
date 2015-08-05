@@ -51,7 +51,7 @@ architecture behavioral of MemoryStage is
 				else
 					writeback <= data_to_cpu;	-- output is the memory_buffer, which carries the memory read value.
 				end
-			end
+			end if
 		end process output
 		
 end architecture behavioral;
