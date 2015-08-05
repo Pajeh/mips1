@@ -91,7 +91,26 @@ begin
 		-- in the IF-stage). This is mixed with some VHDL-typecasting below.
 		offset := to_integer(signed(instr(15 downto 0)));
 		offset := offset * 4;
-		offset := offset + to_integer (unsigned(ip_in));
-		ip_out <= std_logic_vector(to_signed(offset,32));
+		if (instr (31 downto 26) = "000010") then -- Jump instruction
+			ip_out <= ip_in (31 downto 28) & std_logic_vector(to_signed(offset,28));
+		elsif (instr (31 downto 26) = "000011") then --JAL instruction
+			register_file(31) <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
+			ip_out <= ip_in (31 downto 28) & std_logic_vector(to_signed(offset,28));
+		elsif ((instr(31 downto 26) = "000000") and (instr (20 downto 0) ="000000000000000001000")) then --JR instruction
+			-- VHDL code déjà-vu?
+			-- This is the same forwarding logic as above for reg_a
+			if (instr (25 downto 21)) = regdest_mem then 
+				ip_out <= writeback;
+			-- If the destination register is still used by the memory-phase, the alu-result is forwarded
+			elsif (instr (25 downto 21)) = regdest_ex then 
+				ip_out <= alu_result;
+			-- Otherwise, no forwarding is required and the register specified by rs is read
+			else 
+				ip_out <= register_file(to_integer(unsigned (instr (25 downto 21))));
+			end if;
+		else -- Branch instruction of any kind
+			offset := offset + to_integer (unsigned(ip_in));
+			ip_out <= std_logic_vector(to_signed(offset,32));
+		end if;
 	end process;
 end architecture;
