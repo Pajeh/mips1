@@ -201,6 +201,71 @@ begin
         instr <= x"00200008";
         wait for clk_time;
         
+        
+	-- Forwarding test for regdest_ex and alu_result using a jump
+	 -- jump to register value instruction that r1 is still in memory stage
+        --outputs should be (all vals in hex notation):
+        --  reg_a: 
+        --  reg_b: 
+        --  reg_dest: ;
+        --  imm: 1820
+        --  shift: 0
+	--  ip_out: fedcba98
+        alu_result <= x"fedcba98";
+        regdest_ex <= "00001";
+        instr <= x"00200008";
+        wait for clk_time;
+        regdest_ex <= "00000";
+        wait for clk_time;
+
+	-- Forwarding test for regdest_ex and alu_result using a jump
+	 -- jump to register value instruction that r2 is still in memory stage
+        --outputs should be (all vals in hex notation):
+        --  reg_a: 
+        --  reg_b: 
+        --  reg_dest: ;
+        --  imm: 1820
+        --  shift: 0
+	--  ip_out: 1edf2a98
+        alu_result <= x"1edf2a98";
+        regdest_ex <= "00010";
+        instr <= x"00400008";
+        wait for clk_time;
+        regdest_ex <= "00000";
+        wait for clk_time;        
+
+	-- Forwarding test for regdest_mem and writeback using a jump
+	 -- jump to register value instruction that r1 is still in writeback stage
+        --outputs should be (all vals in hex notation):
+        --  reg_a: 
+        --  reg_b: 
+        --  reg_dest: ;
+        --  imm: 1820
+        --  shift: 0
+	--  ip_out: fedcba98
+        writeback <= x"fedcba98";
+        regdest_mem <= "00001";
+        instr <= x"00200008";
+        wait for clk_time;
+        regdest_mem <= "00000";
+        wait for clk_time;
+
+	-- Forwarding test for regdest_mem and writeback using a jump
+	 -- jump to register value instruction that r2 is still in writeback stage
+        --outputs should be (all vals in hex notation):
+        --  reg_a: 
+        --  reg_b: 
+        --  reg_dest: ;
+        --  imm: 1820
+        --  shift: 0
+	--  ip_out: 1edf2a98
+        writeback <= x"1edf2a98";
+        regdest_mem <= "00010";
+        instr <= x"00400008";
+        wait for clk_time;
+        regdest_mem <= "00000";
+        wait for clk_time;  
+        
     end process;
 end;
             
