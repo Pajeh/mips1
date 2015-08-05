@@ -59,6 +59,16 @@ architecture behav_tb_alu of tb_alu is
     wait for 1 ns;
     test_function_code <= b"11_0000";
     wait for 1 ns;
+    test_in_a <= x"0000_0001";
+    test_in_b <= x"0000_0001";
+    test_function_code <= b"10_0100";
+    wait for 1 ns;
+    test_in_a <= x"0000_0001";
+    test_in_b <= x"0000_0002";
+    wait for 1 ns;
+    test_in_a <= x"0000_000F";
+    test_in_b <= x"0000_000C";
+    wait for 1 ns;
     sim_finish  <= '1';
     wait;
   end process;
