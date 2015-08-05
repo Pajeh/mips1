@@ -39,16 +39,11 @@ begin
     		begin
 
 		-- Forwarding logic for reg_a
-		-- If the destination register is still used by the writeback-phase, the writeback-output is forwarded
-        	if (rs = regdest_mem) then reg_a <= writeback;
-		-- If the destination register is still used by the memory-phase, the alu-result is forwarded
+        	if (rs = regdest_mem) then reg_a <= writeback; -- If the destination register is still used by the writeback-phase, 
 		elsif (rs = regdest_ex) then reg_a <= alu_result;
-		-- Otherwise, no forwarding is required and the register specified by rs is read
 		else reg_a <= register_file(to_integer(unsigned (rs)));
 		end if;
 
-		
-		--Forwarding logic for reg_b. Works analogously to the reg_a block above
 		if (rt = regdest_mem) then reg_b <= writeback;
 		elsif (rt = regdest_ex) then reg_b <= alu_result;
 		else reg_b <= register_file(to_integer(unsigned (rt)));
