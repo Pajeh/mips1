@@ -24,7 +24,7 @@ architecture behav_tb_alu of tb_alu is
   signal test_in_b            : std_logic_vector(31 downto 0);
   signal test_function_code   : std_logic_vector(5  downto 0);
   signal test_result          : std_logic_vector(31  downto 0);
-  signal test_zero            : std_logic;
+  signal test_zero            : std_logic_vector(0 downto 0);
   
   -- ------ SIMULATION CONTROL ---------------
   signal sim_finish           : std_logic;
@@ -37,7 +37,7 @@ architecture behav_tb_alu of tb_alu is
   rst   <= '1', '0'     after RST_TIME;
 
   -- ALU
-  u1_alu: alu
+  u1_alu: entity work.alu(behave)
     PORT MAP(test_in_a, test_in_b, test_function_code, test_result, test_zero);
 
 
