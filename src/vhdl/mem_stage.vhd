@@ -4,7 +4,11 @@
 -- 04.08.2015	Carlos Minamisava Faria architecture MemoryStage
 
 library IEEE;
-use IEEE.std_logic_1164.ALL;
+  use IEEE.std_logic_1164.ALL;
+  USE IEEE.numeric_std.ALL;
+
+library WORK;
+  use WORK.all;
 
 entity MemoryStage is
 port(
@@ -50,8 +54,8 @@ architecture behavioral of MemoryStage is
 					writeback <= aluResult_in;	-- output is the aluResult_in
 				else
 					writeback <= data_to_cpu;	-- output is the memory_buffer, which carries the memory read value.
-				end
-			end
-		end process output
+				end if;
+			end if;
+		end process output;
 		
 end architecture behavioral;
