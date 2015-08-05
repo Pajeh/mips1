@@ -14,8 +14,8 @@ end entity tb_execution;
 architecture behav_tb_execution of tb_execution is
   
   -- -------- SIMULATION CONSTANTS -----
-  constant CLK_TIME           : time              := 2500 ps;
-  constant RST_TIME           : time              := 15 ns;
+  constant CLK_TIME           : time              := 2 ns;
+  constant RST_TIME           : time              := 30 ns;
 
   -- -------- ALU INTERFACE -----------------
   signal clk                        : std_logic         := '0';
@@ -46,7 +46,9 @@ architecture behav_tb_execution of tb_execution is
 
   -- ALU
   u1_execution: entity work.execution(behave)
-    PORT MAP();
+    PORT MAP(clk, rst, test_alu_result, test_data_out, test_destreg_out, test_alu_zero_out,
+    test_a_in, test_b_in, test_destreg_in, test_imm_in, test_ip_in, test_shift_in, test_mux1_control_in,
+    test_mux2_control_in, test_alu_instruction_in);
 
 
   -- TEST PROCESS
@@ -54,18 +56,51 @@ architecture behav_tb_execution of tb_execution is
   process
   begin
     sim_finish   <= '0';
-    test_in_a <= x"0000_0001";
-    test_in_b <= x"0000_0001";
-    test_function_code <= b"10_0000";
+    
+    test_shift_in <= b"1_0101";
+    test_a_in <= x"0000_0002";
+    test_b_in <= x"0000_0003";
+    test_destreg_in <= b"0_1111";
+    test_imm_in <= x"0000_000A";
+    test_ip_in <= x"0000_0004";
+    test_alu_instruction_in <= b"10_0000";
+    
     wait for 1 ns;
-    test_in_a <= x"0000_0000";
-    test_in_b <= x"0000_0000";
+    test_mux1_control_in <= b"00";
+    test_mux2_control_in <= b"00";
+    
     wait for 1 ns;
-    test_in_a <= x"0000_0002";
-    test_in_b <= x"0000_0003";
-    test_function_code <= b"10_0000";
+    test_mux1_control_in <= b"00";
+    test_mux2_control_in <= b"01";
+    
     wait for 1 ns;
-    test_function_code <= b"11_0000";
+    test_mux1_control_in <= b"00";
+    test_mux2_control_in <= b"10";
+    
+    wait for 1 ns;
+    test_mux1_control_in <= b"01";
+    test_mux2_control_in <= b"00";
+    
+    wait for 1 ns;
+    test_mux1_control_in <= b"01";
+    test_mux2_control_in <= b"01";
+    
+    wait for 1 ns;
+    test_mux1_control_in <= b"01";
+    test_mux2_control_in <= b"10";
+    
+    wait for 1 ns;
+    test_mux1_control_in <= b"10";
+    test_mux2_control_in <= b"00";
+    
+    wait for 1 ns;
+    test_mux1_control_in <= b"10";
+    test_mux2_control_in <= b"01";
+    
+    wait for 1 ns;
+    test_mux1_control_in <= b"10";
+    test_mux2_control_in <= b"10";
+    
     wait for 1 ns;
     sim_finish  <= '1';
     wait;
