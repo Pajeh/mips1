@@ -24,14 +24,14 @@ port(
 
 	mux_decision: in std_logic;					-- FSS decision for writeback output. ALU results or memory data can be forwarded to writeback
 
-	writeback: out std_logic_vector( CPU_DATA_WIDTH-1 downto 0);	-- Data to send to next stage: Writeback
+	writeback: out std_logic_vector( 31 downto 0);--CPU_DATA_WIDTH-1 downto 0);	-- Data to send to next stage: Writeback
 
-	reg_dest_in: in std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0);        -- k.A.
-	reg_dest_out: out std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0));     -- k.A.
+	reg_dest_in: in std_logic_vector(31 downto 0);--CPU_REG_ADDR_WIDTH-1 downto 0);        -- k.A.
+	reg_dest_out: out std_logic_vector(31 downto 0);--CPU_REG_ADDR_WIDTH-1 downto 0));     -- k.A.
 end entity MemoryStage
 
 architecture behavioral of MemoryStage is
-	signal memory_buffer: std_logic_vector(CPU_DATA_WIDTH-1 downto 0);
+--	signal memory_buffer: std_logic_vector(31 downto 0);--CPU_DATA_WIDTH-1 downto 0);
 	begin
 	
 		-- Data address and data are always routed out.
