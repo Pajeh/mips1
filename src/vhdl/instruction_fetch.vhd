@@ -3,42 +3,25 @@
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
+  
+library IEEE;
+  use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 
 entity instruction_fetch is
 port(
 
-clk: in std_logic;
-rst: in std_logic;
+clk : in std_logic;
+rst : in std_logic;
 
-PC : in std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);                        	--PC(32 bit)
-InstrData : in std_logic_vector(CPU_MEM_CELL_WIDTH-1 downto 0);				    --InstrData, Adress information comes from Memory(8 bit)
+PC : in std_logic_vector(31 downto 0);      --PC : in std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);                        	--PC(32 bit)
+InstrData : in std_logic_vector(31 downto 0);			--InstrData : in std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				 	    --InstrData, Adress information comes from Memory(32 bit)
 
+StallData : in std_logic;
 
-fsm_instruction : in std_logic_vector(1 to 0);         	  	  				    --FSS should control 
-
-
-IR : out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);   					    --IR, Next PC goes to Execution Stage(32 bit)
-InstrAddr: out std_logic_vector(CPU_MEM_CELL_WIDTH-1 downto 0);  				--InstrAddr, PC goes to Memory(8 bit)
-Instr : out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);				    	--Instr, Adress information from Memory goes to Instruction Decoder(32 bit)
-
-
-
---Memory Stage????
-
-
-
-				--MemoryRead, Comment for reading adress from Memory(4 bit)
-
-
-
---FSM Sequence Control
-
---constant fsm_inst_ctrl_0        : t_memory_rw     :=b"00";
---constant fsm_inst_ctrl_1        : t_memory_rw     :=b"01";
---constant fsm_inst_ctrl_2        : t_memory_rw     :=b"10";
---constant fsm_inst_ctrl_3        : t_memory_rw     :=b"11";
-
+IR : out std_logic_vector(31 downto 0);    --IR : out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);   					    --IR, Next PC goes to Execution Stage(32 bit)
+InstrAddr: out std_logic_vector(31 downto 0); --InstrAddr: out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);  					--InstrAddr, PC goes to Memory(32 bit)
+Instr : out std_logic_vector(31 downto 0)	--Instr : out std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				    	--Instr, Adress information from Memory goes to Instruction Decoder(32 bit)
 
 
 );
@@ -48,38 +31,32 @@ end entity instruction_fetch;
 
 
 
-architecture behavior of instruction_fetch
-begin
-
-process (rst, clk, PC, InstrData) is
-begin
-
-if(rst = '1') then
-PC <= x"0000_0100";																-- If reset comes PC goes to at the beginning, its value is 100
-
-else
-if (rising_edge(clk)) then
-InstrAddr <= PC;
---MemoryRead <= x"1111";
-IR <= PC + x"0000_0004";
-Instr <= InstrData;
+architecture behavioral of instruction_fetch is
 
 
-end if;
-end process ;
+	begin
 
+	process (rst, clk, PC, InstrData) is
+	begin
 
-
-fullmemory: process ()
-begin
-case(full_memory) is
-
-
-
-
-
-end process fullmemory;
-
+		if(rst = '1') then
+		InstrAddr <= X"0000_0100";		-- If reset comes PC goes to at the beginning, its value is 100
+		IR <= X"0000_0100";
+		Instr <= X"0000_0100";
+		
+		
+			else
+						--elsif (rising_edge(clk)) then  
+						--if(StallData='0') then
+		
+		
+				InstrAddr <= PC;
+				IR <= PC + X"0000_0100";
+				Instr <= InstrData;
+				
+			
+		end if;
+	end process ;
 
 end architecture behavioral;
 
