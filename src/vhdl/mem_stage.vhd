@@ -2,13 +2,14 @@
 -- 03.08.2015	Carlos Minamisava Faria	created 
 -- 03.08.2015	Carlos Minamisava Faria	entity MemoryStage
 -- 04.08.2015	Carlos Minamisava Faria architecture MemoryStage
+-- 05.08.2015	Carlos Minamisava Faria first working version
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
   USE IEEE.numeric_std.ALL;
 
 library WORK;
-  use WORK.all;
+  use WORK.all;  
 
 entity MemoryStage is
 port(
