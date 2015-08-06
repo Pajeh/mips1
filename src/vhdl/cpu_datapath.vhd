@@ -98,7 +98,7 @@ begin
 
 -- INSTRUCTION DECODE:
   instruction_decode:   entity work.instruction_decode(behavioral) port map(instr_1, ip_1, wb_writeback_out, alu_result,
-                                                                          memstg_writeback_out, exc_destreg_out,
+                                                                          memstg_writeback_out, regdest_4, exc_destreg_out,
                                                                           memstg_destreg_out, id_regdest_mux,
                                                                           id_regshift_mux, clk, rst, id_enable_regs,
                                                                           id_a, id_b, id_imm, id_ip, id_regdest, id_shift);
@@ -117,36 +117,64 @@ begin
   write_back:           entity work.write_back(behavioral) port map(clk, rst, writeback_4, regdest_4,
                                                                   wb_writeback_out, wb_destreg_out);
 
-path: process(clk, rst)
+stage0: process(clk, rst)
 begin
   if (rst = '0') then
     mux_out_0 <= (others => '0');
+  elsif (rising_edge(clk)) then
+    mux_out_0 <= mux_pc_out;
+  end if;
+end process;
+
+stage1: process(clk, rst)
+begin
+  if (rst = '0') then
     instr_1 <= (others => '0');
     ip_1 <= (others => '0');
+  elsif (rising_edge(clk)) then
+    instr_1 <= if_instr;
+    ip_1 <= if_ip;
+  end if;
+end process;
+
+stage2: process(clk, rst)
+begin
+  if (rst = '0') then
     shift_2 <= (others => '0');
     reg_a_2 <= (others => '0');
     reg_b_2 <= (others => '0');
     regdest_2 <= (others => '0');
     imm_2 <= (others => '0');
     ip_2 <= (others => '0');
-    alu_result_3 <= (others => '0');
-    data_3 <= (others => '0');
-    regdest_3 <= (others => '0');
-    writeback_4 <= (others => '0');
-    regdest_4 <= (others => '0');
   elsif (rising_edge(clk)) then
-    mux_out_0 <= mux_pc_out;
-    instr_1 <= if_instr;
-    ip_1 <= if_ip;
     shift_2 <= id_shift;
     reg_a_2 <= id_a;
     reg_b_2 <= id_b;
     regdest_2 <= id_regdest;
     imm_2 <= id_imm;
     ip_2 <= ip_1;
+  end if;
+end process;
+
+stage3: process(clk, rst)
+begin
+  if (rst = '0') then
+    alu_result_3 <= (others => '0');
+    data_3 <= (others => '0');
+    regdest_3 <= (others => '0');
+  elsif (rising_edge(clk)) then
     alu_result_3 <= alu_result;
     data_3 <= data_out;
     regdest_3 <= exc_destreg_out;
+  end if;
+end process;
+
+stage4: process(clk, rst)
+begin
+  if (rst = '0') then
+    writeback_4 <= (others => '0');
+    regdest_4 <= (others => '0');
+  elsif (rising_edge(clk)) then
     writeback_4 <= memstg_writeback_out;
     regdest_4 <= memstg_destreg_out;
   end if;
