@@ -35,9 +35,9 @@ architecture behavioural of tb_cpu_datapath is
     end component;
     
     signal clk, rst, memstg_mux, id_enable_regs : std_logic;
-    signal instr_in, data_to_cpu, : std_logic_vector (31 downto 0);
+    signal instr_in, data_to_cpu : std_logic_vector (31 downto 0);
     signal alu_op : std_logic_vector (5 downto 0);
-    signal exc_mux1, exc_mux2, id_regdest_mux. id_regshift_mux : std_logic_vector(1 downto 0);
+    signal exc_mux1, exc_mux2, id_regdest_mux, id_regshift_mux : std_logic_vector(1 downto 0);
     signal exc_alu_zero, in_mux_pc : std_logic_vector(0 downto 0);
     -- Tweak clock frequency here
     constant clk_time : time := 10 ns;
@@ -53,7 +53,8 @@ architecture behavioural of tb_cpu_datapath is
             memstg_mux => memstg_mux,
             id_regdest_mux => id_regdest_mux,
             id_regshift_mux => id_regshift_mux,
-            id_enable_regs => id_enable_regs
+            id_enable_regs => id_enable_regs,
+	    in_mux_pc => in_mux_pc
         );
         clk_proc : process
         begin
