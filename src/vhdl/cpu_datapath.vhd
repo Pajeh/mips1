@@ -30,6 +30,8 @@ end entity cpu_datapath;
 
 architecture structure_cpu_datapath of cpu_datapath is
 
+  signal mux_out_0       : std_logic_vector(31 downto 0);
+
   -- -------- Instr. Fetch ==> Instr. Decode -----------------
   signal instr_1         : std_logic_vector(31 downto 0);
   signal ip_1            : std_logic_vector(31 downto 0);
@@ -51,7 +53,7 @@ architecture structure_cpu_datapath of cpu_datapath is
   signal writeback_4      : std_logic_vector(31 downto 0);
   signal regdest_4        : std_logic_vector(4 downto 0);
   
-  signal mux_pc_out       : std_logic_vector(31 downto 0);
+
 
 
 begin
@@ -99,6 +101,7 @@ write_back:           entity work.write_back(behavioral) port map(clk, rst, writ
 path: process(clk, rst)
 begin
   if (rst = '0') then
+    mux_out_0 <= (others => '0');
     instr_1 <= (others => '0');
     ip_1 <= (others => '0');
     shift_2 <= (others => '0');
@@ -113,6 +116,7 @@ begin
     writeback_4 <= (others => '0');
     regdest_4 <= (others => '0');
   elsif (rising_edge(clk)) then
+    mux_out_0 <= mux_pc_out;
     instr_1 <= if_instr;
     ip_1 <= if_ip;
     shift_2 <= id_shift;
@@ -128,6 +132,8 @@ begin
     regdest_4 <= memstg_destreg_out;
   end if;
 end process;
+
+variable mux_pc_out      : std_logic_vector(31 downto 0);
 
 mux: process(in_mux_pc)
   begin
