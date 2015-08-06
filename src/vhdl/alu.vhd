@@ -12,8 +12,8 @@ library WORK;
   use WORK.all;
   
 -- -- ALU FUNCTION CODES: -- --
--- ADDU ==> 10_0000
--- SUBU ==> 10_0011
+-- ADD ==> 10_0000
+-- SUB ==> 10_0010
 -- AND ==> 10_0100
 -- OR ==> 10_0101
 
@@ -45,11 +45,11 @@ begin
     z_uns := b"0";
     -- select operation
     case function_code is
-    -- addu
+    -- add
     when b"10_0000" =>    
     r_uns := std_logic_vector(unsigned(a_uns) + unsigned(b_uns));
-    -- subu
-    when b"10_0011" =>    
+    -- sub
+    when b"10_0010" =>    
     r_uns := std_logic_vector(unsigned(a_uns) - unsigned(b_uns));
     -- and
     when b"10_0100" =>    
