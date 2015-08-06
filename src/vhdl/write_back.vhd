@@ -10,10 +10,10 @@ port(
 
 clk : in std_logic; 
 rst : in std_logic;
-writeback_in : in  std_logic_vector(31 downto 0);
-regdest_in : in  std_logic_vector(4 downto 0);
-writeback_out : out std_logic_vector(31 downto 0);
-regdest_out : out std_logic_vector(4 downto 0)
+writeback_in : in  std_logic_vector(31 downto 0);	-- : in  std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);
+regdest_in : in  std_logic_vector(4 downto 0);		-- : in  std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0);
+writeback_out : out std_logic_vector(31 downto 0);  -- :out  std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);
+regdest_out : out std_logic_vector(4 downto 0)		-- : out std_logic_vector(CPU_REG_ADDR_WIDTH-1 downto 0)
 );
 
 
@@ -29,7 +29,7 @@ process (rst, clk, writeback_in, regdest_in) is
 
 		if(rst = '0') then
 		writeback_out <= x"0000_0000";		
-		regdest_out <= x"0000_0000";
+		regdest_out <= b"00000";
 		
 		
 		
