@@ -36,9 +36,21 @@ begin
 
 instruction_fetch:    entity work.instruction_fetch(behavioral) port map(  TODO );
 instruction_decode:   entity work.instruction_decode(behavioral) port map(  TODO );
-execution:            entity work.execution(behave) port map(  TODO );
+variable alu_result   : std_logic_vector(31 downto 0);
+execution:            entity work.execution(behave) port map(,,alu_result,,,,,,,,,,,,);
 memory_stage:         entity work.MemoryStage(behavioral) port map(  TODO );
 write_back:           entity work.write_back(behavioral) port map(  TODO );
+
+process(clk, rst)
+begin
+  if (rst = '0') then
+    alu_result_3 <= (others => '0');
+    data_3 <= (others => '0');
+    regdest_3 <= (others => '0');
+  elsif (rising_edge(clk)) then
+    alu_result_3 <= alu_result;
+  end if;
+end process;
 
 
 end architecture structure_cpu_datapath;
