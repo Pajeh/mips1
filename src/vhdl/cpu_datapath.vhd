@@ -50,12 +50,17 @@ architecture structure_cpu_datapath of cpu_datapath is
   -- -------- Memory Stage ==> Write Back -----------------
   signal writeback_4      : std_logic_vector(31 downto 0);
   signal regdest_4        : std_logic_vector(4 downto 0);
+  
+  signal mux_pc_out       : std_logic_vector(31 downto 0);
 
 
 begin
 
 -- INSTRUCTION FETCH:
-instruction_fetch:    entity work.instruction_fetch(behavioral) port map(clk, rst, );
+variable if_ip      : std_logic_vector(31 downto 0);
+variable if_instr   : std_logic_vector(31 downto 0);
+instruction_fetch:    entity work.instruction_fetch(behavioral) port map(clk, rst, mux_pc_out, instr_in, if_ip,
+                                                                          instr_addr, if_instr);
 
 -- INSTRUCTION DECODE:
 variable id_a       : std_logic_vector(31 downto 0);
@@ -91,9 +96,11 @@ variable wb_destreg_out   : std_logic_vector(4  downto 0);
 write_back:           entity work.write_back(behavioral) port map(clk, rst, writeback_4, regdest_4,
                                                                   wb_writeback_out, wb_destreg_out);
 
-process(clk, rst)
+path: process(clk, rst)
 begin
   if (rst = '0') then
+    instr_1 <= (others => '0');
+    ip_1 <= (others => '0');
     shift_2 <= (others => '0');
     reg_a_2 <= (others => '0');
     reg_b_2 <= (others => '0');
@@ -106,12 +113,14 @@ begin
     writeback_4 <= (others => '0');
     regdest_4 <= (others => '0');
   elsif (rising_edge(clk)) then
+    instr_1 <= if_instr;
+    ip_1 <= if_ip;
     shift_2 <= id_shift;
     reg_a_2 <= id_a;
     reg_b_2 <= id_b;
     regdest_2 <= id_regdest;
     imm_2 <= id_imm;
-    ip_2 <= id_ip;
+    ip_2 <= ip_1;
     alu_result_3 <= alu_result;
     data_3 <= data_out;
     regdest_3 <= destreg_out;
@@ -119,6 +128,18 @@ begin
     regdest_4 <= memstg_destreg_out;
   end if;
 end process;
+
+mux: process(in_mux_pc)
+  begin
+    case in_mux_pc is
+      -- 0
+      when "0" =>
+      mux_pc_out <= ip_1;
+      -- 1
+      when "1" =>
+      mux_pc_out <= id_ip;
+    end case;
+  end process;
 
 
 end architecture structure_cpu_datapath;
