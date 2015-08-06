@@ -21,7 +21,7 @@ PORT (
 	-- -------- Datapath -----------------
 	pc_mux: out std_logic;
 	-- -------- Instr. Fetch -----------------
-	opcode:	in std_logic_vector(5 downto 0);	-- opcode (6) is the instr (31 downto 26) 
+	instr:	in std_logic_vector(31 downto 0);	-- instruction
 	
   	-- -------- Instr. Decode  -----------------
 	regdest_mux, regshift_mux: out std_logic_vector (1 downto 0);
@@ -67,12 +67,55 @@ end entity cpu_control;
 -- 	beqz	-- Branch on equal		0001 00
 -- 	bnez	-- Branch on greater than or equal to zero	0001 01
 -- 	lbu	-- Load byte unsigned		1001 00
--- 	andi	-- 
--- 	jalx
+-- 	andi	-- And Immediate		0011 00		
+-- 	jalx	--  Jump and Link Exchange	0111 01
 -- 	
 -- 	
 -- 	
--- 	
+
+
+-- --------------------------------------  --
+-- FSM-signal-Howto:			   --
+-- --------------------------------------  --
+
+  	-- -------- Instr. Decode  -----------------
+-- regdest_mux:
+-- 00: if instruction is of R-type
+-- 01: if regdest must be set to 31 (JAL?)
+-- 10: if instruction is of I-type
+-- 11: NEVER EVER EVER!!!
+--
+-- regshift_mux:
+-- 00: if instruction is of R-type
+-- 01: if shift must be 16 (No idea, which instruction uses that...)
+-- 10: if you like non-deterministic behaviour
+-- 11: if you love non-deterministic behaviour
+--
+-- enable_regs:
+-- 1: if the writeback-stage just finished an R-type- or I-type-instruction (except for JR)
+-- 0: if the writeback-stage just finished a J-type-instruction or JR
+-- 
+
+  	-- -------- Execution -----------------
+-- in_mux1 chooses the input of register A for the ALU
+-- 00:
+-- 01:
+-- 10:
+-- 11:
+-- in_mux2 chooses the input of register B for the ALU:
+-- 00: in_b
+-- 01: immediate 16
+-- 10: Instruction Pointer (IP)
+-- 11: others => 'X'
+-- in_alu_instruction:
+-- 000000: 
+-- 
+-- 
+-- 
+-- 
+-- 
+-- 
+-- 
 -- 
 -- 
 -- 
