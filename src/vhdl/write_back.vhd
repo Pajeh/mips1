@@ -29,7 +29,7 @@ process (rst, clk, writeback_in, regdest_in) is
 
 		if(rst = '0') then
 		writeback_out <= x"0000_0000";		
-		regdest_out <= x"0000_0000";
+		regdest_out <= b"00000";
 		
 		
 		
