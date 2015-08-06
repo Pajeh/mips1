@@ -286,7 +286,21 @@ begin
         instr <= x"00400008";
         wait for clk_time;
         regdest_mem <= "00000";
-        wait for clk_time;  
+        wait for clk_time; 
+
+	-- Test for unsigned immediate expansion
+	-- reg_a: 01234567
+	-- reg_b: 76543210
+	-- imm: 0000ffff;
+	instr <= x"2422ffff";
+	wait for clk_time;
+
+	-- Test for signed immediate expansion
+	-- reg_a: 01234567
+	-- reg_b: 76543210
+	-- imm: ffffffff;
+	instr <= x"2022ffff";
+	wait for clk_time;
         
     end process;
 end;

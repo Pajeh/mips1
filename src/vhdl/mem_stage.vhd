@@ -60,3 +60,12 @@ architecture behavioral of MemoryStage is
 		end process output;
 		
 end architecture behavioral;
+
+
+
+-- FSM-signal-Howto:
+--
+-- mux_decision:
+-- 0: to forward memory data 
+-- 1: to forward aluResult
+
