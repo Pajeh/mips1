@@ -43,9 +43,9 @@ architecture behavioral of instruction_fetch is
 	begin
 
 		if(rst = '0') then
-		InstrAddr <= X"0000_0000";		-- If reset comes PC goes to at the beginning, its value is 0000_0000
-		IR <= X"0000_0000";
-		Instr <= X"0000_0000";
+		InstrAddr <= X"0000_0000";	    --If reset comes PC goes to the beginning, its value is 0000_0000
+		IR <= X"0000_0000";				--If reset all coming signals are 0000_0000
+		Instr <= X"0000_0000";			--If reset all coming signals are 0000_0000
 		
 		
 			else
@@ -53,9 +53,9 @@ architecture behavioral of instruction_fetch is
 						--if(StallData='0') then
 		
 		
-				InstrAddr <= PC;
-				IR <= PC + X"0000_0004";
-				Instr <= InstrData;
+				InstrAddr <= PC;  		  --We can the value of PC to the memory adress
+				IR <= PC + X"0000_0004";  --IR value is always PC+4;
+				Instr <= InstrData;		  --Instr value is always equal to InstrData value
 				
 			
 		end if;
