@@ -98,10 +98,11 @@ end entity cpu_control;
 
   	-- -------- Execution -----------------
 -- in_mux1 chooses the input of register A for the ALU
--- 00:
--- 01:
--- 10:
--- 11:
+-- 00: Zero extend
+-- 01: outputs x"0000_0004"
+-- 10: in A from Decode
+-- 11: others => 'X'
+--
 -- in_mux2 chooses the input of register B for the ALU:
 -- 00: in_b
 -- 01: immediate 16
