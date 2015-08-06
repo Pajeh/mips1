@@ -55,16 +55,25 @@ architecture behav_tb_mem_stage of tb_mem_stage is
   begin
     sim_finish   <= '1';
 wait for 1 ns;
-	sim_finish <='0';
-    test_alu <= x"0000_0001";
+	-- Test mem_stage passes the value read from memory
+	-- test_data_to_cpu=0101_0100
+	-- test_writeback= 0101_0100
     test_data_in <= x"0000_0010";
     test_data_to_cpu <= x"0101_0100";	
     test_mux <= '0';
     wait for 3 ns;
+	-- Test mem_stage passes the value from ALU
+	-- test_alu = FF10_8543
+	-- test_data_to_cpu=0101_0100
+	-- test_writeback= FF10_8543
+	test_alu <= x"FF10_8543";
     test_mux <= '1';
     wait for 3 ns;
     test_data_to_cpu <= x"0000_0000";	
     wait for 3 ns;
+	-- Test mem_stage passes the value read from memory
+	-- test_data_to_cpu=0000_0000
+	-- test_writeback= 0000_0000
     test_mux <= '0';
     wait for 3 ns;
     sim_finish  <= '1';

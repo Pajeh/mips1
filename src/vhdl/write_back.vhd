@@ -9,8 +9,8 @@ entity write_back is
 port(
 
 clk, rst: in std_logic;
-Writeback_in, Regdest_in : in  std_logic_vector(31 downto 0);
-Writeback_out, Regdest_out : out std_logic_vector(31 downto 0));
+writeback_in, regdest_in : in  std_logic_vector(31 downto 0);
+writeback_out, regdest_out : out std_logic_vector(31 downto 0));
 
 
 
@@ -21,8 +21,8 @@ architecture behavioral of write_back is
 begin
 
 
-Writeback_out <= Writeback_in;
-Regdest_out <= Regdest_in;
+writeback_out <= writeback_in;
+regdest_out <= regdest_in;
 
 
 end architecture behavioral;
