@@ -10,7 +10,7 @@ library IEEE;
 	use IEEE.numeric_std.all;
 
 entity instruction_decode is
-    port(instr,ip_in, writeback, alu_result: in std_logic_vector (31 downto 0);
+    port(instr,ip_in, writeback, alu_result, mem_result : in std_logic_vector (31 downto 0);
         writeback_reg, regdest_ex, regdest_mem : in std_logic_vector (4 downto 0);
         regdest_mux, regshift_mux: in std_logic_vector (1 downto 0);
         clk, reset, enable_regs: in std_logic;
@@ -34,13 +34,13 @@ begin
     	pc_imm <= imm_internal (31 downto 2) & "00";
 	--internal_writeback <= x"00000000";
 	-- Defines the instruction decode logic
-    	logic : process (instr, ip_in, writeback, alu_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux)  is
+    	logic : process (instr, ip_in, writeback, alu_result, mem_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux)  is
     		begin
 
 		-- Forwarding logic for reg_a
 		-- If the destination register is still used by the writeback-phase, the writeback-output is forwarded
         	if instr (25 downto 21) = regdest_mem then 
-			reg_a <= writeback;
+			reg_a <= mem_result;
 		-- If the destination register is still used by the memory-phase, the alu-result is forwarded
 		elsif instr (25 downto 21) = regdest_ex then 
 			reg_a <= alu_result;
@@ -52,7 +52,7 @@ begin
 		
 		--Forwarding logic for reg_b. Works analogously to the reg_a block above
 		if (instr (20 downto 16) = regdest_mem) then 
-			reg_b <= writeback;
+			reg_b <= mem_result;
 		elsif (instr (20 downto 16) = regdest_ex) then 
 			reg_b <= alu_result;
 		else 
@@ -88,7 +88,7 @@ begin
     	end process;
 
 	-- Process that defines the branch logic
-	branch_logic : process (instr, ip_in, writeback, alu_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux) is
+	branch_logic : process (instr, ip_in, writeback, alu_result, mem_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux) is
 	variable offset : integer;
 	begin
 		if (instr (31 downto 26) = "000010") then -- Jump instruction
@@ -109,7 +109,7 @@ begin
 			-- VHDL code déjà-vu?
 			-- This is the same forwarding logic as above for reg_a
 			if (instr (25 downto 21)) = regdest_mem then 
-				ip_out <= writeback;
+				ip_out <= mem_result;
 			elsif (instr (25 downto 21)) = regdest_ex then 
 				ip_out <= alu_result;
 			else 

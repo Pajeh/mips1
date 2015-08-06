@@ -14,7 +14,7 @@ end instruction_decode_tb;
 architecture behavioural of instruction_decode_tb is
     --  DUT
     component instruction_decode
-    port(instr,ip_in, writeback, alu_result: in std_logic_vector (31 downto 0);
+    port(instr,ip_in, writeback, alu_result, mem_result: in std_logic_vector (31 downto 0);
         writeback_reg, regdest_ex, regdest_mem : in std_logic_vector (4 downto 0);
         regdest_mux, regshift_mux: in std_logic_vector (1 downto 0);
         clk, reset, enable_regs: in std_logic;
@@ -27,6 +27,7 @@ architecture behavioural of instruction_decode_tb is
     signal ip_in : std_logic_vector (31 downto 0) := x"00000000";
     signal writeback : std_logic_vector (31 downto 0) := x"00000000";
     signal alu_result : std_logic_vector (31 downto 0) := x"00000000";
+    signal mem_result : std_logic_vector (31 downto 0) := x"00000000";
     signal writeback_reg : std_logic_vector (4 downto 0) := "00001";
     signal regdest_mem : std_logic_vector (4 downto 0) := "00000";
     signal regdest_ex : std_logic_vector (4 downto 0) := "00000";
@@ -44,6 +45,7 @@ begin
         writeback => writeback,
         writeback_reg => writeback_reg,
         alu_result => alu_result,
+	mem_result => mem_result,
         regdest_mux => regdest_mux,
         regshift_mux => regshift_mux,
         clk => clk,
@@ -76,6 +78,7 @@ begin
         -- r2 becomes 76543210
         writeback_reg <= "00010";
         writeback <= x"76543210";
+        mem_result <= x"76543210";
         wait for clk_time;
         enable_regs <= '0';
 	writeback_reg <= "00000";
@@ -117,7 +120,7 @@ begin
         --  imm: 1820
         --  shift: 0
 	--  ip_out: 00006080
-        writeback <= x"01101001";
+        mem_result <= x"01101001";
         regdest_mem <= "00010";
         instr <= x"00221820";
         wait for clk_time;
@@ -159,7 +162,6 @@ begin
         --  imm: 1820
         --  shift: 0
 	--  ip_out: 00006080
-        writeback <= x"01101001";
         regdest_mem <= "00001";
         instr <= x"00221820";
         wait for clk_time;
@@ -189,9 +191,9 @@ begin
         -- shift: 0
 	-- ip_out: fffeaf34
         instr <= x"2422abcd";
-        regdest_mux<='1';
+        regdest_mux <= "01";
         wait for clk_time;
-        regdest_mux <= '0';
+        regdest_mux <= "00";
         
 	-- Jump Register - Jump to the address contained in register $s
 	-- encoding 0000 00ss sss0 0000 0000 0000 0000 1000
@@ -263,7 +265,7 @@ begin
         --  imm: 1820
         --  shift: 0
 	--  ip_out: fedcba98
-        writeback <= x"fedcba98";
+        mem_result <= x"fedcba98";
         regdest_mem <= "00001";
         instr <= x"00200008";
         wait for clk_time;
@@ -279,7 +281,7 @@ begin
         --  imm: 1820
         --  shift: 0
 	--  ip_out: 1edf2a98
-        writeback <= x"1edf2a98";
+        mem_result <= x"1edf2a98";
         regdest_mem <= "00010";
         instr <= x"00400008";
         wait for clk_time;
