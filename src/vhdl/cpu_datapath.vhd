@@ -36,6 +36,7 @@ end entity cpu_datapath;
 
 architecture structure_cpu_datapath of cpu_datapath is
 
+  -- -------- PC ==> Instr. Fetch -----------------
   signal mux_out_0       : std_logic_vector(31 downto 0);
 
   -- -------- Instr. Fetch ==> Instr. Decode -----------------
@@ -58,11 +59,15 @@ architecture structure_cpu_datapath of cpu_datapath is
   -- -------- Memory Stage ==> Write Back -----------------
   signal writeback_4      : std_logic_vector(31 downto 0);
   signal regdest_4        : std_logic_vector(4 downto 0);
-  
 
+-- IP:
+  signal mux_pc_out      : std_logic_vector(31 downto 0);
+  
+-- Instr. Fetch:
   signal if_ip      : std_logic_vector(31 downto 0);
   signal if_instr   : std_logic_vector(31 downto 0);
 
+-- Instr. Decode:
   signal id_a       : std_logic_vector(31 downto 0);
   signal id_b       : std_logic_vector(31 downto 0);
   signal id_imm     : std_logic_vector(31 downto 0);
@@ -70,17 +75,20 @@ architecture structure_cpu_datapath of cpu_datapath is
   signal id_regdest : std_logic_vector(4 downto 0);
   signal id_shift   : std_logic_vector(4 downto 0);
 
+-- Execution:
   signal alu_result       : std_logic_vector(31 downto 0);
   signal data_out         : std_logic_vector(31 downto 0);
   signal exc_destreg_out  : std_logic_vector(4  downto 0);
-
+  
+-- Memory Stage:
   signal memstg_writeback_out : std_logic_vector(31 downto 0);
   signal memstg_destreg_out   : std_logic_vector(4  downto 0);
 
+-- Write Back:
   signal wb_writeback_out : std_logic_vector(31 downto 0);
   signal wb_destreg_out   : std_logic_vector(4  downto 0);
 
-  signal mux_pc_out      : std_logic_vector(31 downto 0);
+
 
 begin
 
