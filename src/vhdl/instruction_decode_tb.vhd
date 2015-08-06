@@ -3,7 +3,8 @@
 -- 2015-08-04   Lukas Jäger     added test cases for forwarding
 -- 2015-08-05	Lukas Jaeger	 adjusted dut to new interface
 -- 2015-08-05	Lukas Jaeger	 added expected data for ip_out
--- 2010-08-06	Lukas, Carlos	 added test cases for Jump-instructions
+-- 2015-08-06	Lukas, Carlos	 added test cases for Jump-instructions
+-- 2015-08-06   Lukas            Fixed some minor bugs
 library IEEE;
     use IEEE.std_logic_1164.all;
 
@@ -90,7 +91,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 0000303C
+	--  ip_out: 00006080
         instr <= x"00221820";
         wait for clk_time;
         
@@ -101,7 +102,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 0000303C
+	--  ip_out: 00006080
         alu_result <= x"fedcba98";
         regdest_ex <= "00010";
         instr <= x"00221820";
@@ -115,7 +116,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 0000303C
+	--  ip_out: 00006080
         writeback <= x"01101001";
         regdest_mem <= "00010";
         instr <= x"00221820";
@@ -129,7 +130,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 0000303C
+	--  ip_out: 00006080
         regdest_ex <= "00010";
         regdest_mem <= "00010";
         instr <= x"00221820";
@@ -139,12 +140,12 @@ begin
         
         -- inserting an add instruction that adds r1 and r2 to r3 while r1 is still in memory stage
         --outputs should be (all vals in hex notation):
-        --  reg_a: 01234567
-        --  reg_b: fedcba98
+        --  reg_a: fedcba98
+        --  reg_b: 76543210
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 0000303C
+	--  ip_out: 00006080
         regdest_ex <= "00001";
         instr <= x"00221820";
         wait for clk_time;
@@ -152,12 +153,12 @@ begin
         
         -- inserting an add instruction that adds r1 and r2 to r3 while r1 is still in writeback stage
         --outputs should be (all vals in hex notation):
-        --  reg_a: 01234567
-        --  reg_b: 01101001
+        --  reg_a: 01101001
+        --  reg_b: 76543210
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 0000303C
+	--  ip_out: 00006080
         writeback <= x"01101001";
         regdest_mem <= "00001";
         instr <= x"00221820";
@@ -166,12 +167,12 @@ begin
 
         -- inserting an add instruction that adds r1 and r2 to r3 while r2 is still in both stages
         --outputs should be (all vals in hex notation):
-        --  reg_a: 01234567
-        --  reg_b: 01101001
+        --  reg_a: 01101001
+        --  reg_b: 76543210
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 0000303C
+	--  ip_out: 00006080
         regdest_ex <= "00001";
         regdest_mem <= "00001";
         instr <= x"00221820";
@@ -182,13 +183,15 @@ begin
         -- inserting an addi instruction that adds abcd in hex notation to r1 and stores it in r2
         -- outputs should be (all vals in hex notation):
         -- reg_a: 01234567
-        -- reg_b: 00000000;
+        -- reg_b: 76543210;
         -- reg_dest: 2;
         -- imm: 0000abcd
         -- shift: 0
 	-- ip_out: fffeaf34
         instr <= x"2422abcd";
+        regdest_mux<='1';
         wait for clk_time;
+        regdest_mux <= '0';
         
 	-- Jump Register - Jump to the address contained in register $s
 	-- encoding 0000 00ss sss0 0000 0000 0000 0000 1000
