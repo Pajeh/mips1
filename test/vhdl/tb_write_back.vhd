@@ -46,14 +46,14 @@ begin
   
     
     wait for 1 ns;
-	regdest_in <= b"00200";
+	regdest_in <= b"00101";
     writeback_in <= x"0000_0100";
 
 	 wait for 1 ns;
 
     writeback_in <= x"0000_5060";
  wait for 1 ns;
-	regdest_in <= x"5200_4218";
+	regdest_in <= b"10110";
 	 wait for 1 ns;
     
     wait;
