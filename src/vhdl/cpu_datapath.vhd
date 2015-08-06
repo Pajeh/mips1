@@ -17,7 +17,11 @@ entity cpu_datapath is
       exc_mux1              : in  std_logic_vector(1 downto 0);
       exc_mux2              : in  std_logic_vector(1 downto 0);
       exc_alu_zero          : out std_logic_vector(0 downto 0);
-      memstg_mux            : in  std_logic
+      memstg_mux            : in  std_logic;
+      id_regdest_mux        : in std_logic_vector (1 downto 0);
+      id_regshift_mux       : in std_logic_vector (1 downto 0);
+      id_enable_regs        : in std_logic;
+      in_mux_pc             : in std_logic_vector(0 downto 0)
       
     );
 
@@ -51,16 +55,26 @@ architecture structure_cpu_datapath of cpu_datapath is
 begin
 
 -- INSTRUCTION FETCH:
-instruction_fetch:    entity work.instruction_fetch(behavioral) port map(  TODO );
+instruction_fetch:    entity work.instruction_fetch(behavioral) port map(clk, rst, );
 
 -- INSTRUCTION DECODE:
-instruction_decode:   entity work.instruction_decode(behavioral) port map(  TODO );
+variable id_a       : std_logic_vector(31 downto 0);
+variable id_b       : std_logic_vector(31 downto 0);
+variable id_imm     : std_logic_vector(31 downto 0);
+variable id_ip      : std_logic_vector(31 downto 0);
+variable id_regdest : std_logic_vector(4 downto 0);
+variable id_shift   : std_logic_vector(4 downto 0);
+instruction_decode:   entity work.instruction_decode(behavioral) port map(instr_1, ip_1, wb_writeback_out, alu_result,
+                                                                          memstg_writeback_out, exc_destreg_out,
+                                                                          memstg_destreg_out, id_regdest_mux,
+                                                                          id_regshift_mux, clk, rst, id_enable_regs,
+                                                                          id_a, id_b, id_imm, id_ip, id_regdest, id_shift);
 
 -- EXECUTION:
 variable alu_result       : std_logic_vector(31 downto 0);
 variable data_out         : std_logic_vector(31 downto 0);
 variable exc_destreg_out  : std_logic_vector(4  downto 0);
-execution:            entity work.execution(behave) port map(clk, rst, alu_result, data_out, destreg_out,
+execution:            entity work.execution(behave) port map(clk, rst, alu_result, data_out, exc_destreg_out,
                                                               exc_alu_zero, reg_a_2, reg_b_2, regdest_2, imm_2,
                                                               ip_2, shift_2, exc_mux1, exc_mux2,alu_op);
 
@@ -69,7 +83,7 @@ variable memstg_writeback_out : std_logic_vector(31 downto 0);
 variable memstg_destreg_out   : std_logic_vector(4  downto 0);
 memory_stage:         entity work.MemoryStage(behavioral) port map(clk, rst, alu_result_3, data_3, data_addr,
                                                                     data_from_cpu, data_to_cpu, memstg_mux,
-                                                                    writeback, regdest_3, memstg_destreg_out);
+                                                                    memstg_writeback_out, regdest_3, memstg_destreg_out);
 
 -- WRITE BACK:
 variable wb_writeback_out : std_logic_vector(31 downto 0);
@@ -80,12 +94,24 @@ write_back:           entity work.write_back(behavioral) port map(clk, rst, writ
 process(clk, rst)
 begin
   if (rst = '0') then
+    shift_2 <= (others => '0');
+    reg_a_2 <= (others => '0');
+    reg_b_2 <= (others => '0');
+    regdest_2 <= (others => '0');
+    imm_2 <= (others => '0');
+    ip_2 <= (others => '0');
     alu_result_3 <= (others => '0');
     data_3 <= (others => '0');
     regdest_3 <= (others => '0');
     writeback_4 <= (others => '0');
     regdest_4 <= (others => '0');
   elsif (rising_edge(clk)) then
+    shift_2 <= id_shift;
+    reg_a_2 <= id_a;
+    reg_b_2 <= id_b;
+    regdest_2 <= id_regdest;
+    imm_2 <= id_imm;
+    ip_2 <= id_ip;
     alu_result_3 <= alu_result;
     data_3 <= data_out;
     regdest_3 <= destreg_out;
