@@ -34,11 +34,23 @@ architecture structure_cpu_datapath of cpu_datapath is
 
 begin
 
+-- INSTRUCTION FETCH:
 instruction_fetch:    entity work.instruction_fetch(behavioral) port map(  TODO );
+
+-- INSTRUCTION DECODE:
 instruction_decode:   entity work.instruction_decode(behavioral) port map(  TODO );
+
+-- EXECUTION:
 variable alu_result   : std_logic_vector(31 downto 0);
-execution:            entity work.execution(behave) port map(,,alu_result,,,,,,,,,,,,);
+variable data_out     : std_logic_vector(31 downto 0);
+variable destreg_out  : std_logic_vector(4  downto 0);
+variable zero_out     : std_logic_vector(0  downto 0);
+execution:            entity work.execution(behave) port map(,,alu_result, data_out, destreg_out, zero_out,,,,,,,,,);
+
+-- MEMORY STAGE:
 memory_stage:         entity work.MemoryStage(behavioral) port map(  TODO );
+
+-- WRITE BACK:
 write_back:           entity work.write_back(behavioral) port map(  TODO );
 
 process(clk, rst)
@@ -49,6 +61,8 @@ begin
     regdest_3 <= (others => '0');
   elsif (rising_edge(clk)) then
     alu_result_3 <= alu_result;
+    data_3 <= data_out;
+    regdest_3 <= destreg_out;
   end if;
 end process;
 
