@@ -65,14 +65,17 @@ execution:            entity work.execution(behave) port map(clk, rst, alu_resul
                                                               ip_2, shift_2, exc_mux1, exc_mux2,alu_op);
 
 -- MEMORY STAGE:
-variable writeback            : std_logic_vector(31 downto 0);
+variable memstg_writeback_out : std_logic_vector(31 downto 0);
 variable memstg_destreg_out   : std_logic_vector(4  downto 0);
 memory_stage:         entity work.MemoryStage(behavioral) port map(clk, rst, alu_result_3, data_3, data_addr,
                                                                     data_from_cpu, data_to_cpu, memstg_mux,
                                                                     writeback, regdest_3, memstg_destreg_out);
 
 -- WRITE BACK:
-write_back:           entity work.write_back(behavioral) port map(  TODO );
+variable wb_writeback_out : std_logic_vector(31 downto 0);
+variable wb_destreg_out   : std_logic_vector(4  downto 0);
+write_back:           entity work.write_back(behavioral) port map(clk, rst, writeback_4, regdest_4,
+                                                                  wb_writeback_out, wb_destreg_out);
 
 process(clk, rst)
 begin
@@ -86,7 +89,7 @@ begin
     alu_result_3 <= alu_result;
     data_3 <= data_out;
     regdest_3 <= destreg_out;
-    writeback_4 <= writeback;
+    writeback_4 <= memstg_writeback_out;
     regdest_4 <= memstg_destreg_out;
   end if;
 end process;
