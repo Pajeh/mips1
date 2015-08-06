@@ -2,7 +2,7 @@
 -- 2015-08-06       Lukas Jaeger        created
 
 entity tb_cpu_datapath is
-end entitiy;
+end entity tb_cpu_datapath;
 
 architecture behavioural of tb_cpu_datapath is
     component cpu_datapath
