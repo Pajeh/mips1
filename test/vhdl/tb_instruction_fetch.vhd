@@ -24,9 +24,9 @@ architecture behav_tb_instruction_fetch of tb_instruction_fetch is
   signal rst : std_logic := '0';
   signal PC :std_logic_vector(31 downto 0) := x"0000_0000";
   signal InstrData : std_logic_vector(31 downto 0) := x"0000_0000";
-signal IR : std_logic_vector(31 downto 0);
-signal InstrAddr : std_logic_vector(31 downto 0);
-signal Instr : std_logic_vector(31 downto 0);  
+  signal IR : std_logic_vector(31 downto 0);
+  signal InstrAddr : std_logic_vector(31 downto 0);
+  signal Instr : std_logic_vector(31 downto 0);  
 
  
 
@@ -50,6 +50,8 @@ begin
     PC <= IR;
 	InstrData <= x"0000_0110";
     wait for 1 ns;
+	    PC <= IR;
+	InstrData <= x"0000_0200";
     
     wait;
   end process;

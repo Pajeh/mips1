@@ -23,9 +23,9 @@ architecture behav_tb_write_back of tb_write_back is
   signal clk : std_logic := '0';
   signal rst : std_logic := '0';
   signal writeback_in :std_logic_vector(31 downto 0) := x"0000_0000";
-  signal regdest_in : std_logic_vector(31 downto 0) := x"0000_0000";
+  signal regdest_in : std_logic_vector(4 downto 0) := b"00000";
 signal writeback_out : std_logic_vector(31 downto 0);
-signal regdest_out : std_logic_vector(31 downto 0);
+signal regdest_out : std_logic_vector(4 downto 0);
 
 
  
@@ -37,21 +37,24 @@ begin
   rst   <= '1', '0'     after RST_TIME;
 
   u1_write_back : entity work.write_back(behavioral)
-    PORT MAP(clk,rst,writeback_in,writeback_out,regdest_in,regdest_out);
+    PORT MAP(clk,rst,writeback_in,regdest_in,writeback_out,regdest_out);
 		
 	 -- TEST PROCESS
   test_process:
   process
   begin
   
-    writeback_out <= writeback_in;
-	regdest_out <= regdest_in;
+    
     wait for 1 ns;
+	regdest_in <= b"00200";
     writeback_in <= x"0000_0100";
-	regdest_in <= x"0000_0110";
-	writeback_out <= writeback_in;
-	regdest_out <= regdest_in;
-    wait for 1 ns;
+
+	 wait for 1 ns;
+
+    writeback_in <= x"0000_5060";
+ wait for 1 ns;
+	regdest_in <= x"5200_4218";
+	 wait for 1 ns;
     
     wait;
   end process;

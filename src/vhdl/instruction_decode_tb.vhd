@@ -3,6 +3,7 @@
 -- 2015-08-04   Lukas Jäger     added test cases for forwarding
 -- 2015-08-05	Lukas Jaeger	 adjusted dut to new interface
 -- 2015-08-05	Lukas Jaeger	 added expected data for ip_out
+-- 2010-08-06	Lukas, Carlos	 added test cases for Jump-instructions
 library IEEE;
     use IEEE.std_logic_1164.all;
 
@@ -200,6 +201,22 @@ begin
 	-- ip_out: 01234567
         instr <= x"00200008";
         wait for clk_time;
+
+	-- Jump 
+	-- ip_out : 02af37bc
+	ip_in <= x"01010101";
+	instr <= x"08abcdef";
+	wait for clk_time;
+
+	-- JAL
+	-- ip_out : 02af37bc
+	instr <= x"0cabcdef";
+	wait for clk_time;
+
+	-- JAL with negative immediate
+	-- ip_out: 0ffffffc
+	instr <= x"0fffffff";
+	wait for clk_time;
         
         
 	-- Forwarding test for regdest_ex and alu_result using a jump
