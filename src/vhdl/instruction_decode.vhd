@@ -97,7 +97,6 @@ begin
 			offset := offset * 4;
 			ip_out <= ip_in (31 downto 28) & std_logic_vector(to_signed(offset,28));
 		elsif ((instr (31 downto 26) = "000011") and (reset = '1'))then --JAL instruction
-			-- TODO: Fix that bloody bug
 			internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
 			internal_wb_flag <= '1';
 			offset := to_integer(signed(instr(25 downto 0)));
@@ -125,3 +124,22 @@ begin
 		end if;
 	end process;
 end architecture;
+
+
+-- FSM-signal-Howto:
+--
+-- regdest_mux:
+-- 00: if instruction is of R-type
+-- 01: if regdest must be set to 31 (JAL?)
+-- 10: if instruction is of I-type
+-- 11: NEVER EVER EVER!!!
+--
+-- regshift_mux:
+-- 00: if instruction is of R-type
+-- 01: if shift must be 16 (No idea, which instruction uses that...)
+-- 10: if you like non-deterministic behaviour
+-- 11: if you love non-deterministic behaviour
+--
+-- enable_regs:
+-- 1: if the writeback-stage just finished an R-type- or I-type-instruction (except for JR)
+-- 0: if the writeback-stage just finished a J-type-instruction or JR
