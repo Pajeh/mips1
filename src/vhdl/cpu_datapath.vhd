@@ -3,6 +3,12 @@
 -- 05.08.2015     Patrick Appenheimer    first try
 -- 06.08.2015     Patrick Appenheimer    ports and entities added
 
+library IEEE;
+  use IEEE.std_logic_1164.ALL;
+  USE IEEE.numeric_std.ALL;
+
+library WORK;
+  use WORK.all;
 
 entity cpu_datapath is
   port(
