@@ -21,15 +21,17 @@ end entity;
 architecture behavioral of instruction_decode is
 	type regfile is array (31 downto 0) of std_logic_vector (31 downto 0);
     	signal register_file : regfile;
-    	signal imm_internal : std_logic_vector(31 downto 0);
+    	signal imm_internal, internal_writeback : std_logic_vector(31 downto 0);
     	signal pc_imm : std_logic_vector (31 downto 0);
-    	signal imm_16 : std_logic_vector (15 downto 0);
+    	signal imm_16 : std_logic_vector (15 downto 0); 
+	signal internal_wb_flag : std_logic := '0';
 begin
 	imm_16  <= instr (15 downto 0);
 	imm_internal <= X"0000" & imm_16;
 	imm <= imm_internal;        -- Imm is the subvector of instr from 15 to 0 and it is padded with leading zeros for further processing.
  	-- Splitting registers for R-type-instructions
     	pc_imm <= imm_internal (31 downto 2) & "00";
+	internal_writeback <= x"00000000";
 	-- Defines the instruction decode logic
     	logic : process (instr, ip_in, writeback, alu_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux)  is
     		begin
@@ -79,37 +81,43 @@ begin
             	end loop;
         	elsif (clk = '1') and (enable_regs = '1') then  -- If register file is enabled, write back result
             		register_file(to_integer(unsigned (writeback_reg))) <= writeback;
+		elsif (clk = '1') and (internal_wb_flag = '1') then
+			register_file (31) <= internal_writeback;
         	end if;
     	end process;
 
 	-- Process that defines the branch logic
-	branch_logic : process (instr) is
+	branch_logic : process (instr, ip_in, writeback, alu_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux) is
 	variable offset : integer;
 	begin
-		-- The new program counter is calulated by taking the immediate value,
-		-- multiplying it with 2 and subtract 4 from it (to anticipate the PC's addition
-		-- in the IF-stage). This is mixed with some VHDL-typecasting below.
-		offset := to_integer(signed(instr(15 downto 0)));
-		offset := offset * 4;
 		if (instr (31 downto 26) = "000010") then -- Jump instruction
+			internal_wb_flag <= '0';
+			offset := to_integer(signed(instr(25 downto 0)));
+			offset := offset * 4;
 			ip_out <= ip_in (31 downto 28) & std_logic_vector(to_signed(offset,28));
 		elsif (instr (31 downto 26) = "000011") then --JAL instruction
-			register_file(31) <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
+			-- TODO: Fix that bloody bug
+			internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
+			internal_wb_flag <= '1';
 			ip_out <= ip_in (31 downto 28) & std_logic_vector(to_signed(offset,28));
 		elsif ((instr(31 downto 26) = "000000") and (instr (20 downto 0) ="000000000000000001000")) then --JR instruction
+			internal_wb_flag <= '0';
+			offset := to_integer(signed(instr(25 downto 0)));
+			offset := offset * 4;
 			-- VHDL code déjà-vu?
 			-- This is the same forwarding logic as above for reg_a
 			if (instr (25 downto 21)) = regdest_mem then 
 				ip_out <= writeback;
-			-- If the destination register is still used by the memory-phase, the alu-result is forwarded
 			elsif (instr (25 downto 21)) = regdest_ex then 
 				ip_out <= alu_result;
-			-- Otherwise, no forwarding is required and the register specified by rs is read
 			else 
 				ip_out <= register_file(to_integer(unsigned (instr (25 downto 21))));
 			end if;
 		else -- Branch instruction of any kind
-			offset := offset + to_integer (unsigned(ip_in));
+			internal_wb_flag <= '0';
+			offset := to_integer(signed(instr(15 downto 0)));
+			offset := offset * 4;
+				offset := offset + to_integer (unsigned(ip_in));
 			ip_out <= std_logic_vector(to_signed(offset,32));
 		end if;
 	end process;

@@ -200,6 +200,17 @@ begin
 	-- ip_out: 01234567
         instr <= x"00200008";
         wait for clk_time;
+
+	-- Jump 
+	-- ip_out : 02af37bc
+	ip_in <= x"01010101";
+	instr <= x"08abcdef";
+	wait for clk_time;
+
+	-- JAL
+	-- ip_out : 02af37bc
+	instr <= x"0cabcdef";
+	wait for clk_time;
         
     end process;
 end;
