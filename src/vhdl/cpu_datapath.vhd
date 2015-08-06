@@ -21,6 +21,7 @@ entity cpu_datapath is
       id_regdest_mux        : in std_logic_vector (1 downto 0);
       id_regshift_mux       : in std_logic_vector (1 downto 0);
       id_enable_regs        : in std_logic;
+      in_mux_pc             : in std_logic_vector(0 downto 0)
       
     );
 
@@ -54,7 +55,7 @@ architecture structure_cpu_datapath of cpu_datapath is
 begin
 
 -- INSTRUCTION FETCH:
-instruction_fetch:    entity work.instruction_fetch(behavioral) port map(  TODO );
+instruction_fetch:    entity work.instruction_fetch(behavioral) port map(clk, rst, );
 
 -- INSTRUCTION DECODE:
 variable id_a       : std_logic_vector(31 downto 0);
