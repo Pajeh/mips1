@@ -5,6 +5,7 @@
 -- 2015-08-05	Lukas Jaeger	 fixed bugs that resulted from me not knowing any VHDL
 -- 2015-08-05	Lukas Jaeger	 added functionality for branch logic
 -- 2015-08-06	Lukas, Carlos 	 fixed bug in JAL-instruction-decode
+-- 2015-08-06	Lukas		 added signed/unsigned logic for immediate-output
 library IEEE;
     use IEEE.std_logic_1164.all;
 	use IEEE.numeric_std.all;
@@ -22,17 +23,16 @@ end entity;
 architecture behavioral of instruction_decode is
 	type regfile is array (31 downto 0) of std_logic_vector (31 downto 0);
     	signal register_file : regfile;
-    	signal imm_internal, internal_writeback : std_logic_vector(31 downto 0);
+    	signal imm_internal : std_logic_vector(31 downto 0) := x"00000000";
+	signal internal_writeback : std_logic_vector(31 downto 0);
     	signal pc_imm : std_logic_vector (31 downto 0);
     	signal imm_16 : std_logic_vector (15 downto 0); 
 	signal internal_wb_flag : std_logic := '0';
 begin
 	imm_16  <= instr (15 downto 0);
-	imm_internal <= X"0000" & imm_16;
-	imm <= imm_internal;        -- Imm is the subvector of instr from 15 to 0 and it is padded with leading zeros for further processing.
+
  	-- Splitting registers for R-type-instructions
     	pc_imm <= imm_internal (31 downto 2) & "00";
-	--internal_writeback <= x"00000000";
 	-- Defines the instruction decode logic
     	logic : process (instr, ip_in, writeback, alu_result, mem_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux)  is
     		begin
@@ -121,6 +121,15 @@ begin
 			offset := offset * 4;
 				offset := offset + to_integer (unsigned(ip_in));
 			ip_out <= std_logic_vector(to_signed(offset,32));
+		end if;
+	end process;
+
+	imm_expand : process (instr) is
+	begin
+		if (instr (26) = '1') then	-- unsigned op
+			imm <= X"0000" & instr (15 downto 0);
+		else				-- signed op
+			imm <= std_logic_vector(to_signed(to_integer(signed (instr (15 downto 0))),32));
 		end if;
 	end process;
 end architecture;
