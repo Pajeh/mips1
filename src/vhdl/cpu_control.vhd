@@ -40,7 +40,11 @@ PORT (
 	rd_mask                 : out std_logic_vector(3  downto 0);
       	wr_mask                 : out std_logic_vector(3  downto 0);
       	instr_stall             : in  std_logic;
-      	data_stall              : in  std_logic
+      	data_stall              : in  std_logic;
+
+
+	-- -------- Pipeline  -----------------
+      	pipeline              : out std_logic_vector(4  downto 0);		-- next step in pipeline
 )
 
 
