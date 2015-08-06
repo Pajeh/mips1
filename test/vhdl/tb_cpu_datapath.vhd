@@ -1,6 +1,14 @@
 -- revision history:
 -- 2015-08-06       Lukas Jaeger        created
 
+
+library IEEE;
+  use IEEE.std_logic_1164.ALL;
+  use IEEE.numeric_std.ALL;
+
+library WORK;
+  use WORK.cpu_pack.all;
+
 entity tb_cpu_datapath is
 end entity tb_cpu_datapath;
 
