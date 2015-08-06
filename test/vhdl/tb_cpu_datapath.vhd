@@ -45,7 +45,7 @@ architecture behavioural of tb_cpu_datapath is
             memstg_mux => memstg_mux,
             id_regdest_mux => id_regdest_mux,
             id_regshift_mux => id_regshift_mux,
-            id_enable_regs => id_enable_regs,
+            id_enable_regs => id_enable_regs
         );
         clk_proc : process
         begin
