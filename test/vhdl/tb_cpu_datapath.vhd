@@ -34,11 +34,11 @@ architecture behavioural of tb_cpu_datapath is
     );
     end component;
     
-    signal clk, rst, memstg_mux, id_enable_regs, in_mux_pc : std_logic;
-    signal instr_in, data_to_cpu : std_logic_vector (31 downto 0);
-    signal alu_op : std_logic_vector (5 downto 0);
-    signal exc_mux1, exc_mux2, id_regdest_mux, id_regshift_mux : std_logic_vector(1 downto 0);
-    signal exc_alu_zero : std_logic_vector(0 downto 0);
+    signal clk, rst, memstg_mux, id_enable_regs, in_mux_pc : std_logic := '0';
+    signal instr_in, data_to_cpu : std_logic_vector (31 downto 0) := x"00000000";
+    signal alu_op : std_logic_vector (5 downto 0) := "000000";
+    signal exc_mux1, exc_mux2, id_regdest_mux, id_regshift_mux : std_logic_vector(1 downto 0) := "00"; 
+    signal exc_alu_zero : std_logic_vector(0 downto 0) := "0";
     -- Tweak clock frequency here
     constant clk_time : time := 10 ns;
     begin
@@ -56,11 +56,33 @@ architecture behavioural of tb_cpu_datapath is
             id_enable_regs => id_enable_regs,
 	    in_mux_pc => in_mux_pc
         );
+        
         clk_proc : process
         begin
                clk <= '0';
                 wait for clk_time / 2;
                 clk <= '1';
                 wait for clk_time / 2;
+        end process;
+        
+        data_proc : process
+        begin
+            	-- Reset
+            	rst <= '0';
+            	wait for clk_time;
+            	rst <= '1';
+            
+            	--Feeding in empty operation to get the pipeline running
+            	instr_in <= x"00000000";
+		wait for clk_time;
+
+		--usually the first instruction address should be dropping out at
+		-- instr_addr and it should be 00000000, so we return an instruction
+		instr_in <= x"3c1c0001";
+		wait for clk_time;
+
+		instr_in <= x"279c8070";
+		wait for clk_time;
+            
         end process;
     end architecture;
