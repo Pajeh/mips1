@@ -1,9 +1,23 @@
 -- revision history:
 -- 06.07.2015     Alex Schönberger    created
 -- 05.08.2015     Patrick Appenheimer    first try
+-- 06.08.2015     Patrick Appenheimer    ports and entities added
 
 
 entity cpu_datapath is
+  port(
+      clk                   : in  std_logic;
+      rst                   : in  std_logic;
+      instr_addr            : out std_logic_vector(31 downto 0);
+      data_addr             : out std_logic_vector(31 downto 0);
+      instr_in              : in  std_logic_vector(31 downto 0);
+      data_to_cpu           : in  std_logic_vector(31 downto 0);
+      data_from_cpu         : out std_logic_vector(31 downto 0);
+      alu_op                : in  std_logic_vector(5 downto 0);
+      exc_mux1              : in  std_logic_vector(1 downto 0);
+      exc_mux2              : in  std_logic_vector(1 downto 0)
+      
+    );
 
 end entity cpu_datapath;
 
@@ -45,7 +59,9 @@ variable alu_result   : std_logic_vector(31 downto 0);
 variable data_out     : std_logic_vector(31 downto 0);
 variable destreg_out  : std_logic_vector(4  downto 0);
 variable zero_out     : std_logic_vector(0  downto 0);
-execution:            entity work.execution(behave) port map(,,alu_result, data_out, destreg_out, zero_out,,,,,,,,,);
+execution:            entity work.execution(behave) port map(clk, rst, alu_result, data_out, destreg_out,
+                                                              zero_out, reg_a_2, reg_b_2, regdest_2, imm_2,
+                                                              ip_2, shift_2, exc_mux1, exc_mux2,alu_op);
 
 -- MEMORY STAGE:
 memory_stage:         entity work.MemoryStage(behavioral) port map(  TODO );
