@@ -23,9 +23,9 @@ architecture behav_tb_write_back of tb_write_back is
   signal clk : std_logic := '0';
   signal rst : std_logic := '0';
   signal writeback_in :std_logic_vector(31 downto 0) := x"0000_0000";
-  signal regdest_in : std_logic_vector(31 downto 0) := x"0000_0000";
+  signal regdest_in : std_logic_vector(4 downto 0) := b"00000";
 signal writeback_out : std_logic_vector(31 downto 0);
-signal regdest_out : std_logic_vector(31 downto 0);
+signal regdest_out : std_logic_vector(4 downto 0);
 
 
  
@@ -46,7 +46,7 @@ begin
   
     
     wait for 1 ns;
-	regdest_in <= x"0000_0200";
+	regdest_in <= b"00200";
     writeback_in <= x"0000_0100";
 
 	 wait for 1 ns;
