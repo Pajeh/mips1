@@ -17,7 +17,6 @@ regdest_out : out std_logic_vector(31 downto 0)
 );
 
 
-
 end entity write_back;
 
 
