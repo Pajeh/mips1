@@ -61,6 +61,7 @@ architecture behav_tb_cpu_datapath of tb_cpu_datapath is
         wait for 2*CLK_TIME;
         rst <= '1';
 	wait for CLK_TIME;
+	-- ADDI ==> Opcode: 0010_00 rs: 0_0001 rt: 0_0010 im: 0000_0000_0000_0001
 	test_instr_in <= b"0010_00_00_001_0_0010_0000_0000_0000_0001";
 	test_alu_op <= b"10_0000";
 	test_exc_mux1 <= b"10";
@@ -71,6 +72,7 @@ architecture behav_tb_cpu_datapath of tb_cpu_datapath is
 	test_id_enable_regs <= '0';
 	test_in_mux_pc <= '0';
     	wait for 5*CLK_TIME;
+    	-- SUB ==> Opcode: 0000_00 rs: 0_0010 rt: 0_0010 rd: 0_0011 func: 10_0010
 	test_instr_in <= b"000000_00010_00010_00011_00000100010";
 	test_alu_op <= b"10_0010";
 	test_exc_mux1 <= b"10";
