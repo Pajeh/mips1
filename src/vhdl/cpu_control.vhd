@@ -34,7 +34,6 @@ PORT (
 	ex_alu_zero           : in  std_logic_vector(0  downto 0);		
   	
 	-- -------- Memory Stage  -----------------
-	-- FSS decision for writeback output. ALU results or memory data can be forwarded to writeback
   	mux_decision: out std_logic;	
 
 
@@ -42,9 +41,9 @@ PORT (
 
 	-- -------- Memory  -----------------
 	rd_mask                 : out std_logic_vector(3  downto 0);
-      	wr_mask                 : out std_logic_vector(3  downto 0);
-      	instr_stall             : in  std_logic;
-      	data_stall              : in  std_logic;
+    wr_mask                 : out std_logic_vector(3  downto 0);
+    instr_stall             : in  std_logic;
+    data_stall              : in  std_logic;
 
 
 	-- -------- Pipeline  -----------------
@@ -69,9 +68,7 @@ end entity cpu_control;
 -- 	lbu	-- Load byte unsigned		1001 00
 -- 	andi	-- And Immediate		0011 00		
 -- 	jalx	--  Jump and Link Exchange	0111 01
--- 	
--- 	
--- 	
+
 
 
 -- --------------------------------------  --
@@ -111,17 +108,22 @@ end entity cpu_control;
 -- in_alu_instruction:
 -- 000000: 
 -- 
+
+	-- -------- Memory Stage  -----------------
+-- FSS decision for writeback output. ALU results or memory data can be forwarded to writeback
+-- mux_decisions:
+-- 1: output is the aluResult_in
+-- 0: output is the memory_buffer, which carries the memory read value
 -- 
--- 
--- 
--- 
--- 
--- 
--- 
--- 
+
 -- 
 architecture structure_cpu_control of cpu_control is
 
 begin
+signal pipeline: std_logic_vector(2 downto 0) := b"000";
+signal fsm: std_logic_vector(2 downto 0,2 downto 0);
+process (clk, rst) is
+	case 
+end process
 
 end architecture structure_cpu_control;
