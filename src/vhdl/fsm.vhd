@@ -206,7 +206,7 @@ signal output_buffer: std_logic_vector(29 downto 0):=(others => '0');
 signal currentstate: std_logic_vector(4 downto 0):= (others => '0') ;
 signal nexstate: std_logic_vector(4 downto 0):(others => '0') ;
 	begin
-process (rst) is
+process (clk, rst, instr, ex_alu_zero,wr_mask,rd_mask) is
 	if (rst ='1') then			-- if no reset
 		case currentstate is
 			when 0 =>	-- Instruction fetch
@@ -250,6 +250,7 @@ process (rst) is
 end process;
 
 output: process (clk) is
+
 	 	-- output_buffer is outputed
 		pc_mux<=output_buffer (29 downto 29);
 		regdest_mux<=output_buffer (28 downto 27);
