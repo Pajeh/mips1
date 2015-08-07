@@ -2,7 +2,6 @@
 -- 07.08.2015	Carlos Minamisava Faria	created 
 -- 07.08.2015	Carlos Minamisava Faria	entity 
 -- 07.08.2015	Carlos Minamisava Faria	moore state machine states definition 
--- 07.08.2015   Patrick Appenheimer   some bugfixes
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -211,68 +210,69 @@ constant jalx :std_logic_vector(5 downto 0):= b"0011_01";	-- Type J
 signal output_buffer: std_logic_vector(29 downto 0):=(others => '0');
 
 signal currentstate: std_logic_vector(4 downto 0):= (others => '0') ;
-signal nexstate: std_logic_vector(4 downto 0):=(others => '0') ;
+signal nextstate: std_logic_vector(4 downto 0):=(others => '0') ;
 	begin
 process (clk, rst, instr, ex_alu_zero)
 begin
 	if (rst ='1') then			-- if no reset
 		case currentstate is
-			when b"00001" =>	-- Instruction fetch
+			when b"00000" =>	-- Instruction fetch
 				output_buffer <= (others => '0');	-- reinitialize all to zero
 
 				if (instr_stall='0') then	-- check if a instruction stall is required. Stall if 1.
-					nextstate <= to_unsigned(1,5);		-- nextstate is the Instruction decode
+					nextstate <= b"00001";		-- nextstate is the Instruction decode
 					output_buffer (1 downto 1)<= "1";	-- stage_control: stage1->stage2: xxx1x
 				else		-- instruction stall is required	
-					nextstate <= to_unsigned(0,5);	-- stay on this stage if stall is required
+					nextstate <= b"00000";	-- stay on this stage if stall is required
 					output_buffer (1 downto 1)<= "1";	-- stage_control: stage1->stage2: xxx1x
 				end if;
 			
-			when 1 =>	-- Instruction Decode / Register fetch
+			when b"00001" =>	-- Instruction Decode / Register fetch
 				case instr (31 downto 26) is	-- decide path depending on the opcode (6 MSB of instr)
 					when lbu |lw|sb|sw =>	-- Memory accesses
-						nextstate <= to_unsigned(2,5);
+						nextstate <= b"00010";
 					when nop =>		-- Type R
-						nextstate <= to_unsigned(3,5);
+						nextstate <= b"00011";
 					when beqz|bnez =>	-- BEQ - branch on equal
-						nextstate <= to_unsigned(4,5);
-					when j|jalx2 =>		-- Type J
-						nextstate <= to_unsigned(5,5);
+						nextstate <= b"00100";
+					when j|jalx =>		-- Type J
+						nextstate <= b"00101";
 					when others =>  	-- Others
-						nextstate <= to_unsigned(11,5);
+						nextstate <= b"01011";
 				end case;
-			when 2 =>	-- Memory address computation
-			when 3 =>	-- Execution
-			when 4 =>	-- Branch completion
-			when 5 =>	-- Jump Completion
-			when 6 =>	-- Memory access read
-			when 7 =>	-- Memory access write
-			when 8 =>	-- Writeback
-			when 9 =>	-- R-Type completion
-			when 10 =>	-- R-Type completion - Overflow
-			when 11 =>	-- Others
+			when b"00010" =>	-- Memory address computation
+			when b"00011" =>	-- Execution
+			when b"00100" =>	-- Branch completion
+			when b"00101" =>	-- Jump Completion
+			when b"00110" =>	-- Memory access read
+			when b"00111" =>	-- Memory access write
+			when b"01000" =>	-- Writeback
+			when b"01001" =>	-- R-Type completion
+			when b"01010" =>	-- R-Type completion - Overflow
+			when b"01011" =>	-- Others
+			when others => nextstate <= b"00000";
 
 		end case;
 
 	
 	else		-- if a  reset was activated, all outputs and internal registers are reseted
 		output_buffer <= (others => '0');	-- reinitialize all to zero
-		currentstate <= to_unsigned(0,5);
-		nextstate <= to_unsigned(0,5);
+		currentstate <= b"00000";
+		nextstate <= b"00000";
 	end if;
 end process;
 
-output: process (clk) is
-
+output: process (clk)
+begin
 	 	-- output_buffer is outputed
-		pc_mux<=output_buffer (29 downto 29);
+		pc_mux<=output_buffer (29);
 		regdest_mux<=output_buffer (28 downto 27);
 		regshift_mux<= output_buffer (26 downto 25);
-		enable_regs<= output_buffer (24 downto 24);
+		enable_regs<= output_buffer (24);
 		in_mux1<= output_buffer (23 downto 22);
 		in_mux2<=output_buffer (21 downto 20);
 		in_alu_instruction<= output_buffer (19 downto 14);
-		mux_decision<=output_buffer (13 downto 13);
+		mux_decision<=output_buffer (13);
 		rd_mask <= output_buffer (12 downto 9);
 		wr_mask<=  output_buffer (8 downto 5);
 		stage_control <= output_buffer (4 downto 0);
