@@ -75,20 +75,24 @@ architecture behavioural of tb_cpu_datapath is
             	rst <= '0';
             	wait for clk_time;
             	rst <= '1';
-            
-            	--Feeding in empty operation to get the pipeline running
-            	instr_in <= x"00000000"; -- Instruction 0: NOP
-		wait for clk_time;
 
 		--usually the first instruction address should be dropping out at
 		-- instr_addr and it should be 00000000, so we return an instruction
 		-- and set the ID's muxes for correct decoding
+		-- To test: 
+		-- instr_address: 00000004
+		-- ip_2 : 00000000
 		instr_in <= x"3c1c0001";	-- Instruction 1: LUI $gp, 1
 		id_regdest_mux <= "10";
 		id_regshift_mux <= "00";
 		id_enable_regs <= '0';
 		wait for clk_time;
 
+		-- To test:
+		-- imm_2: 00000001
+		-- regdest_2: 1C
+		-- instr_address: 00000008
+		-- ip_2 : 00000004
 		instr_in <= x"279c8070";	-- Instruction 2: ADDIU $gp, $gp, -32656
 		id_regdest_mux <= "10";
 		id_regshift_mux <= "00";
@@ -99,8 +103,14 @@ architecture behavioural of tb_cpu_datapath is
 		alu_op <= b"00_0010";
 		wait for clk_time;
 		
-		instr_in <= X"08000008";--x"08000004";	-- Instruction 3: J 0x10
-		id_regdest_mux <= "00";
+		-- To test:
+		-- regdest_2: 1C
+		-- instr_address: 0000000C
+		-- ip_2 : 00000008
+		-- alu_result_3: 00000001
+		-- regdest_3: 1C
+		instr_in <= x"08000004";	-- Instruction 3: J 0x10
+		id_regdest_mux <= "10";
 		id_regshift_mux <= "00";
 		id_enable_regs <= '0';
 		-- Instruction 2 now reaches execution stage
