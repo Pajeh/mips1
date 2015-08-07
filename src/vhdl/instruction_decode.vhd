@@ -82,7 +82,9 @@ begin
                 	register_file(i) <= x"00000000";
             	end loop;
         	elsif (clk = '1') and (enable_regs = '1') then  -- If register file is enabled, write back result
-            		register_file(to_integer(unsigned (writeback_reg))) <= writeback;
+			if (to_integer(unsigned (writeback_reg)) > 0) then
+            			register_file(to_integer(unsigned (writeback_reg))) <= writeback;
+			end if;
 		elsif (clk = '1') and (internal_wb_flag = '1') then
 			register_file (31) <= internal_writeback;
         	end if;
@@ -153,7 +155,7 @@ end architecture;
 --
 -- regshift_mux:
 -- 00: if instruction is of R-type
--- 01: if shift must be 16 (No idea, which instruction uses that...)
+-- 01: if shift must be 16 (No idea which instruction uses that...)
 -- 10: if you like non-deterministic behaviour
 -- 11: if you love non-deterministic behaviour
 --
