@@ -117,9 +117,16 @@ architecture behavioural of tb_cpu_datapath is
 		exc_mux1 <= "00";
 		exc_mux2 <= "01";
 		alu_op <= b"10_0000";
-		-- Instruction 1 now reaches memory stage, but the mux is already set to 0, so nothing to do
+		-- Instruction 1 now reaches memory stage
+		memstg_mux <= '1';
 		wait for clk_time;
 
+		-- To test:
+		-- regdest_3: 1C
+		-- alu_result_3: 00008071
+		-- writeback_4: 00000001
+		-- regdest_4: 1C
+		-- instr_addr: 00000010
 		instr_in <= x"3c1d00a2";	-- Instruction 4: LUI $sp,0xa2 
 		id_regdest_mux <= "10";
 		id_regshift_mux <= "00";
@@ -129,10 +136,37 @@ architecture behavioural of tb_cpu_datapath is
 		-- However the new program counter must be written:
 		in_mux_pc <= '1';
 		-- Instruction 2 now reaches memory stage, which is already prepared for forwarding data to writeback
-
-		--Instruction 1 now reaches writeback, nothing to do
-		
+		--Instruction 1 now reaches writeback, nothing to do		
 		wait for clk_time;
+
+		-- To test:
+		-- regdest_2: 1D
+		-- regdest_4: 1C
+		-- writeback_4: 0008071
+		-- register_file (28): 00000001
+		-- instr_addr : 00000014
+		instr_in <= x"8f828010";	-- Instruction 5: LW $v0,-32752(gp)
+		in_mux_pc <= '0';
+		--Instruction 4 finishes decode stage and decode stage is already prepared for immediate operation
+		--Instruction 3 finishes execution stage but nobody cares
+		--Instruction 2 finishes memory stage, still prepared from Instruction 1
+		wait for clk_time;
+
+		-- To test:
+		-- reg_a_2: 00000001
+		-- imm_2: FFFF8010
+		-- regdest_2: 02
+		-- alu_result_3: 000000a2
+		instr_in <= x"00000000";	-- Instruction 6: NOP
+		-- Instruction 5 finishes decode stage, still immediate type, nothing to do
+		-- Instruction 4 finishes execution stage
+		exc_mux2 <= "01";
+		alu_op <="000010";
+		-- Instruction 3 finishes writeback stage:
+		id_enable_regs <= '1';
+		wait for clk_time;
+		
+		
 
 
             
