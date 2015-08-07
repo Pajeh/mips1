@@ -10,6 +10,24 @@ library IEEE;
 library WORK;
   use WORK.all;
 
+-- -- MUX Steuereingänge: -- --
+-- mux1:
+-- 00: out <= Zero Extend
+-- 01: out <= 4
+-- 10: out <= Reg A
+-- mux2:
+-- 00: out <= Reg B
+-- 01: out <= Imm
+-- 10: out <= IP
+  
+-- -- ALU FUNCTION CODES: -- --
+-- ADD ==> 10_0000
+-- SUB ==> 10_0010
+-- AND ==> 10_0100
+-- OR ==> 10_0101
+-- result <= reg_a ==> 00_0001
+-- result <= reg_b ==> 00_0010
+
 entity execution is
     port(
       clk                   : in  std_logic;
