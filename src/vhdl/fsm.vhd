@@ -26,7 +26,7 @@ library WORK;
 --	when 8 =>	-- Writeback
 --	when 9 =>	-- R-Type completion
 --	when 10 =>	-- R-Type completion - Overflow
---	when 11 =>	-- Type I
+--	when 11 =>	-- Others
 
 -- --------------------------------------  --
 -- FSM-signal-Howto:			   --
@@ -219,14 +219,19 @@ process (clk, rst, instr, ex_alu_zero,wr_mask,rd_mask) is
 					nextstate <= to_unsigned(0,5);	-- stay on this stage if stall is required
 					output_buffer (1 downto 1)<= "1";	-- stage_control: stage1->stage2: xxx1x
 				end if;
-				
+			
 			when 1 =>	-- Instruction Decode / Register fetch
 				case instr (31 downto 26) is	-- decide path depending on the opcode (6 MSB of instr)
 					when lbu |lw|sb|sw =>	-- Memory accesses
+						nextstate <= to_unsigned(2,5);
 					when nop =>		-- Type R
-					when j|jalx2 =>		-- Type J
+						nextstate <= to_unsigned(3,5);
 					when beqz|bnez =>	-- BEQ - branch on equal
+						nextstate <= to_unsigned(4,5);
+					when j|jalx2 =>		-- Type J
+						nextstate <= to_unsigned(5,5);
 					when others =>  	-- Others
+						nextstate <= to_unsigned(11,5);
 				end case;
 			when 2 =>	-- Memory address computation
 			when 3 =>	-- Execution
@@ -237,7 +242,7 @@ process (clk, rst, instr, ex_alu_zero,wr_mask,rd_mask) is
 			when 8 =>	-- Writeback
 			when 9 =>	-- R-Type completion
 			when 10 =>	-- R-Type completion - Overflow
-			when 11 =>	-- Type I
+			when 11 =>	-- Others
 
 		end case;
 
