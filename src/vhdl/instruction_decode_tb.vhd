@@ -302,6 +302,11 @@ begin
 	instr <= x"2022ffff";
 	wait for clk_time;
         
+	-- Test for a LW-Operation
+	-- imm: FFFF8010
+	instr <= x"8f828010";
+	wait for clk_time;
+
     end process;
 end;
             
