@@ -2,6 +2,7 @@
 -- 07.08.2015	Carlos Minamisava Faria	created 
 -- 07.08.2015	Carlos Minamisava Faria	entity 
 -- 07.08.2015	Carlos Minamisava Faria	moore state machine states definition 
+-- 07.08.2015   Patrick Appenheimer   some bugfixes
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -116,25 +117,7 @@ library WORK;
 -- 	andi	-- And Immediate		0011 00		
 -- 	jalx	--  Jump and Link Exchange	0111 01
 
---	Arithmetic	--
-constant addiu :std_logic_vector(5 downto 0):= "0010_01";	-- Type I
---	Data Transfer	--
-constant lui :std_logic_vector(5 downto 0):= "0011_11";	-- Type I	-Register access
-constant lbu :std_logic_vector(5 downto 0):= "1001_00";	-- Type I	-Memory access
-constant lw :std_logic_vector(5 downto 0):= "1000_11";	-- Type I	-Memory access
-constant sb :std_logic_vector(5 downto 0):= "101000";	-- Type I	-Memory access
-constant sw :std_logic_vector(5 downto 0):= "101011";	-- Type I	-Memory access
---	Logical	--
-constant slti :std_logic_vector(5 downto 0):= "001010";	-- Type I
-constant andi :std_logic_vector(5 downto 0):= "0011_00";	-- Type I
-constant nop :std_logic_vector(5 downto 0):= "0000_00";		-- Type R	-NOP is read as sll $0,$0,0
---	Bitwise Shift	--
---	Conditional branch	--
-constant beqz :std_logic_vector(5 downto 0):= "000100";	-- Type I
-constant bnez :std_logic_vector(5 downto 0):= "000101";	-- Type I
---	Unconditional jump	--
-constant j :std_logic_vector(5 downto 0):= "0000_10";	-- Type J
-constant jalx :std_logic_vector(5 downto 0):= "0011_01";	-- Type J
+
 
 
 
@@ -181,13 +164,37 @@ PORT (
 
 
 	-- -------- Pipeline  -----------------
-      	stage_control              : out std_logic_vector(4  downto 0);		-- next step in pipeline
-)
+      	stage_control              : out std_logic_vector(4  downto 0)		-- next step in pipeline
+);
 end entity FSM;
 
 
 
 architecture behavioral of FSM is
+
+
+--	Arithmetic	--
+constant addiu :std_logic_vector(5 downto 0):= b"0010_01";	-- Type I
+--	Data Transfer	--
+constant lui :std_logic_vector(5 downto 0):= b"0011_11";	-- Type I	-Register access
+constant lbu :std_logic_vector(5 downto 0):= b"1001_00";	-- Type I	-Memory access
+constant lw :std_logic_vector(5 downto 0):= b"1000_11";	-- Type I	-Memory access
+constant sb :std_logic_vector(5 downto 0):= b"101000";	-- Type I	-Memory access
+constant sw :std_logic_vector(5 downto 0):= b"101011";	-- Type I	-Memory access
+--	Logical	--
+constant slti :std_logic_vector(5 downto 0):= b"001010";	-- Type I
+constant andi :std_logic_vector(5 downto 0):= b"0011_00";	-- Type I
+constant nop :std_logic_vector(5 downto 0):= b"0000_00";		-- Type R	-NOP is read as sll $0,$0,0
+--	Bitwise Shift	--
+--	Conditional branch	--
+constant beqz :std_logic_vector(5 downto 0):= b"000100";	-- Type I
+constant bnez :std_logic_vector(5 downto 0):= b"000101";	-- Type I
+--	Unconditional jump	--
+constant j :std_logic_vector(5 downto 0):= b"0000_10";	-- Type J
+constant jalx :std_logic_vector(5 downto 0):= b"0011_01";	-- Type J
+
+
+
 
 -- output_buffer is a register with all control outputs of the state machine:
 -- output_buffer (29 downto 29): pc_mux: out std_logic;
@@ -204,15 +211,16 @@ architecture behavioral of FSM is
 signal output_buffer: std_logic_vector(29 downto 0):=(others => '0');
 
 signal currentstate: std_logic_vector(4 downto 0):= (others => '0') ;
-signal nexstate: std_logic_vector(4 downto 0):(others => '0') ;
+signal nexstate: std_logic_vector(4 downto 0):=(others => '0') ;
 	begin
-process (clk, rst, instr, ex_alu_zero,wr_mask,rd_mask) is
+process (clk, rst, instr, ex_alu_zero)
+begin
 	if (rst ='1') then			-- if no reset
 		case currentstate is
-			when 0 =>	-- Instruction fetch
+			when b"00001" =>	-- Instruction fetch
 				output_buffer <= (others => '0');	-- reinitialize all to zero
 
-				if (instr_stall='0')	-- check if a instruction stall is required. Stall if 1.
+				if (instr_stall='0') then	-- check if a instruction stall is required. Stall if 1.
 					nextstate <= to_unsigned(1,5);		-- nextstate is the Instruction decode
 					output_buffer (1 downto 1)<= "1";	-- stage_control: stage1->stage2: xxx1x
 				else		-- instruction stall is required	
@@ -272,8 +280,7 @@ output: process (clk) is
 		currentstate <= nextstate;
 
 end process output;
-end process		
+		
 		
 end architecture behavioral;
-
 
