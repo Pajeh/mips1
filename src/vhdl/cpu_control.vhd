@@ -94,42 +94,8 @@ signal output_buffer: std_logic_vector(29 downto 0);
 
 -- FSM has 11 stages -> at least 5 bits
 signal fsm: std_logic_vector(4 downto 0):= b"00000";
-process (clk, rst) is
-	case fsm is
-		when 0 =>	-- Instruction fetch
-			output_buffer <= (others => '0');	-- reinitialize all to zero
-			
-		when 1 =>	-- Instruction Decode / Register fetch
-		when 2 =>	-- Memory address computation
-		when 3 =>	-- Execution
-		when 4 =>	-- Branch completion
-		when 5 =>	-- Jump Completion
-		when 6 =>	-- Memory access read
-		when 7 =>	-- Memory access write
-		when 8 =>	-- Writeback
-		when 9 =>	-- R-Type completion
-		when 10 =>	-- R-Type completion - Overflow
-		when 11 =>	-- Type I
 
-	end case;
-end process
 
-output: process (clk, rst) is
-	if (rst ='0') then output_buffer <=output_buffer <= (others => '0');	-- reinitialize all to zero does this outputs XXX?
-	else 	-- output_buffer is outputed
-		pc_mux<=output_buffer (29 downto 29);
-		regdest_mux<=output_buffer (28 downto 27);
-		regshift_mux<= output_buffer (26 downto 25);
-		enable_regs<= output_buffer (24 downto 24);
-		in_mux1<= output_buffer (23 downto 22);
-		in_mux2<=output_buffer (21 downto 20);
-		in_alu_instruction<= output_buffer (19 downto 14);
-		mux_decision<=output_buffer (13 downto 13);
-		rd_mask <= output_buffer (12 downto 9);
-		wr_mask<=  output_buffer (8 downto 5);
-pipeline_reg<= output_buffer (4 downto 0);
 
-	end if;
-end process output;
 	
 end architecture structure_cpu_control;
