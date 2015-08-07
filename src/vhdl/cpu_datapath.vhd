@@ -182,18 +182,8 @@ end process;
 
 
 
-mux: process(in_mux_pc)
+mux: process(in_mux_pc, id_ip, if_ip)
   begin
-    --case in_mux_pc is
-      -- 0
-      --when '0' =>
-      --mux_pc_out <= ip_1;
-      -- 1
-      --when '1' =>
-      --mux_pc_out <= id_ip;
-      -- others
-      --when others => mux_pc_out <= (others => 'X');
-    --end case;
 	if (in_mux_pc = '1') then
 		mux_pc_out <= id_ip;
 	else
