@@ -34,6 +34,7 @@ architecture behav_tb_cpu_datapath of tb_cpu_datapath is
   signal test_id_regshift_mux       : std_logic_vector (1 downto 0);
   signal test_id_enable_regs        : std_logic;
   signal test_in_mux_pc             : std_logic;
+  signal test_stage_control	    : std_logic_vector (4 downto 0);
   
   -- ------ SIMULATION CONTROL ---------------
   signal sim_finish           : std_logic;
@@ -48,7 +49,7 @@ architecture behav_tb_cpu_datapath of tb_cpu_datapath is
   -- datapath
   u1_datapath: entity work.cpu_datapath(structure_cpu_datapath)
     PORT MAP(clk, rst, test_instr_addr, test_data_addr, test_instr_in, test_data_to_cpu, test_data_from_cpu, test_alu_op, test_exc_mux1, test_exc_mux2,
-		test_exc_alu_zero, test_memstg_mux, test_id_regdest_mux, test_id_regshift_mux, test_id_enable_regs, test_in_mux_pc);
+		test_exc_alu_zero, test_memstg_mux, test_id_regdest_mux, test_id_regshift_mux, test_id_enable_regs, test_in_mux_pc, test_stage_control);
 
 
   -- TEST PROCESS
@@ -58,9 +59,11 @@ architecture behav_tb_cpu_datapath of tb_cpu_datapath is
     sim_finish   <= '0';
     
 	rst <= '0';
+	test_stage_control <= b"11111";
         wait for 2*CLK_TIME;
-        rst <= '1';
+        rst <= '1';	
 	wait for CLK_TIME;
+	-- ADDI ==> Opcode: 0010_00 rs: 0_0001 rt: 0_0010 im: 0000_0000_0000_0001
 	test_instr_in <= b"0010_00_00_001_0_0010_0000_0000_0000_0001";
 	test_alu_op <= b"10_0000";
 	test_exc_mux1 <= b"10";
@@ -71,6 +74,7 @@ architecture behav_tb_cpu_datapath of tb_cpu_datapath is
 	test_id_enable_regs <= '0';
 	test_in_mux_pc <= '0';
     	wait for 5*CLK_TIME;
+    	-- SUB ==> Opcode: 0000_00 rs: 0_0010 rt: 0_0010 rd: 0_0011 func: 10_0010
 	test_instr_in <= b"000000_00010_00010_00011_00000100010";
 	test_alu_op <= b"10_0010";
 	test_exc_mux1 <= b"10";

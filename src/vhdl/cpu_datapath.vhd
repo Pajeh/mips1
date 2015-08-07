@@ -9,25 +9,34 @@ library IEEE;
 
 library WORK;
   use WORK.all;
+  
+  -- -- stage_control: --
+  -- to activate registers, set signal stage_control as follows:
+  -- stage0->stage1: xxxx1
+  -- stage1->stage2: xxx1x
+  -- stage2->stage3: xx1xx
+  -- stage3->stage4: x1xxx
+  -- stage4->stage5: 1xxxx
 
 entity cpu_datapath is
   port(
-      clk                   : in  std_logic;
-      rst                   : in  std_logic;
-      instr_addr            : out std_logic_vector(31 downto 0);
-      data_addr             : out std_logic_vector(31 downto 0);
-      instr_in              : in  std_logic_vector(31 downto 0);
-      data_to_cpu           : in  std_logic_vector(31 downto 0);
-      data_from_cpu         : out std_logic_vector(31 downto 0);
-      alu_op                : in  std_logic_vector(5 downto 0);
-      exc_mux1              : in  std_logic_vector(1 downto 0);
-      exc_mux2              : in  std_logic_vector(1 downto 0);
-      exc_alu_zero          : out std_logic_vector(0 downto 0);
-      memstg_mux            : in  std_logic;
-      id_regdest_mux        : in std_logic_vector (1 downto 0);
-      id_regshift_mux       : in std_logic_vector (1 downto 0);
-      id_enable_regs        : in std_logic;
-      in_mux_pc             : in std_logic
+      clk                   	: in  std_logic;
+      rst                   	: in  std_logic;
+      instr_addr            	: out std_logic_vector(31 downto 0);
+      data_addr             	: out std_logic_vector(31 downto 0);
+      instr_in              	: in  std_logic_vector(31 downto 0);
+      data_to_cpu           	: in  std_logic_vector(31 downto 0);
+      data_from_cpu         	: out std_logic_vector(31 downto 0);
+      alu_op            	: in  std_logic_vector(5 downto 0);
+      exc_mux1              	: in  std_logic_vector(1 downto 0);
+      exc_mux2              	: in  std_logic_vector(1 downto 0);
+      exc_alu_zero		: out std_logic_vector(0 downto 0);
+      memstg_mux        	: in  std_logic;
+      id_regdest_mux    	: in std_logic_vector (1 downto 0);
+      id_regshift_mux       	: in std_logic_vector (1 downto 0);
+      id_enable_regs		: in std_logic;
+      in_mux_pc             	: in std_logic;
+      stage_control		: in std_logic_vector (4 downto 0)
       
     );
 
@@ -121,7 +130,7 @@ stage0: process(clk, rst)
 begin
   if (rst = '0') then
     mux_out_0 <= (others => '0');
-  elsif (rising_edge(clk)) then
+  elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
     mux_out_0 <= mux_pc_out;
   end if;
 end process;
@@ -131,7 +140,7 @@ begin
   if (rst = '0') then
     instr_1 <= (others => '0');
     ip_1 <= (others => '0');
-  elsif (rising_edge(clk)) then
+  elsif ((rising_edge(clk)) and (stage_control (1 downto 1) = "1")) then
     instr_1 <= if_instr;
     ip_1 <= if_ip;
   end if;
@@ -146,7 +155,7 @@ begin
     regdest_2 <= (others => '0');
     imm_2 <= (others => '0');
     ip_2 <= (others => '0');
-  elsif (rising_edge(clk)) then
+  elsif ((rising_edge(clk)) and (stage_control (2 downto 2) = "1")) then
     shift_2 <= id_shift;
     reg_a_2 <= id_a;
     reg_b_2 <= id_b;
@@ -162,7 +171,7 @@ begin
     alu_result_3 <= (others => '0');
     data_3 <= (others => '0');
     regdest_3 <= (others => '0');
-  elsif (rising_edge(clk)) then
+  elsif ((rising_edge(clk)) and (stage_control (3 downto 3) = "1")) then
     alu_result_3 <= alu_result;
     data_3 <= data_out;
     regdest_3 <= exc_destreg_out;
@@ -174,7 +183,7 @@ begin
   if (rst = '0') then
     writeback_4 <= (others => '0');
     regdest_4 <= (others => '0');
-  elsif (rising_edge(clk)) then
+  elsif ((rising_edge(clk)) and (stage_control (4 downto 4) = "1")) then
     writeback_4 <= memstg_writeback_out;
     regdest_4 <= memstg_destreg_out;
   end if;
