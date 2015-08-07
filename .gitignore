@@ -55,3 +55,6 @@
 *.mtc1
 *.out
 *.synctex.gz
+
+# VHDL files
+*.vhd~
