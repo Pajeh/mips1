@@ -52,27 +52,6 @@ PORT (
 
 
 end entity cpu_control;
--- Finite State Machine for the CPU Control
-
--- The reference program needs the following assembly commands:
--- 	lui	-- Load upper immediate:	0011 11
--- 	addiu	-- Add immediate unsigned 	0010 01
--- 	j	-- Jumps 			0000 10
--- 	lw	-- Load word			1000 11
--- 	nop	-- Performs no operation.	0000 00
--- 	sb	-- Store byte			1010 00
--- 	sw	-- Store word			1010 11
--- 	slti	-- Set on less than immediate (signed)	0010 10
--- 	beqz	-- Branch on equal		0001 00
--- 	bnez	-- Branch on greater than or equal to zero	0001 01
--- 	lbu	-- Load byte unsigned		1001 00
--- 	andi	-- And Immediate		0011 00		
--- 	jalx	--  Jump and Link Exchange	0111 01
-
-
-
-
--- 
 architecture structure_cpu_control of cpu_control is
 
 begin
