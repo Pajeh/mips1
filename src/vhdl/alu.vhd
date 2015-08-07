@@ -16,6 +16,8 @@ library WORK;
 -- SUB ==> 10_0010
 -- AND ==> 10_0100
 -- OR ==> 10_0101
+-- result <= reg_a ==> 00_0001
+-- result <= reg_b ==> 00_0010
 
 entity alu is
 
@@ -57,6 +59,10 @@ begin
     -- or
     when b"10_0101" =>    
     r_uns := std_logic_vector(unsigned(a_uns) OR unsigned(b_uns));
+    when b"00_0001" =>    
+    r_uns := std_logic_vector(unsigned(a_uns));
+    when b"00_0010" =>    
+    r_uns := std_logic_vector(unsigned(b_uns));
     -- others
     when others => r_uns := (others => 'X');
     end case;
