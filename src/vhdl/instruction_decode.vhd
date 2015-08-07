@@ -6,6 +6,7 @@
 -- 2015-08-05	Lukas Jaeger	 added functionality for branch logic
 -- 2015-08-06	Lukas, Carlos 	 fixed bug in JAL-instruction-decode
 -- 2015-08-06	Lukas		 added signed/unsigned logic for immediate-output
+-- 2015-08-07	Lukas		 added signed/unsigned exceptions for LW-instructions
 library IEEE;
     use IEEE.std_logic_1164.all;
 	use IEEE.numeric_std.all;
@@ -81,7 +82,9 @@ begin
                 	register_file(i) <= x"00000000";
             	end loop;
         	elsif (clk = '1') and (enable_regs = '1') then  -- If register file is enabled, write back result
-            		register_file(to_integer(unsigned (writeback_reg))) <= writeback;
+			if (to_integer(unsigned (writeback_reg)) > 0) then
+            			register_file(to_integer(unsigned (writeback_reg))) <= writeback;
+			end if;
 		elsif (clk = '1') and (internal_wb_flag = '1') then
 			register_file (31) <= internal_writeback;
         	end if;
@@ -115,18 +118,25 @@ begin
 			else 
 				ip_out <= register_file(to_integer(unsigned (instr (25 downto 21))));
 			end if;
+                elsif (instr(31 downto 26) = "000001" and (instr (20) = '1')) then -- Branch something and link
+                        internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
+                        internal_wb_flag <= '1';
+                        offset := to_integer(signed(instr(15 downto 0)));
+			offset := offset * 4;
+			offset := offset + to_integer (unsigned(ip_in));
+			ip_out <= std_logic_vector(to_signed(offset,32));
 		else -- Branch instruction of any kind
 			internal_wb_flag <= '0';
 			offset := to_integer(signed(instr(15 downto 0)));
 			offset := offset * 4;
-				offset := offset + to_integer (unsigned(ip_in));
+			offset := offset + to_integer (unsigned(ip_in));
 			ip_out <= std_logic_vector(to_signed(offset,32));
 		end if;
 	end process;
 
 	imm_expand : process (instr) is
 	begin
-		if (instr (26) = '1') then	-- unsigned op
+		if ((instr (26) = '1') and (instr(31 downto 26) /= "100011")) then	-- unsigned op with LW-exception
 			imm <= X"0000" & instr (15 downto 0);
 		else				-- signed op
 			imm <= std_logic_vector(to_signed(to_integer(signed (instr (15 downto 0))),32));
@@ -145,7 +155,7 @@ end architecture;
 --
 -- regshift_mux:
 -- 00: if instruction is of R-type
--- 01: if shift must be 16 (No idea, which instruction uses that...)
+-- 01: if shift must be 16 (No idea which instruction uses that...)
 -- 10: if you like non-deterministic behaviour
 -- 11: if you love non-deterministic behaviour
 --

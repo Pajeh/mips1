@@ -60,9 +60,9 @@ begin
     when b"10_0101" =>    
     r_uns := std_logic_vector(unsigned(a_uns) OR unsigned(b_uns));
     when b"00_0001" =>    
-    r_uns := std_logic_vector(unsigned(a_uns));
+    r_uns := a_uns;
     when b"00_0010" =>    
-    r_uns := std_logic_vector(unsigned(b_uns));
+    r_uns := b_uns;
     -- others
     when others => r_uns := (others => 'X');
     end case;
