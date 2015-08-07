@@ -12,11 +12,11 @@ library WORK;
   
   -- -- stage_control: --
   -- to activate registers, set signal stage_control as follows:
-  -- stage0->stage1: 00001
-  -- stage1->stage2: 00010
-  -- stage2->stage3: 00100
-  -- stage3->stage4: 01000
-  -- stage4->stage5: 10000
+  -- stage0->stage1: xxxx1
+  -- stage1->stage2: xxx1x
+  -- stage2->stage3: xx1xx
+  -- stage3->stage4: x1xxx
+  -- stage4->stage5: 1xxxx
 
 entity cpu_datapath is
   port(
@@ -130,7 +130,7 @@ stage0: process(clk, rst)
 begin
   if (rst = '0') then
     mux_out_0 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"00001")) then
+  elsif ((rising_edge(clk)) and (stage_control = b"XXXX1")) then
     mux_out_0 <= mux_pc_out;
   end if;
 end process;
@@ -140,7 +140,7 @@ begin
   if (rst = '0') then
     instr_1 <= (others => '0');
     ip_1 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"00010")) then
+  elsif ((rising_edge(clk)) and (stage_control = b"XXX1X")) then
     instr_1 <= if_instr;
     ip_1 <= if_ip;
   end if;
@@ -155,7 +155,7 @@ begin
     regdest_2 <= (others => '0');
     imm_2 <= (others => '0');
     ip_2 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"00100")) then
+  elsif ((rising_edge(clk)) and (stage_control = b"XX1XX")) then
     shift_2 <= id_shift;
     reg_a_2 <= id_a;
     reg_b_2 <= id_b;
@@ -171,7 +171,7 @@ begin
     alu_result_3 <= (others => '0');
     data_3 <= (others => '0');
     regdest_3 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"01000")) then
+  elsif ((rising_edge(clk)) and (stage_control = b"X1XXX")) then
     alu_result_3 <= alu_result;
     data_3 <= data_out;
     regdest_3 <= exc_destreg_out;
@@ -183,7 +183,7 @@ begin
   if (rst = '0') then
     writeback_4 <= (others => '0');
     regdest_4 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"10000")) then
+  elsif ((rising_edge(clk)) and (stage_control = b"1XXXX")) then
     writeback_4 <= memstg_writeback_out;
     regdest_4 <= memstg_destreg_out;
   end if;
