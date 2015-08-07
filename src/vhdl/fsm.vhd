@@ -96,6 +96,51 @@ library WORK;
 
 
 
+-- --------------------------------------  --
+-- Instruction:			   --
+-- --------------------------------------  --
+
+
+-- The reference program needs the following assembly commands:
+-- 	lui	-- Load upper immediate:	0011 11
+-- 	addiu	-- Add immediate unsigned 	0010 01
+-- 	j	-- Jumps 			0000 10
+-- 	lw	-- Load word			1000 11
+-- 	nop	-- Performs no operation.	0000 00
+-- 	sb	-- Store byte			1010 00
+-- 	sw	-- Store word			1010 11
+-- 	slti	-- Set on less than immediate (signed)	0010 10
+-- 	beqz	-- Branch on equal		0001 00
+-- 	bnez	-- Branch on greater than or equal to zero	0001 01
+-- 	lbu	-- Load byte unsigned		1001 00
+-- 	andi	-- And Immediate		0011 00		
+-- 	jalx	--  Jump and Link Exchange	0111 01
+
+--	Arithmetic	--
+constant addiu :std_logic_vector(5 downto 0):= "0010_01";	-- Type I
+--	Data Transfer	--
+constant lui :std_logic_vector(5 downto 0):= "0011_11";	-- Type I	-Register access
+constant lbu :std_logic_vector(5 downto 0):= "1001_00";	-- Type I	-Memory access
+constant lw :std_logic_vector(5 downto 0):= "1000_11";	-- Type I	-Memory access
+constant sb :std_logic_vector(5 downto 0):= "101000";	-- Type I	-Memory access
+constant sw :std_logic_vector(5 downto 0):= "101011";	-- Type I	-Memory access
+--	Logical	--
+constant slti :std_logic_vector(5 downto 0):= "001010";	-- Type I
+constant andi :std_logic_vector(5 downto 0):= "0011_00";	-- Type I
+constant nop :std_logic_vector(5 downto 0):= "0000_00";		-- Type R	-NOP is read as sll $0,$0,0
+--	Bitwise Shift	--
+--	Conditional branch	--
+constant beqz :std_logic_vector(5 downto 0):= "000100";	-- Type I
+constant bnez :std_logic_vector(5 downto 0):= "000101";	-- Type I
+--	Unconditional jump	--
+constant j :std_logic_vector(5 downto 0):= "0000_10";	-- Type J
+constant jalx :std_logic_vector(5 downto 0):= "0011_01";	-- Type J
+
+
+
+
+
+
 
 
 entity FSM is
@@ -142,21 +187,6 @@ end entity FSM;
 
 
 
--- The reference program needs the following assembly commands:
--- 	lui	-- Load upper immediate:	0011 11
--- 	addiu	-- Add immediate unsigned 	0010 01
--- 	j	-- Jumps 			0000 10
--- 	lw	-- Load word			1000 11
--- 	nop	-- Performs no operation.	0000 00
--- 	sb	-- Store byte			1010 00
--- 	sw	-- Store word			1010 11
--- 	slti	-- Set on less than immediate (signed)	0010 10
--- 	beqz	-- Branch on equal		0001 00
--- 	bnez	-- Branch on greater than or equal to zero	0001 01
--- 	lbu	-- Load byte unsigned		1001 00
--- 	andi	-- And Immediate		0011 00		
--- 	jalx	--  Jump and Link Exchange	0111 01
-
 architecture behavioral of FSM is
 
 -- output_buffer is a register with all control outputs of the state machine:
@@ -191,7 +221,13 @@ process (rst) is
 				end if;
 				
 			when 1 =>	-- Instruction Decode / Register fetch
-				
+				case instr (31 downto 26) is	-- decide path depending on the opcode (6 MSB of instr)
+					when lbu |lw|sb|sw =>	-- Memory accesses
+					when nop =>		-- Type R
+					when j|jalx2 =>		-- Type J
+					when beqz|bnez =>	-- BEQ - branch on equal
+					when others =>  	-- Others
+				end case;
 			when 2 =>	-- Memory address computation
 			when 3 =>	-- Execution
 			when 4 =>	-- Branch completion
