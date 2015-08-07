@@ -1,0 +1,198 @@
+\documentclass[oneside,colorback,accentcolor=tud4c,11pt,big chapter]{tudreport}
+ \renewcommand{\baselinestretch}{1.0}\normalsize
+
+
+%---- Laden der Pakete  ----%
+\usepackage[stable]{footmisc}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+
+%Standardpakete
+\usepackage[utf8,utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel} 
+\usepackage{subcaption}
+
+%Matheumgebung
+\usepackage{amsmath}
+
+%Bilder und Bildunterschriften
+\usepackage{graphicx}
+\usepackage[section]{placeins}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{transparent}
+\usepackage{epstopdf}
+ 
+%Tabellen
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{multirow}
+
+%Querverweise und Literaturverzeichnis
+\usepackage{hyperref}
+%\usepackage[pagebackref]{hyperref}
+\usepackage[ngerman,compress]{cleveref}
+\usepackage{breakurl,url}
+\usepackage[numbers,comma,compress]{natbib} %bei bibliographystyle{natdin} noetig
+
+\usepackage{braket}
+%Farben
+\usepackage{color}
+\usepackage{transparent}
+\usepackage{epstopdf}
+
+%physikalische und chemische Extras und Einheiten
+\usepackage{upgreek}
+\usepackage{siunitx}
+\sisetup{redefine-symbols=false}
+\usepackage{nicefrac}
+
+  \usepackage{multirow} 
+  \usepackage{pgfplots}
+  \usepackage{multicol} 
+  \usepackage{circuitikz}
+  \usepackage{tikz}
+  \usepackage{graphicx}
+  %\usetikzlibrary{shapes.arrows,chains}
+  \usetikzlibrary{pgfplots.groupplots}
+  \usepackage{lscape} % stellenweises Querformat
+  \usepackage{verbatim}
+  \usepackage{enumitem} 
+  \usepackage{dcolumn}%D{,}{,}{Nachkommastellen}
+
+
+%sonstiges
+\usepackage{xspace} %Leerzeichen an Makroenden, falls noetig
+
+%spezielle Symbole
+\usepackage{bbm} % fuer mathbbm{1}
+
+%Einstellungen%
+\newlength{\longtablewidth}
+\setlength{\longtablewidth}{0.675\linewidth}
+
+
+
+
+
+
+
+
+\usepackage{tikz}
+%\usepackage{euler}                                %Nicer numbers
+
+
+
+
+
+
+%---- Titel ----%
+\title{MIPS 1 in VHDL}
+
+\subtitle{HDL Lab - SS 2015}
+
+\subsubtitle{Bahri Enis Demirtel, Carlos Minamisava Faria,  Lukas Jäger,  Patrick Appenheimer }
+
+%\lowertitleback{\textaccent{}\hfill\today}
+
+\institution{Fachbereich Elektrotechnik und Informationstechnik  \\
+    Fachgebiet Integrated Electronic \\Systems Lab}
+
+    
+    
+\usepgfplotslibrary{polar}
+    
+    
+    % Linienstyle für Diagramme. Variieren sowohl in Farbe als auch Linienstil damit s/w-Druck ohne weiteres möglich
+  \pgfplotscreateplotcyclelist{tudLinestyles}{
+	{solid,black,thick},
+	{densely dashed,tud1b, very thick},
+	{densely dotted,tud9b,very thick},
+	{loosely dashed,tud3b,very thick},
+	{dotted,tud11b,very thick},
+	{solid,tud5b,thick},
+	{densely dashed,tud7b,very thick},
+	{densely dotted,tud4b,very thick},
+	{loosely dashed,tud6b,very thick},
+	{dotted,tud10b,very thick},
+	{solid,tud2b,thick},
+}
+\pgfplotscreateplotcyclelist{tudLinestylessmooth}{
+	{smooth,solid,black,thick},
+	{smooth,densely dashed,tud1b, very thick},
+	{smooth,densely dotted,tud9b,very thick},
+	{smooth,loosely dashed,tud3b,very thick},
+	{smooth,dotted,tud11b,very thick},
+	{smooth,solid,tud5b,thick},
+	{smooth,densely dashed,tud7b,very thick},
+	{smooth,densely dotted,tud4b,very thick},
+	{smooth,loosely dashed,tud6b,very thick},
+	{smooth,dotted,tud10b,very thick},
+	{smooth,solid,tud2b,thick},
+}
+
+\pgfplotscreateplotcyclelist{tudLinestylessmooth2}{
+	{smooth,densely dashed,black,thick},
+	{smooth,densely dotted,tud1b, very thick},
+	{smooth,densely dotted,tud9b,very thick},
+	{smooth,loosely dashed,tud3b,very thick},
+	{smooth,dotted,tud11b,very thick},
+	{smooth,solid,tud5b,thick},
+	{smooth,densely dashed,tud7b,very thick},
+	{smooth,densely dotted,tud4b,very thick},
+	{smooth,loosely dashed,tud6b,very thick},
+	{smooth,dotted,tud10b,very thick},
+	{smooth,solid,tud2b,thick},
+}
+
+
+\pgfplotscreateplotcyclelist{tudLinestylesColor}{
+	{solid,tud9b,thick},
+	{densely dashed,tud3b, very thick},
+	{densely dotted,tud1b,very thick},
+	{loosely dashed,black,very thick},
+	{dotted,tud11b,very thick},
+	{solid,tud5b,thick},
+	{densely dashed,tud7b,very thick},
+	{densely dotted,tud4b,very thick},
+	{loosely dashed,tud6b,very thick},
+	{dotted,tud10b,very thick},
+	{solid,tud2b,thick},
+}
+
+%---- Dokument ----%
+\begin{document}
+\pagenumbering{roman}  
+\maketitle
+
+
+%---- Inhaltsverzeichniss ----%  
+\tableofcontents
+\newpage
+\pagenumbering{arabic} 
+
+%---- Bildverzeichnis ----% 
+%\listoffigures 
+%\addcontentsline{toc}{chapter}{\listfigurename}
+
+%\setcounter{chapter}{-1}
+
+\include{Introduction}
+
+\chapter{Design}
+% input Design sections for no auto new page
+	\input{ALU}
+	\input{Datapath}
+	\input{Controlpath}
+
+\include{Evaluation}
+\include{Synthesis}
+\include{Conclusion}
+
+\end{document}
