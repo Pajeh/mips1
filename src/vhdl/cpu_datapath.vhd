@@ -30,11 +30,11 @@ entity cpu_datapath is
       alu_op            	: in  std_logic_vector(5 downto 0);
       exc_mux1              	: in  std_logic_vector(1 downto 0);
       exc_mux2              	: in  std_logic_vector(1 downto 0);
-      exc_alu_zer		: out std_logic_vector(0 downto 0);
+      exc_alu_zero		: out std_logic_vector(0 downto 0);
       memstg_mux        	: in  std_logic;
       id_regdest_mux    	: in std_logic_vector (1 downto 0);
       id_regshift_mux       	: in std_logic_vector (1 downto 0);
-      id_enable_reg		: in std_logic;
+      id_enable_regs		: in std_logic;
       in_mux_pc             	: in std_logic;
       stage_control		: in std_logic_vector (4 downto 0)
       
@@ -130,7 +130,7 @@ stage0: process(clk, rst)
 begin
   if (rst = '0') then
     mux_out_0 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"XXXX1")) then
+  elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
     mux_out_0 <= mux_pc_out;
   end if;
 end process;
@@ -140,7 +140,7 @@ begin
   if (rst = '0') then
     instr_1 <= (others => '0');
     ip_1 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"XXX1X")) then
+  elsif ((rising_edge(clk)) and (stage_control (1 downto 1) = "1")) then
     instr_1 <= if_instr;
     ip_1 <= if_ip;
   end if;
@@ -155,7 +155,7 @@ begin
     regdest_2 <= (others => '0');
     imm_2 <= (others => '0');
     ip_2 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"XX1XX")) then
+  elsif ((rising_edge(clk)) and (stage_control (2 downto 2) = "1")) then
     shift_2 <= id_shift;
     reg_a_2 <= id_a;
     reg_b_2 <= id_b;
@@ -171,7 +171,7 @@ begin
     alu_result_3 <= (others => '0');
     data_3 <= (others => '0');
     regdest_3 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"X1XXX")) then
+  elsif ((rising_edge(clk)) and (stage_control (3 downto 3) = "1")) then
     alu_result_3 <= alu_result;
     data_3 <= data_out;
     regdest_3 <= exc_destreg_out;
@@ -183,7 +183,7 @@ begin
   if (rst = '0') then
     writeback_4 <= (others => '0');
     regdest_4 <= (others => '0');
-  elsif ((rising_edge(clk)) and (stage_control = b"1XXXX")) then
+  elsif ((rising_edge(clk)) and (stage_control (4 downto 4) = "1")) then
     writeback_4 <= memstg_writeback_out;
     regdest_4 <= memstg_destreg_out;
   end if;
