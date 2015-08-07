@@ -1,7 +1,7 @@
 -- Revision history:
 -- 07.08.2015	Carlos Minamisava Faria	created 
 -- 07.08.2015	Carlos Minamisava Faria	entity 
--- 07.08.2015	Carlos Minamisava Faria	state machine states definition 
+-- 07.08.2015	Carlos Minamisava Faria	moore state machine states definition 
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -10,6 +10,23 @@ library IEEE;
 library WORK;
   use WORK.all;  
 
+
+-- --------------------------------------  --
+-- FSM-Moore State Machine:			   --
+-- --------------------------------------  --
+--	current state
+--	when 0 =>	-- Instruction fetch
+--	when 1 =>	-- Instruction Decode / Register fetch
+--	when 2 =>	-- Memory address computation
+--	when 3 =>	-- Execution
+--	when 4 =>	-- Branch completion
+--	when 5 =>	-- Jump Completion
+--	when 6 =>	-- Memory access read
+--	when 7 =>	-- Memory access write
+--	when 8 =>	-- Writeback
+--	when 9 =>	-- R-Type completion
+--	when 10 =>	-- R-Type completion - Overflow
+--	when 11 =>	-- Type I
 
 -- --------------------------------------  --
 -- FSM-signal-Howto:			   --
@@ -68,6 +85,19 @@ library WORK;
   -- stage2->stage3: xx1xx
   -- stage3->stage4: x1xxx
   -- stage4->stage5: 1xxxx
+
+  -- stage0: PC
+  -- stage1: Instruction Fetch
+  -- stage2: Instr. Decode 
+  -- stage3: Execution
+  -- stage4: Memory Stage 
+  -- stage5: Writeback
+
+
+
+
+
+
 entity FSM is
 PORT ( 
 	-- General Signals
@@ -110,9 +140,26 @@ PORT (
 )
 end entity FSM;
 
+
+
+-- The reference program needs the following assembly commands:
+-- 	lui	-- Load upper immediate:	0011 11
+-- 	addiu	-- Add immediate unsigned 	0010 01
+-- 	j	-- Jumps 			0000 10
+-- 	lw	-- Load word			1000 11
+-- 	nop	-- Performs no operation.	0000 00
+-- 	sb	-- Store byte			1010 00
+-- 	sw	-- Store word			1010 11
+-- 	slti	-- Set on less than immediate (signed)	0010 10
+-- 	beqz	-- Branch on equal		0001 00
+-- 	bnez	-- Branch on greater than or equal to zero	0001 01
+-- 	lbu	-- Load byte unsigned		1001 00
+-- 	andi	-- And Immediate		0011 00		
+-- 	jalx	--  Jump and Link Exchange	0111 01
+
 architecture behavioral of FSM is
 
--- output_buffer code:
+-- output_buffer is a register with all control outputs of the state machine:
 -- output_buffer (29 downto 29): pc_mux: out std_logic;
 -- output_buffer (28 downto 27): regdest_mux, 
 -- output_buffer (26 downto 25): regshift_mux: out std_logic_vector (1 downto 0);
@@ -123,30 +170,51 @@ architecture behavioral of FSM is
 -- output_buffer (13 downto 13): mux_decision: out std_logic;	
 -- output_buffer (12 downto 9): rd_mask                 : out std_logic_vector(3  downto 0);
 -- output_buffer (8 downto 5): wr_mask                 : out std_logic_vector(3  downto 0);
--- output_buffer (4 downto 0): pipeline_reg: out std_logic_vector(4  downto 0);		
-signal output_buffer: std_logic_vector(29 downto 0);
-	begin
-process (clk, rst) is
-	case fsm is
-		when 0 =>	-- Instruction fetch
-			output_buffer <= (others => '0');	-- reinitialize all to zero
-			
-		when 1 =>	-- Instruction Decode / Register fetch
-		when 2 =>	-- Memory address computation
-		when 3 =>	-- Execution
-		when 4 =>	-- Branch completion
-		when 5 =>	-- Jump Completion
-		when 6 =>	-- Memory access read
-		when 7 =>	-- Memory access write
-		when 8 =>	-- Writeback
-		when 9 =>	-- R-Type completion
-		when 10 =>	-- R-Type completion - Overflow
-		when 11 =>	-- Type I
+-- output_buffer (4 downto 0): stage_control : out std_logic_vector(4  downto 0);		
+signal output_buffer: std_logic_vector(29 downto 0):=(others => '0');
 
-	end case;
-	output: process (clk, rst) is
-	if (rst ='0') then output_buffer <=output_buffer <= (others => '0');	-- reinitialize all to zero does this outputs XXX?
-	else 	-- output_buffer is outputed
+signal currentstate: std_logic_vector(4 downto 0):= (others => '0') ;
+signal nexstate: std_logic_vector(4 downto 0):(others => '0') ;
+	begin
+process (rst) is
+	if (rst ='1') then			-- if no reset
+		case currentstate is
+			when 0 =>	-- Instruction fetch
+				output_buffer <= (others => '0');	-- reinitialize all to zero
+
+				if (instr_stall='0')	-- check if a instruction stall is required. Stall if 1.
+					nextstate <= to_unsigned(1,5);		-- nextstate is the Instruction decode
+					output_buffer (1 downto 1)<= "1";	-- stage_control: stage1->stage2: xxx1x
+				else		-- instruction stall is required	
+					nextstate <= to_unsigned(0,5);	-- stay on this stage if stall is required
+					output_buffer (1 downto 1)<= "1";	-- stage_control: stage1->stage2: xxx1x
+				end if;
+				
+			when 1 =>	-- Instruction Decode / Register fetch
+				
+			when 2 =>	-- Memory address computation
+			when 3 =>	-- Execution
+			when 4 =>	-- Branch completion
+			when 5 =>	-- Jump Completion
+			when 6 =>	-- Memory access read
+			when 7 =>	-- Memory access write
+			when 8 =>	-- Writeback
+			when 9 =>	-- R-Type completion
+			when 10 =>	-- R-Type completion - Overflow
+			when 11 =>	-- Type I
+
+		end case;
+
+	
+	else		-- if a  reset was activated, all outputs and internal registers are reseted
+		output_buffer <= (others => '0');	-- reinitialize all to zero
+		currentstate <= to_unsigned(0,5);
+		nextstate <= to_unsigned(0,5);
+	end if;
+end process;
+
+output: process (clk) is
+	 	-- output_buffer is outputed
 		pc_mux<=output_buffer (29 downto 29);
 		regdest_mux<=output_buffer (28 downto 27);
 		regshift_mux<= output_buffer (26 downto 25);
@@ -157,9 +225,10 @@ process (clk, rst) is
 		mux_decision<=output_buffer (13 downto 13);
 		rd_mask <= output_buffer (12 downto 9);
 		wr_mask<=  output_buffer (8 downto 5);
-pipeline_reg<= output_buffer (4 downto 0);
+		stage_control <= output_buffer (4 downto 0);
 
-	end if;
+		currentstate <= nextstate;
+
 end process output;
 end process		
 		
