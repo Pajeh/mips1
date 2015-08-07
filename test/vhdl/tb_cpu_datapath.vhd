@@ -157,18 +157,59 @@ architecture behavioural of tb_cpu_datapath is
 		-- imm_2: FFFF8010
 		-- regdest_2: 02
 		-- alu_result_3: 000000a2
+		-- regdest_3: 1D
 		instr_in <= x"00000000";	-- Instruction 6: NOP
 		-- Instruction 5 finishes decode stage, still immediate type, nothing to do
 		-- Instruction 4 finishes execution stage
 		exc_mux2 <= "01";
 		alu_op <="000010";
-		-- Instruction 3 finishes writeback stage:
+		-- Instruction 3 finishes memory stage:
 		id_enable_regs <= '1';
 		wait for clk_time;
-		
-		
 
+		-- To test:
+		-- reg_a_2 : 00000000
+		-- ieg_b_2 : 00000000
+		-- reg_shift_2: 00000
+		-- regdest_2 : 00000
+		-- imm_2 : 00000000
+		-- regdest_3 : 02
+		-- alu_result_3 : FFFF8011
+		-- regdest_4 : 1D
+		-- writeback_4 : 000000a2
+		instr_in <= x"a0400000";	-- Instruction 7: SB $zero,0($v0)
+		-- Instruction 6 finishes decode stage
+		id_regdest_mux <= "00";
+		id_regshift_mux <= "00";
+		-- Instruction 5 finishes execution stage
+		exc_mux1 <= "10";
+		exc_mux2 <= "01";
+		alu_op <= "100000";
+		-- Instruction 4 finishes memory stage, nothing to do
+		-- Instruction 3 finishes writeback stage
+		id_enable_regs <= '0';
+		wait for clk_time;
 
+		-- To test:
+		-- regdest_2 : 00
+		-- imm_2 : 00000000
+		-- reg_a: 11382187
+		-- regdest_3 : 00
+		-- alu_result_3 : 00000000
+		-- writeback_4 : 11382187
+		-- regdest_4 : 02;
+		instr_in <= x"af80800c";	-- Instruction 8: SW $zero,-32756($gp)
+		-- Instruction 7 finishes decode stage
+		id_regdest_mux <= "10";
+		-- Instruction 6 finishes execution stage
+		exc_mux2 <= "00";
+		-- Instruction 5 finishes memory stage
+		memstg_mux <= '0';
+		data_to_cpu <= x"11382187";
+		id_enable_regs <= '1';
+		wait for clk_time;
+				
+		
             
         end process;
     end architecture;
