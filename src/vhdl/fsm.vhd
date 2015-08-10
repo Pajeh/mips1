@@ -168,17 +168,17 @@ architecture behavioral of FSM is
 
 --      State Machine   --
   constant s0    : std_logic_vector(5 downto 0) := b"00000";
-  constant s1    : std_logic_vector(5 downto 0) := b"00000";
-  constant s2    : std_logic_vector(5 downto 0) := b"00000";
-  constant s3    : std_logic_vector(5 downto 0) := b"00000";
-  constant s4    : std_logic_vector(5 downto 0) := b"00000";
-  constant s5    : std_logic_vector(5 downto 0) := b"00000";
-  constant s6    : std_logic_vector(5 downto 0) := b"00000";
-  constant s7    : std_logic_vector(5 downto 0) := b"00000";
-  constant s8    : std_logic_vector(5 downto 0) := b"00000";
-  constant s9    : std_logic_vector(5 downto 0) := b"00000";
-  constant s10   : std_logic_vector(5 downto 0) := b"00000";
-  constant s11   : std_logic_vector(5 downto 0) := b"00000";
+  constant s1    : std_logic_vector(5 downto 0) := b"00001";
+  constant s2    : std_logic_vector(5 downto 0) := b"00010";
+  constant s3    : std_logic_vector(5 downto 0) := b"00011";
+  constant s4    : std_logic_vector(5 downto 0) := b"00100";
+  constant s5    : std_logic_vector(5 downto 0) := b"00101";
+  constant s6    : std_logic_vector(5 downto 0) := b"00110";
+  constant s7    : std_logic_vector(5 downto 0) := b"00111";
+  constant s8    : std_logic_vector(5 downto 0) := b"01000";
+  constant s9    : std_logic_vector(5 downto 0) := b"01001";
+  constant s10   : std_logic_vector(5 downto 0) := b"01010";
+  constant s11   : std_logic_vector(5 downto 0) := b"01011";
 --      Arithmetic      --
   constant addiu : std_logic_vector(5 downto 0) := b"0010_01";  -- Type I
 --      Data Transfer   --
