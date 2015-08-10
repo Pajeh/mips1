@@ -3,6 +3,7 @@
 -- 07.08.2015   Carlos Minamisava Faria     entity 
 -- 07.08.2015   Carlos Minamisava Faria     moore state machine states definition 
 -- 10.08.2015   Carlos Minamisava Faria & Patrick Appenheimer     Instructions added 
+-- 10.08.2015   Patrick Appenheimer         bugfixes 
 
 library IEEE;
 use IEEE.std_logic_1164.all;
@@ -167,18 +168,18 @@ architecture behavioral of FSM is
 
 
 --      State Machine   --
-  constant s0    : std_logic_vector(5 downto 0) := b"00000";
-  constant s1    : std_logic_vector(5 downto 0) := b"00001";
-  constant s2    : std_logic_vector(5 downto 0) := b"00010";
-  constant s3    : std_logic_vector(5 downto 0) := b"00011";
-  constant s4    : std_logic_vector(5 downto 0) := b"00100";
-  constant s5    : std_logic_vector(5 downto 0) := b"00101";
-  constant s6    : std_logic_vector(5 downto 0) := b"00110";
-  constant s7    : std_logic_vector(5 downto 0) := b"00111";
-  constant s8    : std_logic_vector(5 downto 0) := b"01000";
-  constant s9    : std_logic_vector(5 downto 0) := b"01001";
-  constant s10   : std_logic_vector(5 downto 0) := b"01010";
-  constant s11   : std_logic_vector(5 downto 0) := b"01011";
+  constant s0    : std_logic_vector(4 downto 0) := b"00000";
+  constant s1    : std_logic_vector(4 downto 0) := b"00001";
+  constant s2    : std_logic_vector(4 downto 0) := b"00010";
+  constant s3    : std_logic_vector(4 downto 0) := b"00011";
+  constant s4    : std_logic_vector(4 downto 0) := b"00100";
+  constant s5    : std_logic_vector(4 downto 0) := b"00101";
+  constant s6    : std_logic_vector(4 downto 0) := b"00110";
+  constant s7    : std_logic_vector(4 downto 0) := b"00111";
+  constant s8    : std_logic_vector(4 downto 0) := b"01000";
+  constant s9    : std_logic_vector(4 downto 0) := b"01001";
+  constant s10   : std_logic_vector(4 downto 0) := b"01010";
+  constant s11   : std_logic_vector(4 downto 0) := b"01011";
 --      Arithmetic      --
   constant addiu : std_logic_vector(5 downto 0) := b"0010_01";  -- Type I
 --      Data Transfer   --
@@ -190,7 +191,7 @@ architecture behavioral of FSM is
 --      Logical --
   constant slti  : std_logic_vector(5 downto 0) := b"001010";  -- Type I
   constant andi  : std_logic_vector(5 downto 0) := b"0011_00";  -- Type I
-  constant nop   : std_logic_vector(5 downto 0) := b"0000_00";  -- Type R       -NOP is read as sll $0,$0,0
+  constant shift : std_logic_vector(5 downto 0) := b"0000_00";  -- Type R       -NOP is read as sll $0,$0,0
 --      Bitwise Shift   --
 --      Conditional branch      --
   constant beqz  : std_logic_vector(5 downto 0) := b"000100";  -- Type I
@@ -215,38 +216,41 @@ architecture behavioral of FSM is
 -- output_buffer (8 downto 5):   wr_mask                 : out std_logic_vector(3  downto 0);
 -- output_buffer (4 downto 0):   stage_control : out std_logic_vector(4  downto 0);               
   signal output_buffer : std_logic_vector(29 downto 0) := (others => '0');
-
+  signal opcode : std_logic_vector(5 downto 0);
   signal currentstate : std_logic_vector(4 downto 0)  := (others => '0');
   signal nextstate    : std_logic_vector(4 downto 0)  := (others => '0');
   signal instruction  : std_logic_vector(31 downto 0) := (others => '0');
 begin
-
+  
 -- purpose: set output buffer on instruction input
 -- type   : combinational
 -- inputs : instr
 -- outputs: output_buffer
-  instruction : process (instr) is
+  set_output_buffer : process (instr) is
   begin  -- process instruction
+    opcode <= instr (31 downto 26);
     case instr (31 downto 26) is
-      when lui    => output_buffer <= 0b"0_10_01_1_00_01_000100_0_0000_0000_11111";
-      when addiu  => output_buffer <= 0b"0_10_00_1_10_01_100000_0_0000_0000_11111";
-      when lbu    => output_buffer <= 0b"0_10_00_1_10_01_100000_1_0001_0000_11111";
-      when lw     => output_buffer <= 0b"0_10_00_1_10_01_100000_1_1111_0000_11111";
-      when sb     => output_buffer <= 0b"0_10_00_0_10_01_100000_0_0001_0000_11111";
-      when sw     => output_buffer <= 0b"0_10_00_0_10_01_100000_0_1111_0000_11111";
-      when slti   => output_buffer <= 0b"0_10_00_1_10_01_001000_0_0000_0000_11111";
-      when andi   => output_buffer <= 0b"0_10_01_1_00_01_100100_0_0000_0000_11111";
-      when sll    => output_buffer <= 0b"0_00_00_1_00_00_001000_0_0000_0000_11111";
-      when beqz   => output_buffer <= 0b"0_10_00_0_00_00_000000_0_0000_0000_11111";
-      when bnez   => output_buffer <= 0b"0_10_00_0_00_00_000000_0_0000_0000_11111";
-      when j      => output_buffer <= 0b"1_10_00_1_00_00_000000_0_0000_0000_11000";
-      when jalx   => output_buffer <= 0b"1_10_00_1_00_00_000000_0_0000_0000_11000";
-      when r_type => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
+      when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
+      when lbu    => output_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
+      when lw     => output_buffer <= b"0_10_00_1_10_01_100000_1_1111_0000_11111";
+      when sb     => output_buffer <= b"0_10_00_0_10_01_100000_0_0001_0000_11111";
+      when sw     => output_buffer <= b"0_10_00_0_10_01_100000_0_1111_0000_11111";
+      when slti   => output_buffer <= b"0_10_00_1_10_01_001000_0_0000_0000_11111";
+      when andi   => output_buffer <= b"0_10_01_1_00_01_100100_0_0000_0000_11111";
+      when shift  => output_buffer <= b"0_00_00_1_00_00_001000_0_0000_0000_11111";
+      when beqz   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
+      when bnez   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
+      when j      => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
+      when jalx   => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
+      --when r_type => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
     end case;
-  end process instruction;
+  end process set_output_buffer;
 
-  process (instr, ex_alu_zero, currentstate, instr_stall)
+  process (instr, ex_alu_zero, currentstate, instr_stall, data_stall)
   begin
+    opcode <= instr (31 downto 26);
     if (rst = '1') then                      -- if no reset
       case currentstate is
         when s0 =>                           -- Instruction fetch
@@ -267,7 +271,7 @@ begin
           case opcode is  -- decide path depending on the opcode (6 MSB of instr)
             when lbu |lw|sb|sw =>       -- Memory accesses
               nextstate <= s2;
-            when nop|r_type =>          -- Type R
+            when r_type =>          -- Type R
               nextstate <= s3;
             when beqz|bnez =>           -- BEQ - branch on equal
               nextstate <= s4;
@@ -284,23 +288,23 @@ begin
               nextstate <= s7;
           end case;
         when s3 =>                      -- Execution
-          nextstep <= s9;
+          nextstate <= s9;
         when s4 =>                      -- Branch completion
-          nextstep <= s0;
+          nextstate <= s0;
         when s5 =>                      -- Jump Completion
-          nextstep <= s0;
+          nextstate <= s0;
         when s6 =>                      -- Memory access read
-          nextstep <= s8;
+          nextstate <= s8;
         when s7 =>                      -- Memory access write
-          nextstep <= s0;
+          nextstate <= s0;
         when s8 =>                      -- Writeback
-          nextstep <= s0;
+          nextstate <= s0;
         when s9 =>                      -- R-Type completion
-          nextstep <= s0;
+          nextstate <= s0;
         when s10 =>                     -- R-Type completion - Overflow
-          nextstep <= s0;
+          nextstate <= s0;
         when s11 =>                     -- Other opcode
-          nextstep <= s0;
+          nextstate <= s0;
         when others => nextstate <= b"00000";
 
       end case;
@@ -346,4 +350,3 @@ begin
 
 
 end architecture behavioral;
-
