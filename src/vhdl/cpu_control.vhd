@@ -67,7 +67,21 @@ begin
 	
 	instr_ctrl: process(instr_in)
 	begin
-		if (busy1 = '0') then	
-
+		if (busy1 = '0') then
+			instr1 <= instr_in;
+			busy1 <= '1';
+		elsif (busy2 = '0') then
+			instr2 <= instr_in;
+			busy2 <= '1';
+		elsif (busy3 = '0') then
+			instr3 <= instr_in;
+			busy3 <= '1';
+		elsif (busy4 = '0') then
+			instr3 <= instr_in;
+			busy4 <= '1';
+		elsif (busy5 = '0') then
+			instr3 <= instr_in;
+			busy5 <= '1';
+		end if;
 	
 end architecture structure_cpu_control;
