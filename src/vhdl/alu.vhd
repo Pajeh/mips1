@@ -3,6 +3,7 @@
 -- 04.08.2015     Patrick Appenheimer   added entity and architecture behave
 -- 05.08.2015     Patrick Appenheimer   bugfixes
 -- 05.08.2015     Patrick Appenheimer   subu, and, or added
+-- 10.08.2015     Patrick Appenheimer   shift added
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
