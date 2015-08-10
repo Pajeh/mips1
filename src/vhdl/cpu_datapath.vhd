@@ -2,6 +2,7 @@
 -- 06.07.2015     Alex Schönberger    created
 -- 05.08.2015     Patrick Appenheimer    first try
 -- 06.08.2015     Patrick Appenheimer    ports and entities added
+-- 10.08.2015     Patrick Appenheimer    minor changes
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -129,7 +130,7 @@ begin
 stage0: process(clk, rst)
 begin
   if (rst = '0') then
-    mux_out_0 <= (others => '0');
+    mux_out_0 <=  (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
     mux_out_0 <= mux_pc_out;
   end if;
