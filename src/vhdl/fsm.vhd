@@ -168,17 +168,17 @@ architecture behavioral of FSM is
 
 --      State Machine   --
   constant s0    : std_logic_vector(5 downto 0) := b"00000";
-  constant s1    : std_logic_vector(5 downto 0) := b"00000";
-  constant s2    : std_logic_vector(5 downto 0) := b"00000";
-  constant s3    : std_logic_vector(5 downto 0) := b"00000";
-  constant s4    : std_logic_vector(5 downto 0) := b"00000";
-  constant s5    : std_logic_vector(5 downto 0) := b"00000";
-  constant s6    : std_logic_vector(5 downto 0) := b"00000";
-  constant s7    : std_logic_vector(5 downto 0) := b"00000";
-  constant s8    : std_logic_vector(5 downto 0) := b"00000";
-  constant s9    : std_logic_vector(5 downto 0) := b"00000";
-  constant s10   : std_logic_vector(5 downto 0) := b"00000";
-  constant s11   : std_logic_vector(5 downto 0) := b"00000";
+  constant s1    : std_logic_vector(5 downto 0) := b"00001";
+  constant s2    : std_logic_vector(5 downto 0) := b"00010";
+  constant s3    : std_logic_vector(5 downto 0) := b"00011";
+  constant s4    : std_logic_vector(5 downto 0) := b"00100";
+  constant s5    : std_logic_vector(5 downto 0) := b"00101";
+  constant s6    : std_logic_vector(5 downto 0) := b"00110";
+  constant s7    : std_logic_vector(5 downto 0) := b"00111";
+  constant s8    : std_logic_vector(5 downto 0) := b"01000";
+  constant s9    : std_logic_vector(5 downto 0) := b"01001";
+  constant s10   : std_logic_vector(5 downto 0) := b"01010";
+  constant s11   : std_logic_vector(5 downto 0) := b"01011";
 --      Arithmetic      --
   constant addiu : std_logic_vector(5 downto 0) := b"0010_01";  -- Type I
 --      Data Transfer   --
@@ -230,16 +230,16 @@ begin
     case instr (31 downto 26) is
       when lui    => output_buffer <= 0b"0_10_01_1_00_01_000100_0_0000_0000_11111";
       when addiu  => output_buffer <= 0b"0_10_00_1_10_01_100000_0_0000_0000_11111";
-      when lbu    => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when lw     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when sb     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when sw     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when slti   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when andi   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when nop    => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when beqz   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when bnez   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when j      => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when lbu    => output_buffer <= 0b"0_10_00_1_10_01_100000_1_0001_0000_11111";
+      when lw     => output_buffer <= 0b"0_10_00_1_10_01_100000_1_1111_0000_11111";
+      when sb     => output_buffer <= 0b"0_10_00_0_10_01_100000_0_0001_0000_11111";
+      when sw     => output_buffer <= 0b"0_10_00_0_10_01_100000_0_1111_0000_11111";
+      when slti   => output_buffer <= 0b"0_10_00_1_10_01_001000_0_0000_0000_11111";
+      when andi   => output_buffer <= 0b"0_10_01_1_00_01_100100_0_0000_0000_11111";
+      when sll    => output_buffer <= 0b"0_00_00_1_00_00_001000_0_0000_0000_11111";
+      when beqz   => output_buffer <= 0b"0_10_00_0_00_00_000000_0_0000_0000_11111";
+      when bnez   => output_buffer <= 0b"0_10_00_0_00_00_000000_0_0000_0000_11111";
+      when j      => output_buffer <= 0b"1_10_00_1_00_00_000000_0_0000_0000_11000";
       when jalx   => output_buffer <= 0b"1_10_00_1_00_00_000000_0_0000_0000_11000";
       when r_type => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
     end case;
