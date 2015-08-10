@@ -16,7 +16,7 @@ entity cpu_control is
       instr_addr            	: out std_logic_vector(31 downto 0);
       data_addr             	: out std_logic_vector(31 downto 0);
       rd_mask   	        : out std_logic_vector(3  downto 0);
-      wr_mas		        : out std_logic_vector(3  downto 0);
+      wr_mask		        : out std_logic_vector(3  downto 0);
       instr_stall       	: in  std_logic;
       data_stall        	: in  std_logic;
       instr_in              	: in  std_logic_vector(31 downto 0);
@@ -50,16 +50,38 @@ architecture structure_cpu_control of cpu_control is
   signal state4         : std_logic_vector(4 downto 0);
   signal state5         : std_logic_vector(4 downto 0);
   
-  signal finished1      : std_logic;
+  signal busy1      : std_logic := '0';
+  signal busy2      : std_logic := '0';
+  signal busy3      : std_logic := '0';
+  signal busy4      : std_logic := '0';
+  signal busy5      : std_logic := '0';
 
   
 begin
 
-	fsm1:	entity work.fsm(behavioral) port map(clk, rst, instr1, state1, state5, state2, finished1);
-	fsm2:	entity work.fsm(behavioral) port map(clk, rst, instr2, state2, state1, state3, finished2);
-	fsm3:	entity work.fsm(behavioral) port map(clk, rst, instr3, state3, state2, state4, finished3);
-	fsm4:	entity work.fsm(behavioral) port map(clk, rst, instr4, state4, state3, state5, finished4);
-	fsm5:	entity work.fsm(behavioral) port map(clk, rst, instr5, state5, state4, state1, finished5);
-
+	fsm1:	entity work.fsm(behavioral) port map(clk, rst, instr1, state1, state5, state2, busy1);
+	fsm2:	entity work.fsm(behavioral) port map(clk, rst, instr2, state2, state1, state3, busy2);
+	fsm3:	entity work.fsm(behavioral) port map(clk, rst, instr3, state3, state2, state4, busy3);
+	fsm4:	entity work.fsm(behavioral) port map(clk, rst, instr4, state4, state3, state5, busy4);
+	fsm5:	entity work.fsm(behavioral) port map(clk, rst, instr5, state5, state4, state1, busy5);
+	
+	instr_ctrl: process(instr_in)
+	begin
+		if (busy1 = '0') then
+			instr1 <= instr_in;
+			busy1 <= '1';
+		elsif (busy2 = '0') then
+			instr2 <= instr_in;
+			busy2 <= '1';
+		elsif (busy3 = '0') then
+			instr3 <= instr_in;
+			busy3 <= '1';
+		elsif (busy4 = '0') then
+			instr3 <= instr_in;
+			busy4 <= '1';
+		elsif (busy5 = '0') then
+			instr3 <= instr_in;
+			busy5 <= '1';
+		end if;
 	
 end architecture structure_cpu_control;

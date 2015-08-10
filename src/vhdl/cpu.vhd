@@ -1,6 +1,7 @@
 -- revision history:
 -- 06.07.2015     Alex Schönberger    created
 -- 07.08.2015     Patrick Appenheimer   cpu_datapath instanciated
+-- 10.08.2015     Bahri Enis Demirtel cpu_control added
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -35,18 +36,23 @@ signal id_regdest_mux       : std_logic_vector (1 downto 0);
 signal id_regshift_mux      : std_logic_vector (1 downto 0);
 signal id_enable_regs       : std_logic;
 signal in_mux_pc            : std_logic;
-signal stage_control        : std_logic_vector (4 downto 0):
+signal stage_control        : std_logic_vector (4 downto 0);
+
+
+
 
 begin
 
-  --
+  
   -- control logic
-  --
-  -- u1_control: cpu_control
-  --   -- GENERIC MAP(  )
-  --   PORT MAP( 
-  --   );
-
+   u1_control: cpu_control
+	PORT MAP(clk, rst, instr_addr, data_addr, rd_mask, wr_mask, instr_stall, data_stall, instr_in, data_to_cpu, 
+			 data_from_cpu, alu_op, exc_mux1, exc_mux2, exc_alu_zero, memstg_mux, id_regdest_mux, id_regshift_mux,
+			 id_enable_regs, in_mux_pc, stage_control
+	);
+  
+  
+  
   
   -- datapath
    u2_datapath: cpu_datapath
