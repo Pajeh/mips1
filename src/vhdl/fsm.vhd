@@ -126,39 +126,38 @@ entity FSM is
     clk : in std_logic;
     rst : in std_logic;
 
-    --rst_soft in std_logic:    -- Soft reset
+ output_buffer : std_logic_vector(29 downto 0) := (others => '0');
+
+    --  Datapath -----------------
+    --pc_mux : out std_logic;
+    --  Instr. Fetch -----------------
+    --instr  : in  std_logic_vector(31 downto 0);   instruction
+
+    --  Instr. Decode  -----------------
+    --regdest_mux, regshift_mux : out std_logic_vector (1 downto 0);
+    --enable_regs               : out std_logic;
+    --  Execution -----------------
+    --in_mux1                   : out std_logic_vector(1 downto 0);
+    --in_mux2                   : out std_logic_vector(1 downto 0);
+    --in_alu_instruction        : out std_logic_vector(5 downto 0);
+
+    --ex_alu_zero : in std_logic_vector(0 downto 0);
+
+    --  Memory Stage  -----------------
+    --mux_decision : out std_logic;
 
 
-    -- -------- Datapath -----------------
-    pc_mux : out std_logic;
-    -- -------- Instr. Fetch -----------------
-    instr  : in  std_logic_vector(31 downto 0);  -- instruction
+    --  Write Back -----------------
 
-    -- -------- Instr. Decode  -----------------
-    regdest_mux, regshift_mux : out std_logic_vector (1 downto 0);
-    enable_regs               : out std_logic;
-    -- -------- Execution -----------------
-    in_mux1                   : out std_logic_vector(1 downto 0);
-    in_mux2                   : out std_logic_vector(1 downto 0);
-    in_alu_instruction        : out std_logic_vector(5 downto 0);
-
-    ex_alu_zero : in std_logic_vector(0 downto 0);
-
-    -- -------- Memory Stage  -----------------
-    mux_decision : out std_logic;
+    --  Memory  -----------------
+    --rd_mask     : out std_logic_vector(3 downto 0);
+    --wr_mask     : out std_logic_vector(3 downto 0);
+    --instr_stall : in  std_logic;
+    --data_stall  : in  std_logic;
 
 
-    -- -------- Write Back -----------------
-
-    -- -------- Memory  -----------------
-    rd_mask     : out std_logic_vector(3 downto 0);
-    wr_mask     : out std_logic_vector(3 downto 0);
-    instr_stall : in  std_logic;
-    data_stall  : in  std_logic;
-
-
-    -- -------- Pipeline  -----------------
-    stage_control : out std_logic_vector(4 downto 0)  -- next step in pipeline
+    --  Pipeline  -----------------
+    --stage_control : out std_logic_vector(4 downto 0)   next step in pipeline
     );
 end entity FSM;
 
@@ -215,7 +214,7 @@ architecture behavioral of FSM is
 -- output_buffer (12 downto 9):  rd_mask                 : out std_logic_vector(3  downto 0);
 -- output_buffer (8 downto 5):   wr_mask                 : out std_logic_vector(3  downto 0);
 -- output_buffer (4 downto 0):   stage_control : out std_logic_vector(4  downto 0);               
-  signal output_buffer : std_logic_vector(29 downto 0) := (others => '0');
+
   signal opcode        : std_logic_vector(5 downto 0);
   signal currentstate  : std_logic_vector(4 downto 0)  := (others => '0');
   signal nextstate     : std_logic_vector(4 downto 0)  := (others => '0');
@@ -225,10 +224,10 @@ begin
 -- purpose: set output buffer on instruction input
 -- type   : combinational
 -- inputs : instr
--- outputs: output_buffer
-output_buffer  process (instr, ex_alu_zero, currentstate, instr_stall, data_stall)
+-- outputs: output_buffer  
+output_buffer:  process (instr, ex_alu_zero, currentstate, instr_stall, data_stall)
   begin
-    opcode <= instr (31 downto 26);
+    
     if (rst = '1') then                      -- if no reset
       case currentstate is
         when s0 =>                           -- Instruction fetch
@@ -236,7 +235,7 @@ output_buffer  process (instr, ex_alu_zero, currentstate, instr_stall, data_stal
 
           if (instr_stall = '0') then  -- check if a instruction stall is required. Stall if 1.
 
-            
+            opcode <= instr (31 downto 26);
 
             case instr (31 downto 26) is
               when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
