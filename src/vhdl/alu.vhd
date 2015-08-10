@@ -3,7 +3,7 @@
 -- 04.08.2015     Patrick Appenheimer   added entity and architecture behave
 -- 05.08.2015     Patrick Appenheimer   bugfixes
 -- 05.08.2015     Patrick Appenheimer   subu, and, or added
--- 10.08.2015     Patrick Appenheimer   shift added
+-- 10.08.2015     Patrick Appenheimer   shift, slt added
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -20,6 +20,7 @@ library WORK;
 -- result <= reg_a ==> 00_0001
 -- result <= reg_b ==> 00_0010
 -- shift ==> 00_0100
+-- slt ==> 00_1000
 
 entity alu is
 
@@ -61,13 +62,20 @@ begin
     -- or
     when b"10_0101" =>    
     r_uns := std_logic_vector(unsigned(a_uns) OR unsigned(b_uns));
+    -- out <= a
     when b"00_0001" =>    
     r_uns := a_uns;
+     -- out <= b
     when b"00_0010" =>    
     r_uns := b_uns;
     -- shift
     when b"00_0100" =>    
     r_uns := std_logic_vector(SHIFT_LEFT(unsigned(b_uns),to_integer(unsigned(a_uns))));
+    -- slt
+    when b"00_1000" =>
+    if (to_integer(signed(a_uns)) < to_integer(signed(b_uns))) then
+      r_uns := x"0000_0001";
+    end if;
     -- others
     when others => r_uns := (others => 'X');
     end case;
