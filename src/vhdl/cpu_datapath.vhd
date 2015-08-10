@@ -129,7 +129,7 @@ begin
 stage0: process(clk, rst)
 begin
   if (rst = '0') then
-    mux_out_0 <= conv_std_logic_vector(-4, 32);
+    mux_out_0 <=  (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
     mux_out_0 <= mux_pc_out;
   end if;
