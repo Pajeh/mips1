@@ -65,9 +65,9 @@ begin
     data_proc : process
     begin
         reset <= '0';
-        wait for 5 ns;
+        wait for clk_time/2;
         reset <= '1';
-        wait for 5 ns;
+        wait for clk_time/2;
         enable_regs <= '1';
         -- Writing some test values to the register file:
         -- r1 becomes 01234567
@@ -80,6 +80,12 @@ begin
         writeback <= x"76543210";
         mem_result <= x"76543210";
         wait for clk_time;
+
+	-- r3 becomes -1 (signed)
+	writeback_reg <= "00011";
+	writeback <= X"FFFFFFFF";
+	wait for clk_time;
+
         enable_regs <= '0';
 	writeback_reg <= "00000";
 	wait for clk_time;
@@ -307,14 +313,57 @@ begin
 	instr <= x"8f828010";
 	wait for clk_time;
 
+
+	ip_in <=x"01010100";
 	-- Test for BEQ-Op (condition is true)
-	-- ip_out : 0103C0F9
+	-- ip_out : 0103C0F8
 	instr <= x"1000AFFE";
 	wait for clk_time;
 
 	-- Test for BEQ-Op (condition is false)
-	-- ip_out : 01010101
+	-- ip_out : 01010100
 	instr <= x"1010AFFE";
+	wait for clk_time;
+
+	-- Test for BGEZAL-Op (var is greater)
+	-- ip_out : 0103C0F8
+	instr <= x"0421AFFE";
+	wait for clk_time;
+
+	-- Test for BGEZAL-Op (var is equal)
+	-- ip_out : 0103C0F8
+	instr <= x"0401AFFE";
+	wait for clk_time;
+
+	-- Test for BGEZAL-Op (var is smaller)
+	-- ip_out : 01010100
+	instr <= x"0461AFFE";
+	wait for clk_time;
+
+	-- Test for BGEZAL-Op (var is greater)
+	-- ip_out : 0103C0F8
+	-- R31: 01010100
+	instr <= x"0431AFFE";
+	wait for clk_time;
+
+	-- Test for BGEZAL-Op (var is equal)
+	-- ip_out : 0103C0F8
+	instr <= x"0411AFFE";
+	wait for clk_time;
+
+	-- Test for BGEZAL-Op (var is smaller)
+	-- ip_out : 01010100
+	instr <= x"0471AFFE";
+	wait for clk_time;
+
+	-- Test for BGTZ (true)
+	-- ip_out: 0103C0F8
+	instr <=x"1C20AFFE";
+	wait for clk_time;
+
+	-- Test for BGTZ (false)
+	-- ip_out: 01010100
+	instr <= x"1C40AFFE";
 	wait for clk_time;
 
     end process;
