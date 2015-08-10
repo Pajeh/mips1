@@ -229,18 +229,18 @@ begin
     case instr (31 downto 26) is
       when lui    => output_buffer <= 0b"0_10_01_1_00_01_000100_0_0000_0000_11111";
       when addiu  => output_buffer <= 0b"0_10_00_1_10_01_100000_0_0000_0000_11111";
-      when lbu    => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when lw     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when sb     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when sw     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when slti   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when andi   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when nop    => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when beqz   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when bnez   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when j      => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when jalx   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
-      when r_type => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when lbu    => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when lw     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when sb     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when sw     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when slti   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when andi   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when nop    => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when beqz   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when bnez   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when j      => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when jalx   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when r_type => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
     end case;
   end process instruction;
 
