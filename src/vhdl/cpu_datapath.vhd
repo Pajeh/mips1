@@ -2,6 +2,7 @@
 -- 06.07.2015     Alex Schönberger    created
 -- 05.08.2015     Patrick Appenheimer    first try
 -- 06.08.2015     Patrick Appenheimer    ports and entities added
+-- 10.08.2015     Patrick Appenheimer    minor changes
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
