@@ -228,6 +228,7 @@ begin
   begin  -- process instruction
     case instr (31 downto 26) is
       when lui    => output_buffer <= 0b"0_10_01_1_00_01_000100_0_0000_0000_11111";
+      when addiu  => output_buffer <= 0b"0_10_00_1_10_01_100000_0_0000_0000_11111";
       when lbu    => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
       when lw     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
       when sb     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
