@@ -216,39 +216,17 @@ architecture behavioral of FSM is
 -- output_buffer (8 downto 5):   wr_mask                 : out std_logic_vector(3  downto 0);
 -- output_buffer (4 downto 0):   stage_control : out std_logic_vector(4  downto 0);               
   signal output_buffer : std_logic_vector(29 downto 0) := (others => '0');
-  signal opcode : std_logic_vector(5 downto 0);
-  signal currentstate : std_logic_vector(4 downto 0)  := (others => '0');
-  signal nextstate    : std_logic_vector(4 downto 0)  := (others => '0');
-  signal instruction  : std_logic_vector(31 downto 0) := (others => '0');
+  signal opcode        : std_logic_vector(5 downto 0);
+  signal currentstate  : std_logic_vector(4 downto 0)  := (others => '0');
+  signal nextstate     : std_logic_vector(4 downto 0)  := (others => '0');
+  signal instruction   : std_logic_vector(31 downto 0) := (others => '0');
 begin
-  
+
 -- purpose: set output buffer on instruction input
 -- type   : combinational
 -- inputs : instr
 -- outputs: output_buffer
-  set_output_buffer : process (instr) is
-  begin  -- process instruction
-    opcode <= instr (31 downto 26);
-    case instr (31 downto 26) is
-      when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
-      when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
-      when lbu    => output_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
-      when lw     => output_buffer <= b"0_10_00_1_10_01_100000_1_1111_0000_11111";
-      when sb     => output_buffer <= b"0_10_00_0_10_01_100000_0_0001_0000_11111";
-      when sw     => output_buffer <= b"0_10_00_0_10_01_100000_0_1111_0000_11111";
-      when slti   => output_buffer <= b"0_10_00_1_10_01_001000_0_0000_0000_11111";
-      when andi   => output_buffer <= b"0_10_01_1_00_01_100100_0_0000_0000_11111";
-      when shift  => output_buffer <= b"0_00_00_1_00_00_001000_0_0000_0000_11111";
-      when beqz   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
-      when bnez   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
-      when j      => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
-      when jalx   => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
-      --when r_type => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-    end case;
-  end process set_output_buffer;
-
-  process (instr, ex_alu_zero, currentstate, instr_stall, data_stall)
+output_buffer  process (instr, ex_alu_zero, currentstate, instr_stall, data_stall)
   begin
     opcode <= instr (31 downto 26);
     if (rst = '1') then                      -- if no reset
@@ -259,7 +237,24 @@ begin
           if (instr_stall = '0') then  -- check if a instruction stall is required. Stall if 1.
 
             
-            
+
+            case instr (31 downto 26) is
+              when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
+              when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
+              when lbu    => output_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
+              when lw     => output_buffer <= b"0_10_00_1_10_01_100000_1_1111_0000_11111";
+              when sb     => output_buffer <= b"0_10_00_0_10_01_100000_0_0001_0000_11111";
+              when sw     => output_buffer <= b"0_10_00_0_10_01_100000_0_1111_0000_11111";
+              when slti   => output_buffer <= b"0_10_00_1_10_01_001000_0_0000_0000_11111";
+              when andi   => output_buffer <= b"0_10_01_1_00_01_100100_0_0000_0000_11111";
+              when shift  => output_buffer <= b"0_00_00_1_00_00_001000_0_0000_0000_11111";
+              when beqz   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
+              when bnez   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
+              when j      => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
+              when jalx   => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
+              --when r_type => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+              when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+            end case;
             nextstate <= s1;            -- nextstate is the Instruction decode
 
           else                          -- instruction stall is required
@@ -268,44 +263,12 @@ begin
           end if;
           
         when s1 =>                      -- Instruction Decode / Register fetch
-          case opcode is  -- decide path depending on the opcode (6 MSB of instr)
-            when lbu |lw|sb|sw =>       -- Memory accesses
-              nextstate <= s2;
-            when r_type =>          -- Type R
-              nextstate <= s3;
-            when beqz|bnez =>           -- BEQ - branch on equal
-              nextstate <= s4;
-            when j|jalx =>              -- Type J
-              nextstate <= s5;
-            when others =>              -- Others
-              nextstate <= s6;
-          end case;
-        when s2 =>                      -- Memory address computation
-          case opcode is
-            when lbu|lw =>              -- Memory load
-              nextstate <= s6;
-            when others =>              -- Memory store - sb|sw
-              nextstate <= s7;
-          end case;
-        when s3 =>                      -- Execution
-          nextstate <= s9;
-        when s4 =>                      -- Branch completion
-          nextstate <= s0;
-        when s5 =>                      -- Jump Completion
-          nextstate <= s0;
-        when s6 =>                      -- Memory access read
-          nextstate <= s8;
-        when s7 =>                      -- Memory access write
-          nextstate <= s0;
-        when s8 =>                      -- Writeback
-          nextstate <= s0;
-        when s9 =>                      -- R-Type completion
-          nextstate <= s0;
-        when s10 =>                     -- R-Type completion - Overflow
-          nextstate <= s0;
-        when s11 =>                     -- Other opcode
-          nextstate <= s0;
-        when others => nextstate <= b"00000";
+          nextstate <= s2;
+        when s2 =>                      -- Execution
+          nextstate <= s3;
+        when s3 =>                      -- Memory
+          nextstate <= s4;
+        when others => nextstate <= s0;
 
       end case;
 
