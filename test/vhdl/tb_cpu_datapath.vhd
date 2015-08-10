@@ -80,62 +80,55 @@ architecture behavioural of tb_cpu_datapath is
 		-- instr_addr and it should be 00000000, so we return an instruction
 		-- and set the ID's muxes for correct decoding
 		-- To test: 
-		-- instr_address: 00000004
-		-- ip_2 : 00000000
+		-- instr_address: 00000000
 		instr_in <= x"3c1c0001";	-- Instruction 1: LUI $gp, 1
-		id_regdest_mux <= "10";
-		id_regshift_mux <= "00";
-		id_enable_regs <= '0';
 		wait for clk_time;
 
 		-- To test:
+		-- shift_2 : 10;
 		-- imm_2: 00000001
 		-- regdest_2: 1C
-		-- instr_address: 00000008
-		-- ip_2 : 00000004
+		-- instr_address: 00000004
+		-- ip_2 : 00000000
 		instr_in <= x"279c8070";	-- Instruction 2: ADDIU $gp, $gp, -32656
+		-- Instruction 1 now finishes instruction decode stage, prepare muxes
 		id_regdest_mux <= "10";
-		id_regshift_mux <= "00";
+		id_regshift_mux <= "01";
 		id_enable_regs <= '0';
-		-- Instruction 1 now reaches execution stage, prepare muxes
-		exc_mux1 <= "00";
-		exc_mux2 <= "01";
-		alu_op <= b"00_0010";
-		wait for clk_time;
-		
-		-- To test:
-		-- regdest_2: 1C
-		-- instr_address: 0000000C
-		-- ip_2 : 00000008
-		-- alu_result_3: 00000001
-		-- regdest_3: 1C
-		instr_in <= x"08000004";	-- Instruction 3: J 0x10
-		id_regdest_mux <= "10";
-		id_regshift_mux <= "00";
-		id_enable_regs <= '0';
-		-- Instruction 2 now reaches execution stage
-		exc_mux1 <= "00";
-		exc_mux2 <= "01";
-		alu_op <= b"10_0000";
-		-- Instruction 1 now reaches memory stage
-		memstg_mux <= '1';
 		wait for clk_time;
 
 		-- To test:
+		-- regdest_2: 1C
+		-- reg_a_2: 00010000;
+		-- imm_2: 8070
+		-- instr_address: 00000008
+		-- ip_2 : 00000004
+		-- alu_result_3: 000010000
 		-- regdest_3: 1C
-		-- alu_result_3: 00008071
-		-- writeback_4: 00000001
+		-- ip_3 : 00000000
+		instr_in <= x"08000004";	-- Instruction 3: J 0x10
+		-- Instruction 2 now finishes instruction decode stage
+		id_regdest_mux <= "10";
+		id_regshift_mux <= "00";
+		-- Instruction 1 now finishes execution stage
+		exc_mux1 <= "00";
+		exc_mux2 <= "01";
+		alu_op <= "000100";
+		wait for clk_time;
+
+		-- To test:
+		-- id_ip : 000010
+		-- regdest_3: 1C
+		-- alu_result_3: 00018071
+		-- writeback_4: 00010000
 		-- regdest_4: 1C
 		-- instr_addr: 00000010
 		instr_in <= x"3c1d00a2";	-- Instruction 4: LUI $sp,0xa2 
+		-- Instruction 3 now finishes Instruction decode stage
 		id_regdest_mux <= "10";
 		id_regshift_mux <= "00";
 		id_enable_regs <= '1';	-- Writeback will write back the result of instruction 1, so id is prepared
-		-- Instruction 3 now reaches execution stage, but since ALU has nothing to do when J is performed, we don't care
-		-- about correct settings
-		-- However the new program counter must be written:
-		in_mux_pc <= '1';
-		-- Instruction 2 now reaches memory stage, which is already prepared for forwarding data to writeback
+		-- Instruction 2 now finishes memory stage
 		--Instruction 1 now reaches writeback, nothing to do		
 		wait for clk_time;
 
@@ -143,10 +136,10 @@ architecture behavioural of tb_cpu_datapath is
 		-- regdest_2: 1D
 		-- regdest_4: 1C
 		-- writeback_4: 0008071
-		-- register_file (28): 00000001
+		-- register_file (28): 00010000
 		-- instr_addr : 00000014
 		instr_in <= x"8f828010";	-- Instruction 5: LW $v0,-32752(gp)
-		in_mux_pc <= '0';
+		in_mux_pc <= '1';
 		--Instruction 4 finishes decode stage and decode stage is already prepared for immediate operation
 		--Instruction 3 finishes execution stage but nobody cares
 		--Instruction 2 finishes memory stage, still prepared from Instruction 1
@@ -208,7 +201,25 @@ architecture behavioural of tb_cpu_datapath is
 		data_to_cpu <= x"11382187";
 		id_enable_regs <= '1';
 		wait for clk_time;
-				
+
+
+		-- To test:
+		-- reg_a_2: 00008071
+		-- reg_b_2: 00000000
+		-- imm_2: FFFF800c
+		-- data_3: 00000000
+		-- alu_result: 11382178
+		-- writeback_4: 00000000
+		-- regdest_4 : 00		
+		instr_in <=x"8f82800c";		-- Instruction 9: LW $v0,-32756($gp)
+		-- Instruction 8 finishes decode stage, still set for immediate
+		-- Instruction 7 finishes execution stage
+		exc_mux1 <= "10";
+		exc_mux2 <= "01";	
+		alu_op <="000001";	
+		-- Instruction 6 finishes memory stage
+		memstg_mux <= '1';
+		wait for clk_time;
 		
             
         end process;

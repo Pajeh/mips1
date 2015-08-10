@@ -62,7 +62,7 @@ begin
         
         	case regshift_mux is    -- Determines the output at shift_out
             		when "00" => shift_out <= instr(10 downto 6);
-            		when "01" => shift_out <= "00000";
+            		when "01" => shift_out <= "10000";
             		when others => shift_out <= "00000";
         	end case;
         
