@@ -73,10 +73,9 @@ use WORK.all;
 -- -------- Memory Stage  -----------------
 -- FSS decision for writeback output. ALU results or memory data can be forwarded to writeback
 -- mux_decisions:
--- 1: output is the aluResult_in
--- 0: output is the memory_buffer, which carries the memory read value
+-- 0: to forward aluResult
+-- 1: to forward memory data 
 -- 
-
 -- -- stage_control: --
 -- to activate registers, set signal stage_control as follows:
 -- stage0->stage1: xxxx1
@@ -199,7 +198,7 @@ architecture behavioral of FSM is
   constant j     : std_logic_vector(5 downto 0) := b"0000_10";  -- Type J
   constant jalx  : std_logic_vector(5 downto 0) := b"0011_01";  -- Type J
 
-
+  constant r_type : std_logic_vector(5 downto 0) := b"0000_00";  -- Type R      
 
 
 -- output_buffer is a register with all control outputs of the state machine:
@@ -216,11 +215,35 @@ architecture behavioral of FSM is
 -- output_buffer (4 downto 0):   stage_control : out std_logic_vector(4  downto 0);               
   signal output_buffer : std_logic_vector(29 downto 0) := (others => '0');
 
-  signal currentstate : std_logic_vector(4 downto 0) := (others => '0');
-  signal nextstate    : std_logic_vector(4 downto 0) := (others => '0');
-  signal instruction  : std_logic_vector(5 downto 0) := (others => '0');
+  signal currentstate : std_logic_vector(4 downto 0)  := (others => '0');
+  signal nextstate    : std_logic_vector(4 downto 0)  := (others => '0');
+  signal instruction  : std_logic_vector(31 downto 0) := (others => '0');
 begin
-  process (clk, rst, instr, ex_alu_zero)
+
+-- purpose: set output buffer on instruction input
+-- type   : combinational
+-- inputs : instr
+-- outputs: output_buffer
+  instruction : process (instr) is
+  begin  -- process instruction
+    case instr (31 downto 26) is
+      when lui    => output_buffer <= 0b"0_10_01_1_00_01_000100_0_0000_0000_11111";
+      when lbu    => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when lw     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when sb     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when sw     => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when slti   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when andi   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when nop    => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when beqz   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when bnez   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when j      => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when jalx   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+      when r_type => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_1111";
+    end case;
+  end process instruction;
+
+  process (instr, ex_alu_zero, currentstate, instr_stall)
   begin
     if (rst = '1') then                      -- if no reset
       case currentstate is
@@ -228,19 +251,21 @@ begin
           output_buffer <= (others => '0');  -- reinitialize all to zero
 
           if (instr_stall = '0') then  -- check if a instruction stall is required. Stall if 1.
-            nextstate                  <= s1;  -- nextstate is the Instruction decode
-            output_buffer (1 downto 1) <= "1";  -- stage_control: stage1->stage2: xxx1x
+
+            
+            
+            nextstate <= s1;            -- nextstate is the Instruction decode
+
           else                          -- instruction stall is required
-            opcode                     <= instruction (31 downto 26);
-            nextstate                  <= s0;  -- stay on this stage if stall is required
-            output_buffer (1 downto 1) <= "1";  -- stage_control: stage1->stage2: xxx1x
+            nextstate <= s0;  -- stay on this stage if stall is required
+
           end if;
           
         when s1 =>                      -- Instruction Decode / Register fetch
           case opcode is  -- decide path depending on the opcode (6 MSB of instr)
             when lbu |lw|sb|sw =>       -- Memory accesses
               nextstate <= s2;
-            when nop =>                 -- Type R
+            when nop|r_type =>          -- Type R
               nextstate <= s3;
             when beqz|bnez =>           -- BEQ - branch on equal
               nextstate <= s4;
@@ -287,35 +312,35 @@ begin
   end process;
 
 
-end process ouput;
-
 -- purpose: this is a timed output for the state machine
 -- type   : sequential
 -- inputs : clk, rst, nextstate
 -- outputs: pc_mux, regdest_mux, regshift_mux, enable_regs, in_mux1, in_mux2, in_alu_instruction, mux_decision, rd_mask, wr_mask, stage_control, currentstate
-ouput : process (clk, rst) is
-begin  -- process ouput
-  if rst = '0' then                     -- asynchronous reset (active low)
-    currentstate <= s0;  -- reset to first state - Instruction fetch
-  elsif clk'event and clk = '1' then    -- rising clock edge
+  ouput : process (clk, rst) is
+  begin  -- process ouput
+    if rst = '0' then                   -- asynchronous reset (active low)
+      currentstate <= s0;  -- reset to first state - Instruction fetch
+    elsif clk'event and clk = '1' then  -- rising clock edge
 
-    -- output_buffer is outputed
-    pc_mux             <= output_buffer (29);
-    regdest_mux        <= output_buffer (28 downto 27);
-    regshift_mux       <= output_buffer (26 downto 25);
-    enable_regs        <= output_buffer (24);
-    in_mux1            <= output_buffer (23 downto 22);
-    in_mux2            <= output_buffer (21 downto 20);
-    in_alu_instruction <= output_buffer (19 downto 14);
-    mux_decision       <= output_buffer (13);
-    rd_mask            <= output_buffer (12 downto 9);
-    wr_mask            <= output_buffer (8 downto 5);
-    stage_control      <= output_buffer (4 downto 0);
+      -- output_buffer is outputed
+      pc_mux             <= output_buffer (29);
+      regdest_mux        <= output_buffer (28 downto 27);
+      regshift_mux       <= output_buffer (26 downto 25);
+      enable_regs        <= output_buffer (24);
+      in_mux1            <= output_buffer (23 downto 22);
+      in_mux2            <= output_buffer (21 downto 20);
+      in_alu_instruction <= output_buffer (19 downto 14);
+      mux_decision       <= output_buffer (13);
+      rd_mask            <= output_buffer (12 downto 9);
+      wr_mask            <= output_buffer (8 downto 5);
+      stage_control      <= output_buffer (4 downto 0);
 
-    currentstate <= nextstate;
+      currentstate <= nextstate;
 
-  end if;
-end process ouput;
+    end if;
+  end process ouput;
+
+
 
 
 end architecture behavioral;
