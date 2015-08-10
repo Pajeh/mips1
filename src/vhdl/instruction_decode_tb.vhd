@@ -307,6 +307,16 @@ begin
 	instr <= x"8f828010";
 	wait for clk_time;
 
+	-- Test for BEQ-Op (condition is true)
+	-- ip_out : 0103C0F9
+	instr <= x"1000AFFE";
+	wait for clk_time;
+
+	-- Test for BEQ-Op (condition is false)
+	-- ip_out : 01010101
+	instr <= x"1010AFFE";
+	wait for clk_time;
+
     end process;
 end;
             
