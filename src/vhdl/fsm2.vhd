@@ -10,43 +10,23 @@ use WORK.all;
 
 entity FSM is
   port (
-    -- General Signals
     clk : in std_logic;
     rst : in std_logic;
-
-    --rst_soft in std_logic:    -- Soft reset
-
-
-    -- -------- Datapath -----------------
     pc_mux : out std_logic;
-    -- -------- Instr. Fetch -----------------
-    instr  : in  std_logic_vector(31 downto 0);  -- instruction
-
-    -- -------- Instr. Decode  -----------------
-    regdest_mux, regshift_mux : out std_logic_vector (1 downto 0);
-    enable_regs               : out std_logic;
-    -- -------- Execution -----------------
-    in_mux1                   : out std_logic_vector(1 downto 0);
-    in_mux2                   : out std_logic_vector(1 downto 0);
-    in_alu_instruction        : out std_logic_vector(5 downto 0);
-
+    instr  : in  std_logic_vector(31 downto 0);
+    id_regdest_mux  : out std_logic_vector (1 downto 0);
+    id_regshift_mux : out std_logic_vector (1 downto 0);
+    id_enable_regs               : out std_logic;
+    exc_mux1                   : out std_logic_vector(1 downto 0);
+    exc_mux2                   : out std_logic_vector(1 downto 0);
+    alu_instruction        : out std_logic_vector(5 downto 0);
     ex_alu_zero : in std_logic_vector(0 downto 0);
-
-    -- -------- Memory Stage  -----------------
     mux_decision : out std_logic;
-
-
-    -- -------- Write Back -----------------
-
-    -- -------- Memory  -----------------
     rd_mask     : out std_logic_vector(3 downto 0);
     wr_mask     : out std_logic_vector(3 downto 0);
     instr_stall : in  std_logic;
     data_stall  : in  std_logic;
-
-
-    -- -------- Pipeline  -----------------
-    stage_control : out std_logic_vector(4 downto 0)  -- next step in pipeline
+    stage_control : out std_logic_vector(4 downto 0)
     );
 end entity FSM;
 
@@ -74,7 +54,6 @@ architecture behavioral of FSM is
   constant slti  : std_logic_vector(5 downto 0) := b"001010";  -- Type I
   constant andi  : std_logic_vector(5 downto 0) := b"0011_00";  -- Type I
   constant shift : std_logic_vector(5 downto 0) := b"0000_00";  -- Type R       -NOP is read as sll $0,$0,0
---      Bitwise Shift   --
 --      Conditional branch      --
   constant beqz  : std_logic_vector(5 downto 0) := b"000100";  -- Type I
   constant bnez  : std_logic_vector(5 downto 0) := b"000101";  -- Type I
