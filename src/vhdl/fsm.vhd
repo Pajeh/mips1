@@ -1,7 +1,8 @@
 -- Revision history:
--- 07.08.2015   Carlos Minamisava Faria created 
--- 07.08.2015   Carlos Minamisava Faria entity 
--- 07.08.2015   Carlos Minamisava Faria moore state machine states definition 
+-- 07.08.2015   Carlos Minamisava Faria     created 
+-- 07.08.2015   Carlos Minamisava Faria     entity 
+-- 07.08.2015   Carlos Minamisava Faria     moore state machine states definition 
+-- 10.08.2015   Carlos Minamisava Faria & Patrick Appenheimer     Instructions added 
 
 library IEEE;
 use IEEE.std_logic_1164.all;
@@ -239,7 +240,7 @@ begin
       when beqz   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
       when bnez   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
       when j      => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-      when jalx   => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+      when jalx   => output_buffer <= 0b"1_10_00_1_00_00_000000_0_0000_0000_11000";
       when r_type => output_buffer <= 0b"0_00_00_0_00_00_000000_0_0000_0000_11111";
     end case;
   end process instruction;
