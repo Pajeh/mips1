@@ -93,7 +93,28 @@ begin
 	-- Process that defines the branch logic
 	branch_logic : process (instr, ip_in, writeback, alu_result, mem_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux) is
 	variable offset : integer;
+	variable a, b : integer;
 	begin
+		-- Prepares values of reg_a and reg_b for comparison
+		if (instr (25 downto 21)) = regdest_mem then 
+			a := to_integer(signed(mem_result));
+		elsif (instr (25 downto 21)) = regdest_ex then 
+			a := to_integer(signed(alu_result));
+		else 
+			a := to_integer(signed(register_file(to_integer(unsigned (instr (25 downto 21))))));
+		end if;
+
+		
+		if (instr (20 downto 16) = regdest_mem) then 
+			b:= to_integer(signed(mem_result));
+		elsif (instr (20 downto 16) = regdest_ex) then 
+			b := to_integer(signed(alu_result));
+		else 
+			b := to_integer(signed(register_file(to_integer(unsigned (instr (25 downto 21))))));
+		end if;
+
+
+		-- Annoyingly lengthy list of if-statements for calculation of branch logic
 		if (instr (31 downto 26) = "000010") then -- Jump instruction
 			internal_wb_flag <= '0';
 			offset := to_integer(signed(instr(25 downto 0)));
@@ -118,19 +139,30 @@ begin
 			else 
 				ip_out <= register_file(to_integer(unsigned (instr (25 downto 21))));
 			end if;
+
+                elsif (instr (31 downto 26) = "000100") then        --BEQ
+                        internal_wb_flag <= '0';
+                        if (a = b) then
+                                offset := to_integer(unsigned(instr(15 downto 0)));
+                                offset := offset * 4;
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
+                        else
+                                ip_out <= ip_in;
+                        end if;
                 elsif (instr(31 downto 26) = "000001" and (instr (20) = '1')) then -- Branch something and link
                         internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
                         internal_wb_flag <= '1';
                         offset := to_integer(signed(instr(15 downto 0)));
 			offset := offset * 4;
 			offset := offset + to_integer (unsigned(ip_in));
-			ip_out <= std_logic_vector(to_signed(offset,32));
+			ip_out <= std_logic_vector(to_unsigned(offset,32));
 		else -- Branch instruction of any kind
 			internal_wb_flag <= '0';
 			offset := to_integer(signed(instr(15 downto 0)));
 			offset := offset * 4;
 			offset := offset + to_integer (unsigned(ip_in));
-			ip_out <= std_logic_vector(to_signed(offset,32));
+			ip_out <= std_logic_vector(to_unsigned(offset,32));
 		end if;
 	end process;
 
