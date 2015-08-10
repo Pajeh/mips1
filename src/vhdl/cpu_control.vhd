@@ -38,6 +38,12 @@ end entity cpu_control;
 
 architecture structure_cpu_control of cpu_control is
 
+  constant s0    : std_logic_vector(4 downto 0) := b"00000";
+  constant s1    : std_logic_vector(4 downto 0) := b"00001";
+  constant s2    : std_logic_vector(4 downto 0) := b"00010";
+  constant s3    : std_logic_vector(4 downto 0) := b"00011";
+  constant s4    : std_logic_vector(4 downto 0) := b"00100";
+
   signal instr1         : std_logic_vector(31 downto 0);
   signal instr2         : std_logic_vector(31 downto 0);
   signal instr3         : std_logic_vector(31 downto 0);
@@ -83,5 +89,17 @@ begin
 			instr3 <= instr_in;
 			busy5 <= '1';
 		end if;
+	end process;
+	
+
+			
+	fsm1: process(state1)
+	begin
+	case state1 is
+	when s0 =>
+	id_regdest_mux <= output_buffer1 (28 downto 27);
+	id_regshift_mux <= output_buffer1 (26 downto 25);
+	
+		
 	
 end architecture structure_cpu_control;
