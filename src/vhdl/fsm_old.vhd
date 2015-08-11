@@ -140,15 +140,15 @@ entity FSM is
 -- output_buffer (12 downto 9):  rd_mask                 : out std_logic_vector(3  downto 0);
 -- output_buffer (8 downto 5):   wr_mask                 : out std_logic_vector(3  downto 0);
 -- output_buffer (4 downto 0):   stage_control : out std_logic_vector(4  downto 0);               
-
-      nextfsm_busy, fsm_busy: std_logic;
-      nextfsm_state: std_logic_vector(4 downto 0);
-    output_buffer : std_logic_vector(29 downto 0);
+fsm_busy: out std_logic;
+      nextfsm_busy: in std_logic;
+      nextfsm_state: in std_logic_vector(4 downto 0);
+      output_buffer : out std_logic_vector(29 downto 0);
 
     --  Datapath -----------------
     --pc_mux : out std_logic;
   --  Instr. Fetch -----------------
-    instr  : in  std_logic_vector(31 downto 0);   instruction
+    instr  : in  std_logic_vector(31 downto 0); 
 
     --  Instr. Decode  -----------------
     --regdest_mux, regshift_mux : out std_logic_vector (1 downto 0);
@@ -228,8 +228,8 @@ begin
 -- purpose: set output buffer on instruction input
 -- type   : combinational
 -- inputs : instr
--- outputs: output_buffer  
-  output_buffer : process (instr, ex_alu_zero, currentstate, instr_stall, data_stall)
+-- outputs: output
+  output : process (instr, currentstate, instr_stall, data_stall)
   begin
     
     if (rst = '1') then                      -- if no reset
@@ -258,7 +258,7 @@ begin
               --when r_type => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
               when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
             end case;
-            if (nextfsm_busy = '0') & (nextfsm_state > currentstate) then
+            if (nextfsm_busy = '0') and (nextfsm_state > currentstate) then
               nextstate <= s1;          -- nextstate is the Instruction decode
             end if;
           else                          -- instruction stall is required
@@ -267,7 +267,7 @@ begin
           end if;
           
         when s1 =>                      -- Instruction Decode / Register fetch
-          if (nextfsm_busy = '0') & (nextfsm_state > currentstate) then
+          if (nextfsm_busy = '0') and (nextfsm_state > currentstate) then
             nextstate <= s1;
           else
             nextstate <= s2;
@@ -286,14 +286,14 @@ begin
       currentstate  <= b"00000";
       nextstate     <= b"00000";
     end if;
-  end process;
+  end process output;
 
 
 -- purpose: this is a timed output for the state machine
 -- type   : sequential
 -- inputs : clk, rst, nextstate
 -- outputs: pc_mux, regdest_mux, regshift_mux, enable_regs, in_mux1, in_mux2, in_alu_instruction, mux_decision, rd_mask, wr_mask, stage_control, currentstate
-  ouput : process (clk, rst) is
+  reset : process (clk, rst) is
   begin  -- process ouput
     if rst = '0' then                   -- asynchronous reset (active low)
       currentstate <= s0;  -- reset to first state - Instruction fetch
@@ -315,7 +315,7 @@ begin
       currentstate <= nextstate;
 
     end if;
-  end process ouput;
+  end process reset;
 
 
 
