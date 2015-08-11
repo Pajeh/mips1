@@ -100,7 +100,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 00006080
+	--  ip_out: 00000000
         instr <= x"00221820";
         wait for clk_time;
         
@@ -111,7 +111,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 00006080
+	--  ip_out: 00000000
         alu_result <= x"fedcba98";
         regdest_ex <= "00010";
         instr <= x"00221820";
@@ -125,7 +125,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 00006080
+	--  ip_out: 00000000
         mem_result <= x"01101001";
         regdest_mem <= "00010";
         instr <= x"00221820";
@@ -139,7 +139,7 @@ begin
         --  reg_dest: 3;
         --  imm: 1820
         --  shift: 0
-	--  ip_out: 00006080
+	--  ip_out: 00000000
         regdest_ex <= "00010";
         regdest_mem <= "00010";
         instr <= x"00221820";
@@ -363,7 +363,7 @@ begin
 
 	-- Test for BGTZ (false)
 	-- ip_out: 01010100
-	instr <= x"1C40AFFE";
+	instr <= x"1C00AFFE";
 	wait for clk_time;
 
     end process;

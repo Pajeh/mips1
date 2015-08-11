@@ -7,6 +7,7 @@
 -- 2015-08-06	Lukas, Carlos 	 fixed bug in JAL-instruction-decode
 -- 2015-08-06	Lukas		 added signed/unsigned logic for immediate-output
 -- 2015-08-07	Lukas		 added signed/unsigned exceptions for LW-instructions
+-- 2015-08-11   Lukas            fixed some bugs in forwarding
 library IEEE;
     use IEEE.std_logic_1164.all;
 	use IEEE.numeric_std.all;
@@ -40,12 +41,12 @@ begin
 
 		-- Forwarding logic for reg_a
 		-- If the destination register is still used by the writeback-phase, the writeback-output is forwarded
-        	if instr (25 downto 21) = regdest_ex then 
+                if ((instr (25 downto 21) = regdest_ex) and (instr (25 downto 21) /= "00000")) then 
 			reg_a <= alu_result;
 		-- If the destination register is still used by the memory-phase, the alu-result is forwarded
-		elsif instr (25 downto 21) = regdest_mem then 
+		elsif ((instr (25 downto 21) = regdest_mem) and (instr (25 downto 21) /= "00000")) then 
 			reg_a <= mem_result;
-                elsif (instr (25 downto 21) = writeback_reg) then
+                elsif ((instr (25 downto 21) = writeback_reg)and (instr (25 downto 21) /= "00000")) then
                         reg_a <= writeback;
 		-- Otherwise, no forwarding is required and the register specified by rs is read
 		else 
@@ -54,11 +55,11 @@ begin
 
 		
 		--Forwarding logic for reg_b. Works analogously to the reg_a block above
-		if (instr (20 downto 16) = regdest_ex) then 
+		if ((instr (20 downto 16) = regdest_ex) and (instr (20 downto 16) /= "00000")) then 
 			reg_b <= alu_result;
-		elsif (instr (20 downto 16) = regdest_mem) then 
+		elsif ((instr (20 downto 16) = regdest_mem) and (instr (20 downto 16) /= "00000")) then 
 			reg_b <= mem_result;
-                elsif (instr (20 downto 16) = writeback_reg) then
+                elsif ((instr (20 downto 16) = writeback_reg) and (instr (20 downto 16) /= "00000")) then
                         reg_b <= writeback;
 		else 
 			reg_b <= register_file(to_integer(unsigned (instr (20 downto 16))));
@@ -100,22 +101,22 @@ begin
 	variable a, b : integer;
 	begin
 		-- Prepares values of reg_a and reg_b for comparison
-		if (instr (25 downto 21)) = regdest_ex then 
+		if ((instr (25 downto 21) = regdest_ex ) and (instr (25 downto 21) /= "00000")) then 
 			a := to_integer(signed(alu_result));
-		elsif (instr (25 downto 21)) = regdest_mem then 
+		elsif ((instr (25 downto 21) = regdest_mem) and (instr (25 downto 21) /= "00000")) then 
 			a := to_integer(signed(mem_result));
-                elsif (instr (25 downto 21) = writeback_reg) then
+                elsif ((instr (25 downto 21) = writeback_reg) and (instr (25 downto 21) /= "00000")) then
                         a := to_integer(signed(writeback));
 		else 
 			a := to_integer(signed(register_file(to_integer(unsigned (instr (25 downto 21))))));
 		end if;
 
 		
-		if (instr (20 downto 16) = regdest_ex) then 
+		if ((instr (20 downto 16) = regdest_ex) and (instr (20 downto 16) /= "00000")) then 
 			b:= to_integer(signed(alu_result));
-		elsif (instr (20 downto 16) = regdest_mem) then 
+		elsif ((instr (20 downto 16) = regdest_mem) and (instr (20 downto 16) /= "00000")) then 
 			b := to_integer(signed(mem_result));
-                elsif (instr (20 downto 16) = writeback_reg) then
+                elsif ((instr (20 downto 16) = writeback_reg) and (instr (20 downto 16) /= "00000")) then
                         b := to_integer(signed(writeback));
 		else 
 			b := to_integer(signed(register_file(to_integer(unsigned (instr (20 downto 16))))));
@@ -140,11 +141,11 @@ begin
 			offset := offset * 4;
 			-- VHDL code déjà-vu?
 			-- This is the same forwarding logic as above for reg_a
-			if (instr (25 downto 21)) = regdest_ex then 
+                        if ((instr (25 downto 21) = regdest_ex) and (instr (25 downto 21) /= "00000")) then 
 				ip_out <= alu_result;
-			elsif (instr (25 downto 21)) = regdest_mem then 
+			elsif ((instr (25 downto 21) = regdest_mem) and (instr (25 downto 21) /= "00000")) then 
 				ip_out <= mem_result;
-                        elsif (instr (25 downto 21) = writeback_reg) then
+                        elsif ((instr (25 downto 21) = writeback_reg) and (instr (25 downto 21) /= "00000")) then
                                 ip_out <= writeback;
 			else 
 				ip_out <= register_file(to_integer(unsigned (instr (25 downto 21))));
@@ -206,6 +207,7 @@ begin
 			--offset := to_integer(signed(instr(15 downto 0)));
 			--offset := offset * 4;
 			--offset := offset + to_integer (unsigned(ip_in));
+			ip_out <= ip_in;
 			--ip_out <= std_logic_vector(to_unsigned(offset,32));
 		end if;
 	end process;
