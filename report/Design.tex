@@ -1,5 +1,25 @@
 \chapter{Design}
 % input Design sections for no auto new page
-	\input{ALU}
+This chapter describes the design of a MIPS 1 microcontroller. The microcontroller design is shown \autoref{fig:overview}.
+
+\begin{figure}[h]
+\centering{
+\resizebox{100mm}{!}{\input{design.pdf_tex}}
+\caption{CPU overview}
+\label{fig:overview}
+}
+\end{figure}
+
+The CPU is divided in a control and a datapath blocks. In the datapath there is the pipeline made of five blocks:
+\begin{itemize}
+ \item IF: Instruction fetch
+ \item ID: Instruction decode
+ \item Ex: Execution
+ \item Me: Memory stage
+ \item WB: Writeback
+\end{itemize}
+
+The CPU interacts with two external memories and has also a clock and a reset input.
+\input{ALU}
 	\input{Datapath}
 	\input{Controlpath}
