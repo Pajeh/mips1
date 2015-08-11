@@ -75,6 +75,8 @@ architecture structure_cpu_control of cpu_control is
   signal busy4      : std_logic := '0';
   signal busy5      : std_logic := '0';
 
+  signal currentstate  : std_logic_vector(4 downto 0)  := (others => '0');
+  signal nextstate     : std_logic_vector(4 downto 0)  := (others => '0');
   
 begin
 
@@ -85,34 +87,80 @@ begin
 	fsm5:	entity work.fsm(behavioral) port map(clk, rst, instr5, instr_stall, data_stall, currentstate5, nextstate5, output_buffer5, busy5);
 
 	
-	instr_ctrl: process(instr_in)
-	begin
-		if (busy1 = '0') then
-			instr1 <= instr_in;
-			busy1 <= '1';
-		elsif (busy2 = '0') then
-			instr2 <= instr_in;
-			busy2 <= '1';
-		elsif (busy3 = '0') then
-			instr3 <= instr_in;
-			busy3 <= '1';
-		elsif (busy4 = '0') then
-			instr3 <= instr_in;
-			busy4 <= '1';
-		elsif (busy5 = '0') then
-			instr3 <= instr_in;
-			busy5 <= '1';
-		end if;
-	end process;
-	
-
-			
-	fsm1: process(state1)
-	begin
-	case state1 is
-	when s0 =>
-	id_regdest_mux <= output_buffer1 (28 downto 27);
-	id_regshift_mux <= output_buffer1 (26 downto 25);
+state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
+  begin
+    case currentstate is
+        when s0 =>
+        if (busy2 = '0') then
+            nextstate <= s1;
+        else                          
+            nextstate <= s0;
+        end if;
+        when s1 =>                     
+        if (busy3 = '0') then
+            nextstate <= s2;
+        else                          
+            nextstate <= s1;
+        end if;
+        when s2 =>                      
+        if (busy4 = '0') then
+            nextstate <= s3;
+        else                          
+            nextstate <= s2;
+        end if;
+        when s3 =>                     
+        if (busy5 = '0') then
+            nextstate <= s4;
+        else                          
+            nextstate <= s3;
+        end if;
+        when s4 =>                     
+        if (busy1 = '0') then
+            nextstate <= s0;
+        else                          
+            nextstate <= s4;
+        end if;
+        when others => nextstate <= s0;
+    end case;
+  end process state_encode;
+  
+  state_register: process(rst, clk)
+  begin
+    if (rst = '0') then
+      currentstate <= s0;
+    elsif (clk'event and clk = '1') then
+      currentstate <= nextstate;
+    end if;
+  end process state_register;
+  
+  state_decode: process(currentstate)
+  begin
+    case currentstate is
+      when s0 =>
+        out_busy <= '1';
+        case instr_in (31 downto 26) is
+              when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
+              when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
+              when lbu    => output_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
+              when lw     => output_buffer <= b"0_10_00_1_10_01_100000_1_1111_0000_11111";
+              when sb     => output_buffer <= b"0_10_00_0_10_01_100000_0_0001_0000_11111";
+              when sw     => output_buffer <= b"0_10_00_0_10_01_100000_0_1111_0000_11111";
+              when slti   => output_buffer <= b"0_10_00_1_10_01_001000_0_0000_0000_11111";
+              when andi   => output_buffer <= b"0_10_01_1_00_01_100100_0_0000_0000_11111";
+              when shift  => output_buffer <= b"0_00_00_1_00_00_001000_0_0000_0000_11111";
+              when beqz   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
+              when bnez   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
+              when j      => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
+              when jalx   => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
+              --when r_type => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+              when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+        end case;
+      when s4 =>
+        out_busy <= '0';
+      when others =>
+        -- do something
+    end case;
+  end process state_decode;
 	
 		
 	
