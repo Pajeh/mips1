@@ -73,6 +73,12 @@ architecture structure_cpu_control of cpu_control is
   signal busy3      : std_logic := '0';
   signal busy4      : std_logic := '0';
   signal busy5      : std_logic := '0';
+  
+  signal go1      : std_logic := '0';
+  signal go2      : std_logic := '0';
+  signal go3      : std_logic := '0';
+  signal go4      : std_logic := '0';
+  signal go5      : std_logic := '0';
 
   signal currentstate  : std_logic_vector(4 downto 0)  := (others => '0');
   signal nextstate     : std_logic_vector(4 downto 0)  := (others => '0');
@@ -80,15 +86,15 @@ architecture structure_cpu_control of cpu_control is
 begin
 
 	fsm1:	entity work.fsm(behavioral) port map(clk, rst, instr1, instr_stall, data_stall,
-	currentstate1, nextstate1, output_buffer1, busy1);
+	currentstate1, nextstate1, output_buffer1, busy1, go1);
 	fsm2:	entity work.fsm(behavioral) port map(clk, rst, instr2, instr_stall, data_stall,
-	currentstate2, nextstate2, output_buffer2, busy2);
+	currentstate2, nextstate2, output_buffer2, busy2, go2);
 	fsm3:	entity work.fsm(behavioral) port map(clk, rst, instr3, instr_stall, data_stall,
-	currentstate3, nextstate3, output_buffer3, busy3);
+	currentstate3, nextstate3, output_buffer3, busy3, go3);
 	fsm4:	entity work.fsm(behavioral) port map(clk, rst, instr4, instr_stall, data_stall,
-	currentstate4, nextstate4, output_buffer4, busy4);
+	currentstate4, nextstate4, output_buffer4, busy4, go4);
 	fsm5:	entity work.fsm(behavioral) port map(clk, rst, instr5, instr_stall, data_stall,
-	currentstate5, nextstate5, output_buffer5, busy5);
+	currentstate5, nextstate5, output_buffer5, busy5, go5);
 
 	stage_control (1 downto 0) <= b"11";
 	
@@ -143,14 +149,19 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
     case currentstate is
       when s0 =>
       	instr1 <= instr_in;
+      	go1 <= '1';
       when s1 =>
       	instr2 <= instr_in;
+      	go2 <= '1';
       when s2 =>
       	instr3 <= instr_in;
+      	go3 <= '1';
       when s3 =>
       	instr4 <= instr_in;
+      	go4 <= '1';
       when s4 =>
       	instr5 <= instr_in;
+      	go5 <= '1';
       when others =>
         -- do something
     end case;
@@ -177,6 +188,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer1 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer1 (24);
+			go1 <= '0'
 		when others =>
 			--do nothing
 	end case;
@@ -205,6 +217,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer2 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer2 (24);
+			go2 <= '0'
 		when others =>
 			--do nothing
 	end case;
@@ -231,6 +244,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer3 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer3 (24);
+			go3 <= '0'
 		when others =>
 			--do nothing
 	end case;
@@ -257,6 +271,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer4 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer4 (24);
+			go4 <= '0'
 		when others =>
 			--do nothing
 	end case;
@@ -283,6 +298,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer5 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer5 (24);
+			go5 <= '0'
 		when others =>
 			--do nothing
 	end case;
