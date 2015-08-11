@@ -125,6 +125,9 @@ begin
   
   state_decode: process(currentstate)
   begin
+    out_currentstate <= currentstate;
+    out_nextstate <= nextstate;
+    out_buffer <= output_buffer;
     case currentstate is
       when s0 =>
         out_busy <= '1';
