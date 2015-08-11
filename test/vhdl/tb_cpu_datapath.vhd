@@ -1,6 +1,7 @@
 -- revision history:
 -- 2015-08-06       Lukas Jaeger        created
 -- 2015-08-07	Lukas Jaeger		added instructions of counter-example
+-- 2015-08-10       Lukas jaeger        Made it more clear
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -214,7 +215,7 @@ architecture behavioural of tb_cpu_datapath is
 		-- regdest_2 : 00000
 		-- imm_2 : 00000000
 		-- regdest_3 : 02
-		-- alu_result_3 : 00010081
+		-- alu_result_3 : 00010080
 		-- regdest_4 : 1D
 		-- writeback_4 : 00a20000
 		instr_in <= x"a0400000";	-- Instruction 7: SB $zero,0($v0)
@@ -272,7 +273,7 @@ architecture behavioural of tb_cpu_datapath is
                 in_mux_pc <= '0';    
                 --ex: Instruction 7
                 exc_mux1 <= "10";
-                exc_mux2 <= "10";
+                exc_mux2 <= "01";
                 alu_op <= "100000";
                 -- mem: Instruction 6
                 memstg_mux <= '0';
