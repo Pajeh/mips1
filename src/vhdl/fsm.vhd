@@ -33,6 +33,7 @@ architecture behavioral of FSM is
   constant s2    : std_logic_vector(4 downto 0) := b"00010";
   constant s3    : std_logic_vector(4 downto 0) := b"00011";
   constant s4    : std_logic_vector(4 downto 0) := b"00100";
+  constant sX    : std_logic_vector(4 downto 0) := b"11111";
 
 --      Arithmetic      --
   constant addiu : std_logic_vector(5 downto 0) := b"0010_01";  -- Type I
