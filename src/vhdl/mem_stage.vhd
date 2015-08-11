@@ -3,7 +3,7 @@
 -- 03.08.2015	Carlos Minamisava Faria	entity MemoryStage
 -- 04.08.2015	Carlos Minamisava Faria architecture MemoryStage
 -- 05.08.2015	Carlos Minamisava Faria first working version
-
+-- 11.08.2015   Lukas Jaeger            fixed a bug in memory access
 library IEEE;
   use IEEE.std_logic_1164.ALL;
   USE IEEE.numeric_std.ALL;

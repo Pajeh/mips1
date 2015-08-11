@@ -306,6 +306,57 @@ architecture behavioural of tb_cpu_datapath is
                 -- wb: Instruction 6
                 id_enable_regs <= '0';
                 wait for clk_time;
+                
+                -- To test:
+                -- reg_a_2:         00000000
+                -- reg_b_2:         00000000
+                -- shift_2:         00000
+                -- imm_2:           00000000
+                -- regdest_2:       00
+                -- alu_result_3:    0001007C 
+                -- data_3:          11382187
+                -- data_from_cpu:   11382187
+                -- data_addr:       0001007C
+                --if: Instruction 11 (SLTI $vo, $v0, 16);
+                instr_in <= x"28420010";
+                --id: Instruction 10
+                id_regdest_mux <= "00";
+                id_regshift_mux <="00";
+                in_mux_pc <= '0';    
+                --ex: Instruction 9
+                exc_mux1 <= "10";
+                exc_mux2 <= "01";
+                alu_op <= "100000";
+                -- mem: Instruction 8
+                memstg_mux <= '0';
+                -- wb: Instruction 7
+                id_enable_regs <= '0';
+                wait for clk_time;
+                
+                --To test:
+                -- reg_a_2: 21871138
+                -- imm_2: 10
+                -- regdest_2 : 02
+                -- alu_result: 00000000
+                -- regdest_3: 00
+                -- regdest_4: 02
+                -- writeback_4: 21871138
+                --if:12 (BEQZ $vo, 0x 58)
+                instr_in <= x"1040000a";
+                --id: 11
+                id_regdest_mux <= "10";
+                id_regshift_mux <="00";
+                in_mux_pc <= '0';    
+                --ex: 10
+                exc_mux1 <= "10";
+                exc_mux2 <= "00";
+                alu_op <= "000100";
+                -- mem: 9
+                memstg_mux <= '1';
+                data_to_cpu <=x"21871138";
+                -- wb: 8
+                id_enable_regs <= '0';
+                wait for clk_time;
 		
             
         end process;
