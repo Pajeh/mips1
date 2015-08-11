@@ -188,7 +188,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer1 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer1 (24);
-			go1 <= '0'
+			go1 <= '0';
 		when others =>
 			--do nothing
 	end case;
@@ -217,7 +217,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer2 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer2 (24);
-			go2 <= '0'
+			go2 <= '0';
 		when others =>
 			--do nothing
 	end case;
@@ -244,7 +244,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer3 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer3 (24);
-			go3 <= '0'
+			go3 <= '0';
 		when others =>
 			--do nothing
 	end case;
@@ -271,7 +271,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer4 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer4 (24);
-			go4 <= '0'
+			go4 <= '0';
 		when others =>
 			--do nothing
 	end case;
@@ -298,7 +298,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			stage_control (4) <= output_buffer5 (4);
 		when s4 =>
 			id_enable_regs <= output_buffer5 (24);
-			go5 <= '0'
+			go5 <= '0';
 		when others =>
 			--do nothing
 	end case;
