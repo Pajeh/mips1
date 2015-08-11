@@ -125,7 +125,7 @@ begin
   begin
     case currentstate is
       when s0 =>
-        busy <= '1';
+        out_busy <= '1';
         case instr_in (31 downto 26) is
               when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
               when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
@@ -144,7 +144,7 @@ begin
               when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
         end case;
       when s4 =>
-        busy <= '0';
+        out_busy <= '0';
       when others =>
         -- do something
     end case;
