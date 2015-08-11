@@ -42,6 +42,7 @@ architecture structure_cpu_control of cpu_control is
   constant s2    : std_logic_vector(4 downto 0) := b"00010";
   constant s3    : std_logic_vector(4 downto 0) := b"00011";
   constant s4    : std_logic_vector(4 downto 0) := b"00100";
+  constant sX    : std_logic_vector(4 downto 0) := b"11111";
 
   signal instr1         : std_logic_vector(31 downto 0);
   signal instr2         : std_logic_vector(31 downto 0);
@@ -130,7 +131,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
   state_register: process(rst, clk)
   begin
     if (rst = '0') then
-      currentstate <= s0;
+      currentstate <= sX;
     elsif (clk'event and clk = '1') then
       currentstate <= nextstate;
     end if;
