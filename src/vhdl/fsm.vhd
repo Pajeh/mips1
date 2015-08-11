@@ -127,7 +127,7 @@ entity FSM is
     rst : in std_logic;
 
 
-    
+
 -- output_buffer is a register with all control outputs of the state machine:
 -- output_buffer (29 downto 29): pc_mux: out std_logic;
 -- output_buffer (28 downto 27): regdest_mux, 
@@ -141,12 +141,14 @@ entity FSM is
 -- output_buffer (8 downto 5):   wr_mask                 : out std_logic_vector(3  downto 0);
 -- output_buffer (4 downto 0):   stage_control : out std_logic_vector(4  downto 0);               
 
- output_buffer : std_logic_vector(29 downto 0) := (others => '0');
+      nextfsm_busy, fsm_busy: std_logic;
+      nextfsm_state: std_logic_vector(4 downto 0);
+    output_buffer : std_logic_vector(29 downto 0);
 
     --  Datapath -----------------
     --pc_mux : out std_logic;
-    --  Instr. Fetch -----------------
-    --instr  : in  std_logic_vector(31 downto 0);   instruction
+  --  Instr. Fetch -----------------
+    instr  : in  std_logic_vector(31 downto 0);   instruction
 
     --  Instr. Decode  -----------------
     --regdest_mux, regshift_mux : out std_logic_vector (1 downto 0);
@@ -167,12 +169,12 @@ entity FSM is
     --  Memory  -----------------
     --rd_mask     : out std_logic_vector(3 downto 0);
     --wr_mask     : out std_logic_vector(3 downto 0);
-    --instr_stall : in  std_logic;
-    --data_stall  : in  std_logic;
+    instr_stall : in  std_logic;
+    data_stall  : in  std_logic
 
 
-    --  Pipeline  -----------------
-    --stage_control : out std_logic_vector(4 downto 0)   next step in pipeline
+   --  Pipeline  -----------------
+   --stage_control : out std_logic_vector(4 downto 0)   next step in pipeline
     );
 end entity FSM;
 
@@ -217,17 +219,17 @@ architecture behavioral of FSM is
   constant r_type : std_logic_vector(5 downto 0) := b"0000_00";  -- Type R      
 
 
-  signal opcode        : std_logic_vector(5 downto 0);
-  signal currentstate  : std_logic_vector(4 downto 0)  := (others => '0');
-  signal nextstate     : std_logic_vector(4 downto 0)  := (others => '0');
-  signal instruction   : std_logic_vector(31 downto 0) := (others => '0');
+  signal opcode       : std_logic_vector(5 downto 0);
+  signal currentstate : std_logic_vector(4 downto 0)  := (others => '0');
+  signal nextstate    : std_logic_vector(4 downto 0)  := (others => '0');
+  signal instruction  : std_logic_vector(31 downto 0) := (others => '0');
 begin
 
 -- purpose: set output buffer on instruction input
 -- type   : combinational
 -- inputs : instr
 -- outputs: output_buffer  
-output_buffer:  process (instr, ex_alu_zero, currentstate, instr_stall, data_stall)
+  output_buffer : process (instr, ex_alu_zero, currentstate, instr_stall, data_stall)
   begin
     
     if (rst = '1') then                      -- if no reset
@@ -256,15 +258,20 @@ output_buffer:  process (instr, ex_alu_zero, currentstate, instr_stall, data_sta
               --when r_type => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
               when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
             end case;
-            nextstate <= s1;            -- nextstate is the Instruction decode
-
+            if (nextfsm_busy = '0') & (nextfsm_state > currentstate) then
+              nextstate <= s1;          -- nextstate is the Instruction decode
+            end if;
           else                          -- instruction stall is required
-            nextstate <= s0;  -- stay on this stage if stall is required
+            nextstate <= s0;    -- stay on this stage if stall is required
 
           end if;
           
         when s1 =>                      -- Instruction Decode / Register fetch
-          nextstate <= s2;
+          if (nextfsm_busy = '0') & (nextfsm_state > currentstate) then
+            nextstate <= s1;
+          else
+            nextstate <= s2;
+          end if;
         when s2 =>                      -- Execution
           nextstate <= s3;
         when s3 =>                      -- Memory
