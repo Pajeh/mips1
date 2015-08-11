@@ -126,6 +126,21 @@ entity FSM is
     clk : in std_logic;
     rst : in std_logic;
 
+
+    
+-- output_buffer is a register with all control outputs of the state machine:
+-- output_buffer (29 downto 29): pc_mux: out std_logic;
+-- output_buffer (28 downto 27): regdest_mux, 
+-- output_buffer (26 downto 25): regshift_mux: out std_logic_vector (1 downto 0);
+-- output_buffer (24 downto 24): enable_regs: out std_logic;
+-- output_buffer (23 downto 22): in_mux1               : out  std_logic_vector(1 downto 0);
+-- output_buffer (21 downto 20): in_mux2               : out  std_logic_vector(1 downto 0);
+-- output_buffer (19 downto 14): in_alu_instruction    : out  std_logic_vector(5 downto 0);
+-- output_buffer (13 downto 13): mux_decision: out std_logic;   
+-- output_buffer (12 downto 9):  rd_mask                 : out std_logic_vector(3  downto 0);
+-- output_buffer (8 downto 5):   wr_mask                 : out std_logic_vector(3  downto 0);
+-- output_buffer (4 downto 0):   stage_control : out std_logic_vector(4  downto 0);               
+
  output_buffer : std_logic_vector(29 downto 0) := (others => '0');
 
     --  Datapath -----------------
@@ -201,19 +216,6 @@ architecture behavioral of FSM is
 
   constant r_type : std_logic_vector(5 downto 0) := b"0000_00";  -- Type R      
 
-
--- output_buffer is a register with all control outputs of the state machine:
--- output_buffer (29 downto 29): pc_mux: out std_logic;
--- output_buffer (28 downto 27): regdest_mux, 
--- output_buffer (26 downto 25): regshift_mux: out std_logic_vector (1 downto 0);
--- output_buffer (24 downto 24): enable_regs: out std_logic;
--- output_buffer (23 downto 22): in_mux1               : out  std_logic_vector(1 downto 0);
--- output_buffer (21 downto 20): in_mux2               : out  std_logic_vector(1 downto 0);
--- output_buffer (19 downto 14): in_alu_instruction    : out  std_logic_vector(5 downto 0);
--- output_buffer (13 downto 13): mux_decision: out std_logic;   
--- output_buffer (12 downto 9):  rd_mask                 : out std_logic_vector(3  downto 0);
--- output_buffer (8 downto 5):   wr_mask                 : out std_logic_vector(3  downto 0);
--- output_buffer (4 downto 0):   stage_control : out std_logic_vector(4  downto 0);               
 
   signal opcode        : std_logic_vector(5 downto 0);
   signal currentstate  : std_logic_vector(4 downto 0)  := (others => '0');
@@ -291,17 +293,17 @@ output_buffer:  process (instr, ex_alu_zero, currentstate, instr_stall, data_sta
     elsif clk'event and clk = '1' then  -- rising clock edge
 
       -- output_buffer is outputed
-      pc_mux             <= output_buffer (29);
-      regdest_mux        <= output_buffer (28 downto 27);
-      regshift_mux       <= output_buffer (26 downto 25);
-      enable_regs        <= output_buffer (24);
-      in_mux1            <= output_buffer (23 downto 22);
-      in_mux2            <= output_buffer (21 downto 20);
-      in_alu_instruction <= output_buffer (19 downto 14);
-      mux_decision       <= output_buffer (13);
-      rd_mask            <= output_buffer (12 downto 9);
-      wr_mask            <= output_buffer (8 downto 5);
-      stage_control      <= output_buffer (4 downto 0);
+      --pc_mux             <= output_buffer (29);
+      --regdest_mux        <= output_buffer (28 downto 27);
+      --regshift_mux       <= output_buffer (26 downto 25);
+      --enable_regs        <= output_buffer (24);
+      --in_mux1            <= output_buffer (23 downto 22);
+      --in_mux2            <= output_buffer (21 downto 20);
+      --in_alu_instruction <= output_buffer (19 downto 14);
+      --mux_decision       <= output_buffer (13);
+      --rd_mask            <= output_buffer (12 downto 9);
+      --wr_mask            <= output_buffer (8 downto 5);
+      --stage_control      <= output_buffer (4 downto 0);
 
       currentstate <= nextstate;
 
