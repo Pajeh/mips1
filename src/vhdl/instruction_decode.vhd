@@ -8,6 +8,7 @@
 -- 2015-08-06	Lukas		 added signed/unsigned logic for immediate-output
 -- 2015-08-07	Lukas		 added signed/unsigned exceptions for LW-instructions
 -- 2015-08-11   Lukas            fixed some bugs in forwarding
+-- 2015-08-11	Bahri Enis Demirtel added BLEZ, BLTZ, BLTZAL, BNE
 library IEEE;
     use IEEE.std_logic_1164.all;
 	use IEEE.numeric_std.all;
@@ -139,7 +140,7 @@ begin
 			internal_wb_flag <= '0';
 			offset := to_integer(signed(instr(25 downto 0)));
 			offset := offset * 4;
-			-- VHDL code déjà-vu?
+			-- VHDL code dï¿½jï¿½-vu?
 			-- This is the same forwarding logic as above for reg_a
                         if ((instr (25 downto 21) = regdest_ex) and (instr (25 downto 21) /= "00000")) then 
 				ip_out <= alu_result;
@@ -194,7 +195,51 @@ begin
                                 ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
                                 ip_out <= ip_in;
+                        end if;		
+		elsif ((instr (31 downto 26) = "000110")and(instr (20 downto 16)="00000")) then -- BLEZ
+			internal_wb_flag <= '0';
+			b :=0;
+			if (a <= b) then
+                                offset := to_integer(unsigned(instr(15 downto 0)));
+                                offset := offset * 4;
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
+                        else
+                                ip_out <= ip_in;
+                        end if;		
+		elsif ((instr (31 downto 26) = "000001")and(instr (20 downto 16)="00000")) then -- BLTZ
+			internal_wb_flag <= '0';
+			b :=0;
+			if (a < b) then
+                                offset := to_integer(unsigned(instr(15 downto 0)));
+                                offset := offset * 4;
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
+                        else
+                                ip_out <= ip_in;
                         end if;
+		elsif ((instr (31 downto 26) = "000001")and(instr (20 downto 16)="10000")) then -- BLTZAL
+			internal_wb_flag <= '1';
+			internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
+			b :=0;
+			if (a < b) then
+                                offset := to_integer(unsigned(instr(15 downto 0)));
+                                offset := offset * 4;
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
+                        else
+                                ip_out <= ip_in;
+                        end if;							
+		elsif (instr (31 downto 26) = "000101") then -- BNE
+			internal_wb_flag <= '0';
+			if (a /= b) then
+                                offset := to_integer(unsigned(instr(15 downto 0)));
+                                offset := offset * 4;
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
+                        else
+                                ip_out <= ip_in;
+                        end if;	
                 elsif (instr(31 downto 26) = "000001" and (instr (20) = '1')) then -- Branch something and link
                         internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
                         internal_wb_flag <= '1';
