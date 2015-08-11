@@ -45,7 +45,7 @@ begin
 
   
   -- control logic
-   u1_control: cpu_control
+   u1_control: entity work.cpu_control(structure_cpu_control)
 	PORT MAP(clk, rst, instr_addr, data_addr, rd_mask, wr_mask, instr_stall, data_stall, instr_in, data_to_cpu, 
 			 data_from_cpu, alu_op, exc_mux1, exc_mux2, exc_alu_zero, memstg_mux, id_regdest_mux, id_regshift_mux,
 			 id_enable_regs, in_mux_pc, stage_control
@@ -55,7 +55,7 @@ begin
   
   
   -- datapath
-   u2_datapath: cpu_datapath
+   u2_datapath: entity work.cpu_datapath(structure_cpu_datapath)
      PORT MAP(clk, rst, instr_addr, data_addr, instr_in, data_to_cpu, data_from_cpu, alu_op, exc_mux1, exc_mux2,
               exc_alu_zero, memstg_mux, id_regdest_mux, id_regshift_mux, id_enable_regs, in_mux_pc, stage_control
      );
