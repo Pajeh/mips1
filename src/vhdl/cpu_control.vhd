@@ -15,8 +15,6 @@ entity cpu_control is
   port(
       clk                   	: in  std_logic;
       rst                   	: in  std_logic;
-      instr_addr            	: out std_logic_vector(31 downto 0);
-      data_addr             	: out std_logic_vector(31 downto 0);
       rd_mask   	        : out std_logic_vector(3  downto 0);
       wr_mask		        : out std_logic_vector(3  downto 0);
       instr_stall       	: in  std_logic;
