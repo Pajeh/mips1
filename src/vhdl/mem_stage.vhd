@@ -40,8 +40,8 @@ architecture behavioral of MemoryStage is
 	begin
 	
 		-- Data address and data are always routed out.
-		data_addr <= data_in;
-		data_from_cpu <= aluResult_in;
+		data_addr <= aluResult_in;
+		data_from_cpu <= data_in;
 		
 		-- reg_dest is forwarded
 		reg_dest_out <= reg_dest_in;
