@@ -40,11 +40,13 @@ begin
 
 		-- Forwarding logic for reg_a
 		-- If the destination register is still used by the writeback-phase, the writeback-output is forwarded
-        	if instr (25 downto 21) = regdest_mem then 
-			reg_a <= mem_result;
-		-- If the destination register is still used by the memory-phase, the alu-result is forwarded
-		elsif instr (25 downto 21) = regdest_ex then 
+        	if instr (25 downto 21) = regdest_ex then 
 			reg_a <= alu_result;
+		-- If the destination register is still used by the memory-phase, the alu-result is forwarded
+		elsif instr (25 downto 21) = regdest_mem then 
+			reg_a <= mem_result;
+                elsif (instr (25 downto 21) = writeback_reg) then
+                        reg_a <= writeback;
 		-- Otherwise, no forwarding is required and the register specified by rs is read
 		else 
 			reg_a <= register_file(to_integer(unsigned (instr (25 downto 21))));
@@ -52,10 +54,12 @@ begin
 
 		
 		--Forwarding logic for reg_b. Works analogously to the reg_a block above
-		if (instr (20 downto 16) = regdest_mem) then 
-			reg_b <= mem_result;
-		elsif (instr (20 downto 16) = regdest_ex) then 
+		if (instr (20 downto 16) = regdest_ex) then 
 			reg_b <= alu_result;
+		elsif (instr (20 downto 16) = regdest_mem) then 
+			reg_b <= mem_result;
+                elsif (instr (20 downto 16) = writeback_reg) then
+                        reg_b <= writeback;
 		else 
 			reg_b <= register_file(to_integer(unsigned (instr (20 downto 16))));
 		end if;
@@ -96,21 +100,25 @@ begin
 	variable a, b : integer;
 	begin
 		-- Prepares values of reg_a and reg_b for comparison
-		if (instr (25 downto 21)) = regdest_mem then 
-			a := to_integer(signed(mem_result));
-		elsif (instr (25 downto 21)) = regdest_ex then 
+		if (instr (25 downto 21)) = regdest_ex then 
 			a := to_integer(signed(alu_result));
+		elsif (instr (25 downto 21)) = regdest_mem then 
+			a := to_integer(signed(mem_result));
+                elsif (instr (25 downto 21) = writeback_reg) then
+                        a := to_integer(signed(writeback));
 		else 
 			a := to_integer(signed(register_file(to_integer(unsigned (instr (25 downto 21))))));
 		end if;
 
 		
-		if (instr (20 downto 16) = regdest_mem) then 
-			b:= to_integer(signed(mem_result));
-		elsif (instr (20 downto 16) = regdest_ex) then 
-			b := to_integer(signed(alu_result));
+		if (instr (20 downto 16) = regdest_ex) then 
+			b:= to_integer(signed(alu_result));
+		elsif (instr (20 downto 16) = regdest_mem) then 
+			b := to_integer(signed(mem_result));
+                elsif (instr (20 downto 16) = writeback_reg) then
+                        b := to_integer(signed(writeback));
 		else 
-			b := to_integer(signed(register_file(to_integer(unsigned (instr (25 downto 21))))));
+			b := to_integer(signed(register_file(to_integer(unsigned (instr (20 downto 16))))));
 		end if;
 
 
@@ -132,17 +140,53 @@ begin
 			offset := offset * 4;
 			-- VHDL code déjà-vu?
 			-- This is the same forwarding logic as above for reg_a
-			if (instr (25 downto 21)) = regdest_mem then 
-				ip_out <= mem_result;
-			elsif (instr (25 downto 21)) = regdest_ex then 
+			if (instr (25 downto 21)) = regdest_ex then 
 				ip_out <= alu_result;
+			elsif (instr (25 downto 21)) = regdest_mem then 
+				ip_out <= mem_result;
+                        elsif (instr (25 downto 21) = writeback_reg) then
+                                ip_out <= writeback;
 			else 
 				ip_out <= register_file(to_integer(unsigned (instr (25 downto 21))));
 			end if;
-
                 elsif (instr (31 downto 26) = "000100") then        --BEQ
                         internal_wb_flag <= '0';
                         if (a = b) then
+                                offset := to_integer(unsigned(instr(15 downto 0)));
+                                offset := offset * 4;
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
+                        else
+                                ip_out <= ip_in;
+                        end if;
+		elsif ((instr (31 downto 26) = "000001") and (instr (20 downto 16) = "00001")) then --BGEZ instruction
+			internal_wb_flag <= '0';
+			b :=0;
+                        if (a >= b) then
+                                offset := to_integer(unsigned(instr(15 downto 0)));
+                                offset := offset * 4;
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
+                        else
+                                ip_out <= ip_in;
+                        end if;
+		elsif ((instr (31 downto 26) = "000001") and (instr (20 downto 16) = "10001")) then --BGEZAL instruction
+			internal_wb_flag <= '1';
+			internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
+			b :=0;
+                        if (a >= b) then
+                                offset := to_integer(unsigned(instr(15 downto 0)));
+                                offset := offset * 4;
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
+                        else
+                                ip_out <= ip_in;
+                        end if;
+		elsif ((instr (31 downto 26) = "000111")and(instr (20 downto 16)="00000")) then -- BGTZ
+			internal_wb_flag <= '0';
+			b :=0;
+			report "The value of 'a' is " & integer'image(a);
+			if (a > b) then
                                 offset := to_integer(unsigned(instr(15 downto 0)));
                                 offset := offset * 4;
                                 offset := offset + to_integer (unsigned(ip_in));
@@ -158,11 +202,11 @@ begin
 			offset := offset + to_integer (unsigned(ip_in));
 			ip_out <= std_logic_vector(to_unsigned(offset,32));
 		else -- Branch instruction of any kind
-			internal_wb_flag <= '0';
-			offset := to_integer(signed(instr(15 downto 0)));
-			offset := offset * 4;
-			offset := offset + to_integer (unsigned(ip_in));
-			ip_out <= std_logic_vector(to_unsigned(offset,32));
+			--internal_wb_flag <= '0';
+			--offset := to_integer(signed(instr(15 downto 0)));
+			--offset := offset * 4;
+			--offset := offset + to_integer (unsigned(ip_in));
+			--ip_out <= std_logic_vector(to_unsigned(offset,32));
 		end if;
 	end process;
 
@@ -175,6 +219,8 @@ begin
 		end if;
 	end process;
 end architecture;
+
+--TODO forwarding von r0 verhindern
 
 
 -- FSM-signal-Howto:
