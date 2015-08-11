@@ -142,26 +142,15 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
   begin
     case currentstate is
       when s0 =>
-        out_busy <= '1';
-        case instr_in (31 downto 26) is
-              when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
-              when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
-              when lbu    => output_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
-              when lw     => output_buffer <= b"0_10_00_1_10_01_100000_1_1111_0000_11111";
-              when sb     => output_buffer <= b"0_10_00_0_10_01_100000_0_0001_0000_11111";
-              when sw     => output_buffer <= b"0_10_00_0_10_01_100000_0_1111_0000_11111";
-              when slti   => output_buffer <= b"0_10_00_1_10_01_001000_0_0000_0000_11111";
-              when andi   => output_buffer <= b"0_10_01_1_00_01_100100_0_0000_0000_11111";
-              when shift  => output_buffer <= b"0_00_00_1_00_00_001000_0_0000_0000_11111";
-              when beqz   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
-              when bnez   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
-              when j      => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
-              when jalx   => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
-              --when r_type => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-              when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
-        end case;
+      	instr1 <= instr_in;
+      when s1 =>
+      	instr2 <= instr_in;
+      when s2 =>
+      	instr3 <= instr_in;
+      when s3 =>
+      	instr4 <= instr_in;
       when s4 =>
-        out_busy <= '0';
+      	instr5 <= instr_in;
       when others =>
         -- do something
     end case;
