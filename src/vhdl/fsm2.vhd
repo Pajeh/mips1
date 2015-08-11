@@ -13,6 +13,7 @@ entity FSM is
   port (
     clk                     : in std_logic;
     rst                     : in std_logic;
+    instr_in                : in  std_logic_vector(31 downto 0);
     instr_stall             : in  std_logic;
     data_stall              : in  std_logic;
     out_currentstate        : out std_logic_vector(4 downto 0);
@@ -76,8 +77,6 @@ begin
 
   state_encode: process(currentstate, instr_stall, data_stall)
   begin
-    opcode <= instr (31 downto 26);
-    output_buffer <= (others => '0');
     case currentstate is
         when s0 =>
         if (instr_stall = '0') then
@@ -127,7 +126,7 @@ begin
     case currentstate is
       when s0 =>
         busy <= '1';
-        case instr (31 downto 26) is
+        case instr_in (31 downto 26) is
               when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
               when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
               when lbu    => output_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
