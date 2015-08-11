@@ -1,6 +1,7 @@
 -- revision history:
 -- 06.07.2015     Alex Schönberger    created
 -- 10.08.2015     Patrick Appenheimer    entity
+-- 11.08.2015     Patrick Appenheimer    architecture
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
