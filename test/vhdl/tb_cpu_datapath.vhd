@@ -357,6 +357,51 @@ architecture behavioural of tb_cpu_datapath is
                 -- wb: 8
                 id_enable_regs <= '0';
                 wait for clk_time;
+                
+                -- To test:
+                -- next instr_addr: 58
+                -- alu_result: 00000000
+                -- regdest_3: 02
+                -- writeback_4: 000000000
+                -- regdest_4 : 00
+                -- if: Instruction 13 (NOP)
+                instr_in <= x"00000000";
+                --id: 12
+                id_regdest_mux <= "00";
+                id_regshift_mux <="00";
+                in_mux_pc <= '1';    
+                --ex: 11
+                exc_mux1 <= "10";
+                exc_mux2 <= "01";
+                alu_op <= "001000";
+                -- mem: 10
+                memstg_mux <= '0';
+                -- wb: 9
+                id_enable_regs <= '1';
+                wait for clk_time;
+                
+                -- To test: 
+                -- reg_a_2: 00000000
+                -- reg_b_2: 00000000
+                -- imm_2: 00000000
+                -- shift_2: 00
+                -- writeback_4: 00000000
+                -- regdest_4: 02
+                --if: Instruction 23 (LW $v1, -32752($gp))
+                instr_in <= x"8f838010";
+                --id: Instruction 13
+                id_regdest_mux <= "00";
+                id_regshift_mux <="00";
+                in_mux_pc <= '0';    
+                --ex: Instruction 12
+                exc_mux1 <= "10";
+                exc_mux2 <= "00";
+                alu_op <= "000100";
+                -- mem: Instruction 11
+                memstg_mux <= '0';
+                -- wb: Instruction 10
+                id_enable_regs <= '0';
+                wait for clk_time;
 		
             
         end process;

@@ -322,7 +322,7 @@ begin
 
 	-- Test for BEQ-Op (condition is false)
 	-- ip_out : 01010100
-	instr <= x"1010AFFE";
+	instr <= x"1020AFFE";
 	wait for clk_time;
 
 	-- Test for BGEZAL-Op (var is greater)

@@ -102,7 +102,7 @@ begin
 	variable a, b : integer;
 	begin
 		-- Prepares values of reg_a and reg_b for comparison
-		if ((instr (25 downto 21) = regdest_ex ) and (instr (25 downto 21) /= "00000")) then 
+		if ((instr (25 downto 21) = regdest_ex) and (instr (25 downto 21) /= "00000")) then 
 			a := to_integer(signed(alu_result));
 		elsif ((instr (25 downto 21) = regdest_mem) and (instr (25 downto 21) /= "00000")) then 
 			a := to_integer(signed(mem_result));
@@ -239,21 +239,9 @@ begin
                                 ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
                                 ip_out <= ip_in;
-                        end if;	
-                elsif (instr(31 downto 26) = "000001" and (instr (20) = '1')) then -- Branch something and link
-                        internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
-                        internal_wb_flag <= '1';
-                        offset := to_integer(signed(instr(15 downto 0)));
-			offset := offset * 4;
-			offset := offset + to_integer (unsigned(ip_in));
-			ip_out <= std_logic_vector(to_unsigned(offset,32));
-		else -- Branch instruction of any kind
-			--internal_wb_flag <= '0';
-			--offset := to_integer(signed(instr(15 downto 0)));
-			--offset := offset * 4;
-			--offset := offset + to_integer (unsigned(ip_in));
+                        end if;
+		else
 			ip_out <= ip_in;
-			--ip_out <= std_logic_vector(to_unsigned(offset,32));
 		end if;
 	end process;
 
