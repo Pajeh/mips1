@@ -1,5 +1,7 @@
 -- Revision history:
 -- 10.08.2015   Patrick Appenheimer         created 
+-- 10.08.2015   Carlos Minamisava Faria     moore state machine states definition 
+-- 10.08.2015   Carlos Minamisava Faria & Patrick Appenheimer     Instructions added 
 -- 11.08.2015   Patrick Appenheimer         added state_register and state_decode 
 
 library IEEE;
