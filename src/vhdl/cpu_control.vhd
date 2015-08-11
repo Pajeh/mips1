@@ -58,11 +58,11 @@ architecture structure_cpu_control of cpu_control is
   signal currentstate4         : std_logic_vector(4 downto 0);
   signal currentstate5         : std_logic_vector(4 downto 0);
   
-  signal nexttstate1         : std_logic_vector(4 downto 0);
-  signal nexttstate2         : std_logic_vector(4 downto 0);
-  signal nexttstate3         : std_logic_vector(4 downto 0);
-  signal nexttstate4         : std_logic_vector(4 downto 0);
-  signal nexttstate5         : std_logic_vector(4 downto 0);
+  signal nextstate1         : std_logic_vector(4 downto 0);
+  signal nextstate2         : std_logic_vector(4 downto 0);
+  signal nextstate3         : std_logic_vector(4 downto 0);
+  signal nextstate4         : std_logic_vector(4 downto 0);
+  signal nextstate5         : std_logic_vector(4 downto 0);
   
   signal output_buffer1 : std_logic_vector(29 downto 0);
   signal output_buffer2 : std_logic_vector(29 downto 0);
@@ -167,15 +167,15 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			exc_mux1 <= output_buffer1 (23 downto 22);
 			exc_mux2 <= output_buffer1 (21 downto 20);
 			alu_op <= output_buffer1 (19 downto 14);
-			in_mux_pc <= output_buffer1 (29 downto 29);
+			in_mux_pc <= output_buffer1 (29);
 		when s2 =>
-			memstg_mux <= output_buffer1 (13 downto 13);
+			memstg_mux <= output_buffer1 (13);
 			rd_mask <= output_buffer1 (12 downto 9);
 			wr_mask <= output_buffer1 (8 downto 5);
 		when s3 =>
 			--do nothing
 		when s4 =>
-			id_enable_regs <= output_buffer1 (24 downto 24);
+			id_enable_regs <= output_buffer1 (24);
 		when others =>
 			--do nothing
 	end case;
@@ -193,15 +193,15 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			exc_mux1 <= output_buffer2 (23 downto 22);
 			exc_mux2 <= output_buffer2 (21 downto 20);
 			alu_op <= output_buffer2 (19 downto 14);
-			in_mux_pc <= output_buffer2 (29 downto 29);
+			in_mux_pc <= output_buffer2 (29);
 		when s2 =>
-			memstg_mux <= output_buffer2(13 downto 13);
+			memstg_mux <= output_buffer2(13);
 			rd_mask <= output_buffer2 (12 downto 9);
 			wr_mask <= output_buffer2 (8 downto 5);
 		when s3 =>
 			--do nothing
 		when s4 =>
-			id_enable_regs <= output_buffer2 (24 downto 24);
+			id_enable_regs <= output_buffer2 (24);
 		when others =>
 			--do nothing
 	end case;
@@ -217,15 +217,15 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			exc_mux1 <= output_buffer3 (23 downto 22);
 			exc_mux2 <= output_buffer3 (21 downto 20);
 			alu_op <= output_buffer3 (19 downto 14);
-			in_mux_pc <= output_buffer3 (29 downto 29);
+			in_mux_pc <= output_buffer3 (29);
 		when s2 =>
-			memstg_mux <= output_buffer3 (13 downto 13);
+			memstg_mux <= output_buffer3 (13);
 			rd_mask <= output_buffer3 (12 downto 9);
 			wr_mask <= output_buffer3 (8 downto 5);
 		when s3 =>
 			--do nothing
 		when s4 =>
-			id_enable_regs <= output_buffer3 (24 downto 24);
+			id_enable_regs <= output_buffer3 (24);
 		when others =>
 			--do nothing
 	end case;
@@ -241,15 +241,15 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			exc_mux1 <= output_buffer4 (23 downto 22);
 			exc_mux2 <= output_buffer4 (21 downto 20);
 			alu_op <= output_buffer4 (19 downto 14);
-			in_mux_pc <= output_buffer4 (29 downto 29);
+			in_mux_pc <= output_buffer4 (29);
 		when s2 =>
-			memstg_mux <= output_buffer4 (13 downto 13);
+			memstg_mux <= output_buffer4 (13);
 			rd_mask <= output_buffer4 (12 downto 9);
 			wr_mask <= output_buffer4 (8 downto 5);
 		when s3 =>
 			--do nothing
 		when s4 =>
-			id_enable_regs <= output_buffer4 (24 downto 24);
+			id_enable_regs <= output_buffer4 (24);
 		when others =>
 			--do nothing
 	end case;
@@ -265,15 +265,15 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			exc_mux1 <= output_buffer5 (23 downto 22);
 			exc_mux2 <= output_buffer5 (21 downto 20);
 			alu_op <= output_buffer5 (19 downto 14);
-			in_mux_pc <= output_buffer5 (29 downto 29);
+			in_mux_pc <= output_buffer5 (29);
 		when s2 =>
-			memstg_mux <= output_buffer5 (13 downto 13);
+			memstg_mux <= output_buffer5 (13);
 			rd_mask <= output_buffer5 (12 downto 9);
 			wr_mask <= output_buffer5 (8 downto 5);
 		when s3 =>
 			--do nothing
 		when s4 =>
-			id_enable_regs <= output_buffer5 (24 downto 24);
+			id_enable_regs <= output_buffer5 (24);
 		when others =>
 			--do nothing
 	end case;
