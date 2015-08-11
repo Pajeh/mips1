@@ -21,7 +21,8 @@ entity FSM is
     out_currentstate        : out std_logic_vector(4 downto 0);
     out_nextstate           : out std_logic_vector(4 downto 0);
     out_buffer              : out std_logic_vector(29 downto 0);
-    out_busy                : out std_logic
+    out_busy                : out std_logic;
+    in_go                   : in  std_logic
     );
 end entity FSM;
 
@@ -119,8 +120,10 @@ begin
   begin
     if (rst = '0') then
       currentstate <= sX;
-    elsif (clk'event and clk = '1') then
+    elsif (clk'event and clk = '1' and in_go = '1') then
       currentstate <= nextstate;
+    else
+      currentstate <= s0;
     end if;
   end process state_register;
   
