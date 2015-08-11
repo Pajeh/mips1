@@ -1,7 +1,8 @@
 -- revision history:
 -- 06.07.2015     Alex Schönberger    created
 -- 10.08.2015     Patrick Appenheimer    entity
--- 11.08.2015     Patrick Appenheimer    architecture
+-- 11.08.2015     Patrick Appenheimer    main fsm
+-- 11.08.2015     Patrick Appenheimer    5 instr fsm
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -155,7 +156,129 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
         -- do something
     end case;
   end process state_decode;
-	
+  
+  fsm1_ctrl: process(currentstate1)
+  begin
+  	case currentstate1 is
+		when s0 =>
+			id_regdest_mux <= output_buffer1 (28 downto 27);
+			id_regshift_mux <= output_buffer1 (26 downto 25);
+		when s1 =>
+			exc_mux1 <= output_buffer1 (23 downto 22);
+			exc_mux2 <= output_buffer1 (21 downto 20);
+			alu_op <= output_buffer1 (19 downto 14);
+			in_mux_pc <= output_buffer1 (29 downto 29);
+		when s2 =>
+			memstg_mux <= output_buffer1 (13 downto 13);
+			rd_mask <= output_buffer1 (12 downto 9);
+			wr_mask <= output_buffer1 (8 downto 5);
+		when s3 =>
+			--do nothing
+		when s4 =>
+			id_enable_regs <= output_buffer1 (24 downto 24);
+		when others =>
+			--do nothing
+	end case;
+  end process fsm1_ctrl;
+
+
+  
+  fsm2_ctrl: process(currentstate2)
+  begin
+  	case currentstate2 is
+		when s0 =>
+			id_regdest_mux <= output_buffer2 (28 downto 27);
+			id_regshift_mux <= output_buffer2 (26 downto 25);
+		when s1 =>
+			exc_mux1 <= output_buffer2 (23 downto 22);
+			exc_mux2 <= output_buffer2 (21 downto 20);
+			alu_op <= output_buffer2 (19 downto 14);
+			in_mux_pc <= output_buffer2 (29 downto 29);
+		when s2 =>
+			memstg_mux <= output_buffer2(13 downto 13);
+			rd_mask <= output_buffer2 (12 downto 9);
+			wr_mask <= output_buffer2 (8 downto 5);
+		when s3 =>
+			--do nothing
+		when s4 =>
+			id_enable_regs <= output_buffer2 (24 downto 24);
+		when others =>
+			--do nothing
+	end case;
+  end process fsm2_ctrl;
+  
+  fsm3_ctrl: process(currentstate3)
+  begin
+  	case currentstate3 is
+		when s0 =>
+			id_regdest_mux <= output_buffer3 (28 downto 27);
+			id_regshift_mux <= output_buffer3 (26 downto 25);
+		when s1 =>
+			exc_mux1 <= output_buffer3 (23 downto 22);
+			exc_mux2 <= output_buffer3 (21 downto 20);
+			alu_op <= output_buffer3 (19 downto 14);
+			in_mux_pc <= output_buffer3 (29 downto 29);
+		when s2 =>
+			memstg_mux <= output_buffer3 (13 downto 13);
+			rd_mask <= output_buffer3 (12 downto 9);
+			wr_mask <= output_buffer3 (8 downto 5);
+		when s3 =>
+			--do nothing
+		when s4 =>
+			id_enable_regs <= output_buffer3 (24 downto 24);
+		when others =>
+			--do nothing
+	end case;
+  end process fsm3_ctrl;
+  
+  fsm4_ctrl: process(currentstate4)
+  begin
+  	case currentstate4 is
+		when s0 =>
+			id_regdest_mux <= output_buffer4 (28 downto 27);
+			id_regshift_mux <= output_buffer4 (26 downto 25);
+		when s1 =>
+			exc_mux1 <= output_buffer4 (23 downto 22);
+			exc_mux2 <= output_buffer4 (21 downto 20);
+			alu_op <= output_buffer4 (19 downto 14);
+			in_mux_pc <= output_buffer4 (29 downto 29);
+		when s2 =>
+			memstg_mux <= output_buffer4 (13 downto 13);
+			rd_mask <= output_buffer4 (12 downto 9);
+			wr_mask <= output_buffer4 (8 downto 5);
+		when s3 =>
+			--do nothing
+		when s4 =>
+			id_enable_regs <= output_buffer4 (24 downto 24);
+		when others =>
+			--do nothing
+	end case;
+  end process fsm4_ctrl;
+  
+  fsm5_ctrl: process(currentstate5)
+  begin
+  	case currentstate5 is
+		when s0 =>
+			id_regdest_mux <= output_buffer5 (28 downto 27);
+			id_regshift_mux <= output_buffer5 (26 downto 25);
+		when s1 =>
+			exc_mux1 <= output_buffer5 (23 downto 22);
+			exc_mux2 <= output_buffer5 (21 downto 20);
+			alu_op <= output_buffer5 (19 downto 14);
+			in_mux_pc <= output_buffer5 (29 downto 29);
+		when s2 =>
+			memstg_mux <= output_buffer5 (13 downto 13);
+			rd_mask <= output_buffer5 (12 downto 9);
+			wr_mask <= output_buffer5 (8 downto 5);
+		when s3 =>
+			--do nothing
+		when s4 =>
+			id_enable_regs <= output_buffer5 (24 downto 24);
+		when others =>
+			--do nothing
+	end case;
+  end process fsm5_ctrl;
+
 		
 	
 end architecture structure_cpu_control;
