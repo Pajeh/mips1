@@ -11,6 +11,7 @@ library IEEE;
 library WORK;
   use WORK.all;  
 
+
 entity cpu_control is
   port(
       clk                   	: in  std_logic;
