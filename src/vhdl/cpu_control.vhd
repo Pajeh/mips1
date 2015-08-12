@@ -180,7 +180,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
     end case;
   end process state_decode;
   
-  fsm1_ctrl: process(currentstate1)
+  fsm_ctrl: process(currentstate1, currentstate2, currentstate3, currentstate4, currentstate5)
   begin
   	case currentstate1 is
 		when s0 =>
@@ -204,13 +204,8 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 		when others =>
 			--do nothing
 	end case;
-  end process fsm1_ctrl;
-
-
-  
-  fsm2_ctrl: process(currentstate2)
-  begin
-  	case currentstate2 is
+	
+	case currentstate2 is
 		when s0 =>
 			id_regdest_mux <= output_buffer2 (28 downto 27);
 			id_regshift_mux <= output_buffer2 (26 downto 25);
@@ -232,11 +227,8 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 		when others =>
 			--do nothing
 	end case;
-  end process fsm2_ctrl;
-  
-  fsm3_ctrl: process(currentstate3)
-  begin
-  	case currentstate3 is
+	
+	case currentstate3 is
 		when s0 =>
 			id_regdest_mux <= output_buffer3 (28 downto 27);
 			id_regshift_mux <= output_buffer3 (26 downto 25);
@@ -258,11 +250,8 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 		when others =>
 			--do nothing
 	end case;
-  end process fsm3_ctrl;
-  
-  fsm4_ctrl: process(currentstate4)
-  begin
-  	case currentstate4 is
+	
+	case currentstate4 is
 		when s0 =>
 			id_regdest_mux <= output_buffer4 (28 downto 27);
 			id_regshift_mux <= output_buffer4 (26 downto 25);
@@ -284,11 +273,8 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 		when others =>
 			--do nothing
 	end case;
-  end process fsm4_ctrl;
-  
-  fsm5_ctrl: process(currentstate5)
-  begin
-  	case currentstate5 is
+	
+	case currentstate5 is
 		when s0 =>
 			id_regdest_mux <= output_buffer5 (28 downto 27);
 			id_regshift_mux <= output_buffer5 (26 downto 25);
@@ -310,8 +296,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 		when others =>
 			--do nothing
 	end case;
-  end process fsm5_ctrl;
-
-		
+	
+  end process fsm_ctrl;
 	
 end architecture structure_cpu_control;
