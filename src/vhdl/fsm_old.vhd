@@ -259,7 +259,7 @@ begin
   begin  -- process ouput
     if rst = '0' then                   -- asynchronous reset (active low)
       currentstate <= s0;  -- reset to first state - Instruction fetch
-    elsif clk'event and clk = '1'and (nextfsm_nextstate > (nextstate) or (nextfsm_nextstate <= currentstate)) then  -- rising clock edge
+    elsif clk'event and clk = '1'and (nextfsm_nextstate /= (nextstate)) then  -- rising clock edge
       currentstate     <= nextstate;
       currentstate_out <= currentstate;
     end if;
