@@ -97,7 +97,7 @@ begin
 	fsm5:	entity work.fsm(behavioral) port map(clk, rst, instr5, instr_stall, data_stall,
 	currentstate5, nextstate5, output_buffer5, busy5, go5);
 
-	stage_control (1 downto 0) <= b"11";
+	--stage_control (1 downto 0) <= b"11";
 	
 state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
   begin
@@ -182,6 +182,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
   
   fsm_ctrl: process(currentstate1, currentstate2, currentstate3, currentstate4, currentstate5)
   begin
+  	stage_control <= b"11111";
   	case currentstate1 is
 		when s0 =>
 			id_regdest_mux <= output_buffer1 (28 downto 27);
