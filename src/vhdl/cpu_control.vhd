@@ -44,17 +44,18 @@ architecture structure_cpu_control of cpu_control is
   constant s3 : std_logic_vector(4 downto 0) := b"00011";
   constant s4 : std_logic_vector(4 downto 0) := b"00100";
 
-  signal currentstate  : std_logic_vector(4 downto 0, 3 downto 0) : ((others  => (others => '0')));
-  signal nextstate     : std_logic_vector(4 downto 0, 3 downto 0) : ((others  => (others => '0')));
-  signal output_buffer : std_logic_vector(29 downto 0, 3 downto 0) : ((others => (others => '0')));
-  signal rst_fsm       : std_logic_vector(4 downto 0) : (others               => '1');
+  type t_states is array (4 downto 0) of std_logic_vector(4 downto 0);
+  signal currentstate  : t_states := ((others  => (others => '0')));
+  signal nextstate     : t_states  := ((others  => (others => '0')));
+  signal output_buffer : t_states := ((others  => (others => '0')));
+  signal rst_fsm       : std_logic_vector(4 downto 0) := (others                     => '1');
   
 begin
-  fsm1 : entity work.fsm(behavioral) port map(clk, rst_fsm(0), nextstate(4 downto 0, 4), nextstate(4 downto 0, 0),currentstate(4 downto 0, 0), instr, instr_stall, data_stall);
-  fsm2 : entity work.fsm(behavioral) port map(clk, rst_fsm(1), nextstate(4 downto 0, 0), nextstate(4 downto 0, 1),currentstate(4 downto 0, 1), instr, instr_stall, data_stall);
-  fsm3 : entity work.fsm(behavioral) port map(clk, rst_fsm(2), nextstate(4 downto 0, 1), nextstate(4 downto 0, 2),currentstate(4 downto 0, 2), instr, instr_stall, data_stall);
-  fsm4 : entity work.fsm(behavioral) port map(clk, rst_fsm(3), nextstate(4 downto 0, 2), nextstate(4 downto 0, 3),currentstate(4 downto 0, 3), instr, instr_stall, data_stall);
-  fsm5 : entity work.fsm(behavioral) port map(clk, rst_fsm(4), nextstate(4 downto 0, 3), nextstate(4 downto 0, 4),currentstate(4 downto 0, 4), instr, instr_stall, data_stall);
+  fsm1 : entity work.fsm(behavioral) port map(clk, rst_fsm(0), nextstate(4), nextstate(0), currentstate(0), instr_in, instr_stall, data_stall);
+  fsm2 : entity work.fsm(behavioral) port map(clk, rst_fsm(1), nextstate(0), nextstate(1), currentstate(1), instr_in, instr_stall, data_stall);
+  fsm3 : entity work.fsm(behavioral) port map(clk, rst_fsm(2), nextstate(1), nextstate(2), currentstate(2), instr_in, instr_stall, data_stall);
+  fsm4 : entity work.fsm(behavioral) port map(clk, rst_fsm(3), nextstate(2), nextstate(3), currentstate(3), instr_in, instr_stall, data_stall);
+  fsm5 : entity work.fsm(behavioral) port map(clk, rst_fsm(4), nextstate(3), nextstate(4), currentstate(4), instr_in, instr_stall, data_stall);
 
 
   init : process(rst, nextstate)
