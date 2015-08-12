@@ -3,6 +3,7 @@
 -- 10.08.2015     Patrick Appenheimer    entity
 -- 11.08.2015     Patrick Appenheimer    main fsm
 -- 11.08.2015     Patrick Appenheimer    5 instr fsm
+-- 12.08.2015     Patrick Appenheimer    minor changes
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
