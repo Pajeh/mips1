@@ -127,7 +127,6 @@ begin
   begin
     if (rst = '0') then
       currentstate <= sX;
-      out_busy <= '0';
     elsif (clk'event and clk = '1') then
       currentstate <= nextstate;
     end if;
@@ -139,6 +138,8 @@ begin
     out_nextstate <= nextstate;
     out_buffer <= output_buffer;
     case currentstate is
+      when sX =>
+        out_busy <= '0';
       when s0 =>
         out_busy <= '1';
         case instr_in (31 downto 26) is
