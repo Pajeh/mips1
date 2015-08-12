@@ -247,11 +247,7 @@ begin
 
 	imm_expand : process (instr) is
 	begin
-		if ((instr (26) = '1') and (instr(31 downto 26) /= "100011") and (instr(31 downto 26) /="101011")) then	-- unsigned op with LW-exception
-			imm <= X"0000" & instr (15 downto 0);
-		else				-- signed op
-			imm <= std_logic_vector(to_signed(to_integer(signed (instr (15 downto 0))),32));
-		end if;
+                imm <= std_logic_vector(to_signed(to_integer(signed (instr (15 downto 0))),32));
 	end process;
 end architecture;
 
