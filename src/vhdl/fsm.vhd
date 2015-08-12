@@ -129,7 +129,11 @@ begin
   state_register: process(rst, clk)
   begin
     if (rst = '0') then
-      currentstate <= sX;
+      if (in_go = '0') then
+        currentstate <= sX;
+      else
+        currentstate <= s0;
+      end if;
     elsif (clk'event and clk = '1') then
       currentstate <= nextstate;
     end if;
