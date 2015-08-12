@@ -186,7 +186,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 		when s0 =>
 			id_regdest_mux <= output_buffer1 (28 downto 27);
 			id_regshift_mux <= output_buffer1 (26 downto 25);
-			in_mux_pc <= output_buffer1 (29);
+			
 		when s1 =>
 			exc_mux1 <= output_buffer1 (23 downto 22);
 			exc_mux2 <= output_buffer1 (21 downto 20);
@@ -198,8 +198,8 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			rd_mask <= output_buffer1 (12 downto 9);
 			wr_mask <= output_buffer1 (8 downto 5);
 			stage_control (3) <= output_buffer1 (3);
-		when s4 =>
-			stage_control (4) <= output_buffer1 (4);
+		when sX =>
+			in_mux_pc <= output_buffer1 (29);
 		when s3 =>
 			id_enable_regs <= output_buffer1 (24);
 		when others =>
@@ -222,8 +222,8 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			rd_mask <= output_buffer2 (12 downto 9);
 			wr_mask <= output_buffer2 (8 downto 5);
 			stage_control (3) <= output_buffer2 (3);
-		when s4 =>
-			stage_control (4) <= output_buffer2 (4);
+		when sX =>
+			in_mux_pc <= output_buffer2 (29);
 		when s3 =>
 			id_enable_regs <= output_buffer2 (24);
 		when others =>
@@ -246,8 +246,8 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			rd_mask <= output_buffer3 (12 downto 9);
 			wr_mask <= output_buffer3 (8 downto 5);
 			stage_control (3) <= output_buffer3 (3);
-		when s4 =>
-			stage_control (4) <= output_buffer3 (4);
+		when sX =>
+			in_mux_pc <= output_buffer3 (29);
 		when s3 =>
 			id_enable_regs <= output_buffer3 (24);
 		when others =>
@@ -270,8 +270,8 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			rd_mask <= output_buffer4 (12 downto 9);
 			wr_mask <= output_buffer4 (8 downto 5);
 			stage_control (3) <= output_buffer4 (3);
-		when s4 =>
-			stage_control (4) <= output_buffer4 (4);
+		when sX =>
+			in_mux_pc <= output_buffer4 (29);
 		when s3 =>
 			id_enable_regs <= output_buffer4 (24);
 		when others =>
@@ -294,8 +294,8 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 			rd_mask <= output_buffer5 (12 downto 9);
 			wr_mask <= output_buffer5 (8 downto 5);
 			stage_control (3) <= output_buffer5 (3);
-		when s4 =>
-			stage_control (4) <= output_buffer5 (4);
+		when sX =>
+			in_mux_pc <= output_buffer5 (29);
 		when s3 =>
 			id_enable_regs <= output_buffer5 (24);
 		when others =>
