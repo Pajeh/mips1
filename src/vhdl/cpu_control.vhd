@@ -68,20 +68,20 @@ architecture structure_cpu_control of cpu_control is
   signal output_buffer4 : std_logic_vector(29 downto 0);
   signal output_buffer5 : std_logic_vector(29 downto 0);
   
-  signal busy1      : std_logic := '0';
-  signal busy2      : std_logic := '0';
-  signal busy3      : std_logic := '0';
-  signal busy4      : std_logic := '0';
-  signal busy5      : std_logic := '0';
+  signal busy1      : std_logic;
+  signal busy2      : std_logic;
+  signal busy3      : std_logic;
+  signal busy4      : std_logic;
+  signal busy5      : std_logic;
   
-  signal go1      : std_logic := '0';
-  signal go2      : std_logic := '0';
-  signal go3      : std_logic := '0';
-  signal go4      : std_logic := '0';
-  signal go5      : std_logic := '0';
+  signal go1      : std_logic;
+  signal go2      : std_logic;
+  signal go3      : std_logic;
+  signal go4      : std_logic;
+  signal go5      : std_logic;
 
-  signal currentstate  : std_logic_vector(4 downto 0)  := (others => '0');
-  signal nextstate     : std_logic_vector(4 downto 0)  := (others => '0');
+  signal currentstate  : std_logic_vector(4 downto 0);
+  signal nextstate     : std_logic_vector(4 downto 0);
   
 begin
 
