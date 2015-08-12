@@ -127,6 +127,7 @@ begin
   begin
     if (rst = '0') then
       currentstate <= sX;
+      out_busy <= '0';
     elsif (clk'event and clk = '1') then
       currentstate <= nextstate;
     end if;
