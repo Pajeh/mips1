@@ -81,12 +81,13 @@ begin
     end if;
   end process init;
 
-  output_s0 : process(output_buffer, currentstate)
+  output_IF : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s0) then
       id_regdest_mux  <= output_buffer(0) (28 downto 27);
       id_regshift_mux <= output_buffer(0) (26 downto 25);
       in_mux_pc       <= output_buffer(0) (29);
+      
     elsif (currentstate(1) = s0) then
       id_regdest_mux  <= output_buffer(1) (28 downto 27);
       id_regshift_mux <= output_buffer(1) (26 downto 25);
@@ -104,44 +105,68 @@ begin
       id_regshift_mux <= output_buffer(4) (26 downto 25);
       in_mux_pc       <= output_buffer(4) (29);
     end if;
-  end process output_s0;
+  end process output_IF;
 
-  output_s1 : process(output_buffer, currentstat0)
+  output_ID : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s1) then
-      exc_mux1          <= output_buffer(0) (23 downto 22);
-      exc_mux2          <= output_buffer(0) (21 downto 20);
-      alu_op            <= output_buffer(0) (19 downto 14);
-      in_mux_pc         <= output_buffer(0) (29);
-      stage_control (2) <= output_buffer(0) (2);
+      exc_mux1  <= output_buffer(0) (23 downto 22);
+      exc_mux2  <= output_buffer(0) (21 downto 20);
+      alu_op    <= output_buffer(0) (19 downto 14);
+      in_mux_pc <= output_buffer(0) (29);
+      if currentstate(0) /= nextstate(0) then
+        stage_control (2) <= output_buffer(0) (2);
+      else
+        stage_control (2) <= '0';
+      end if;
     elsif (currentstate(1) = s1) then
-      exc_mux1          <= output_buffer(1) (23 downto 22);
-      exc_mux2          <= output_buffer(1) (21 downto 20);
-      alu_op            <= output_buffer(1) (19 downto 14);
-      in_mux_pc         <= output_buffer(1) (29);
-      stage_control (2) <= output_buffer(1) (2);
-    elsif (currentstate(2) = s1) then
-      exc_mux1          <= output_buffer(2) (23 downto 22);
-      exc_mux2          <= output_buffer(2) (21 downto 20);
-      alu_op            <= output_buffer(2) (19 downto 14);
-      in_mux_pc         <= output_buffer(2) (29);
-      stage_control (3) <= output_buffer(2) (2);
-    elsif (currentstate(3) = s1) then
-      exc_mux1          <= output_buffer(3) (23 downto 22);
-      exc_mux2          <= output_buffer(3) (21 downto 20);
-      alu_op            <= output_buffer(3) (19 downto 14);
-      in_mux_pc         <= output_buffer(3) (29);
-      stage_control (2) <= output_buffer(3) (2);
-    elsif (currentstate(4) = s1) then
-      exc_mux1          <= output_buffer(4) (23 downto 22);
-      exc_mux2          <= output_buffer(4) (21 downto 20);
-      alu_op            <= output_buffer(4) (19 downto 14);
-      in_mux_pc         <= output_buffer(4) (29);
-      stage_control (2) <= output_buffer(4) (2);
-    end if;
-  end process output_s1;
+      exc_mux1  <= output_buffer(1) (23 downto 22);
+      exc_mux2  <= output_buffer(1) (21 downto 20);
+      alu_op    <= output_buffer(1) (19 downto 14);
+      in_mux_pc <= output_buffer(1) (29);
+      if currentstate(1) /= nextstate(1) then
+        stage_control (2) <= output_buffer(1) (2);
+      else
+        stage_control (2) <= '0';
+      end if;
 
-  output_s2 : process(output_buffer, currentstat0)
+    elsif (currentstate(2) = s1) then
+      exc_mux1  <= output_buffer(2) (23 downto 22);
+      exc_mux2  <= output_buffer(2) (21 downto 20);
+      alu_op    <= output_buffer(2) (19 downto 14);
+      in_mux_pc <= output_buffer(2) (29);
+      if currentstate(2) /= nextstate(2) then
+        stage_control (2) <= output_buffer(2) (2);
+      else
+        stage_control (2) <= '0';
+      end if;
+
+    elsif (currentstate(3) = s1) then
+      exc_mux1  <= output_buffer(3) (23 downto 22);
+      exc_mux2  <= output_buffer(3) (21 downto 20);
+      alu_op    <= output_buffer(3) (19 downto 14);
+      in_mux_pc <= output_buffer(3) (29);
+      if currentstate(3) /= nextstate(3) then
+        stage_control (2) <= output_buffer(3) (2);
+      else
+        stage_control (2) <= '0';
+      end if;
+
+    elsif (currentstate(4) = s1) then
+      exc_mux1  <= output_buffer(4) (23 downto 22);
+      exc_mux2  <= output_buffer(4) (21 downto 20);
+      alu_op    <= output_buffer(4) (19 downto 14);
+      in_mux_pc <= output_buffer(4) (29);
+      if currentstate(4) /= nextstate(4) then
+        stage_control (2) <= output_buffer(4) (2);
+      else
+        stage_control (2) <= '0';
+      end if;
+
+    end if;
+  end process output_ID;
+
+  output_ex : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s2) then
       memstg_mux        <= output_buffer(0) (13);
@@ -169,9 +194,9 @@ begin
       wr_mask           <= output_buffer(4) (8 downto 5);
       stage_control (3) <= output_buffer(4) (3);
     end if;
-  end process output_s2;
+  end process output_ex;
 
-  output_s3 : process(output_buffer, currentstat0)
+  output_me : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s3) then
       stage_control (4) <= output_buffer(0) (4);
@@ -184,9 +209,9 @@ begin
     elsif (currentstate(4) = s3) then
       stage_control (4) <= output_buffer(4) (4);
     end if;
-  end process output_s3;
+  end process output_me;
 
-  output_s4 : process(output_buffer, currentstat0)
+  output_wb : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s4) then
       id_enable_regs <= output_buffer(0) (24);
@@ -199,7 +224,6 @@ begin
     elsif (currentstate(4) = s4) then
       id_enable_regs <= output_buffer(4) (24);
     end if;
-  end process output_s4;
-
+  end process output_wb;
 
 end architecture structure_cpu_control;
