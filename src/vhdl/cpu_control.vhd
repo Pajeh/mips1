@@ -107,6 +107,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
     	    nextstate <= s0;
     	else
     	    nextstate <= sX;
+    	end if;
         when s0 =>
         if (busy2 = '0') then
             nextstate <= s1;
