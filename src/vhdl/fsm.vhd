@@ -115,12 +115,10 @@ begin
             nextstate <= s3;
         end if;
         when s4 =>                     
-        if ((instr_stall = '0') and (in_go ='1')) then
+        if (instr_stall = '0') then
             nextstate <= s0;
-        elsif (instr_stall = '1') then
-            nextstate <= s4;
         else                          
-            nextstate <= sX;
+            nextstate <= s4;
         end if;
         when others => nextstate <= sX;
     end case;
