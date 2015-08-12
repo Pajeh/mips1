@@ -116,7 +116,7 @@ begin
         end if;
         when s4 =>                     
         if (instr_stall = '0') then
-            nextstate <= s0;
+            nextstate <= sX;
         else                          
             nextstate <= s4;
         end if;
