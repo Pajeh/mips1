@@ -79,9 +79,14 @@ architecture behavioral of FSM is
   
 begin
 
-  state_encode: process(currentstate, instr_stall, data_stall)
+  state_encode: process(currentstate, instr_stall, data_stall, in_go)
   begin
     case currentstate is
+        when sX =>
+        if (in_go = '1') then
+          nextstate <= s0;
+        else
+          nextstate <= sX;
         when s0 =>
         if (instr_stall = '0') then
             nextstate <= s1;
@@ -120,10 +125,8 @@ begin
   begin
     if (rst = '0') then
       currentstate <= sX;
-    elsif (clk'event and clk = '1' and in_go = '1') then
+    elsif (clk'event and clk = '1') then
       currentstate <= nextstate;
-    else
-      currentstate <= s0;
     end if;
   end process state_register;
   
