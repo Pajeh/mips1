@@ -81,7 +81,7 @@ begin
     end if;
   end process init;
 
-  output_s0 : process(output_buffer, clk, currentstate, nextstate)
+  output_s0 : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s0) then
       id_regdest_mux  <= output_buffer(0) (28 downto 27);
@@ -101,7 +101,7 @@ begin
     end if;
   end process output_s0;
 
-  output_s1 : process(output_buffer, clk, currentstate, nextstate)
+  output_s1 : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s0) then
       exc_mux1          <= output_buffer(0) (23 downto 22);
@@ -136,7 +136,7 @@ begin
     end if;
   end process output_s1;
 
-  output_s2 : process(output_buffer, clk, currentstate, nextstate)
+  output_s2 : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s0) then
       memstg_mux        <= output_buffer(0) (13);
@@ -166,7 +166,7 @@ begin
     end if;
   end process output_s2;
 
-  output_s3 : process(output_buffer, clk, currentstate, nextstate)
+  output_s3 : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s0) then
       stage_control (4) <= output_buffer(0) (4);
@@ -181,7 +181,7 @@ begin
      end if;
   end process output_s3;
 
-  output_s4 : process(output_buffer, clk, currentstate, nextstate)
+  output_s4 : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s0) then
       id_enable_regs <= output_buffer(0) (24);
