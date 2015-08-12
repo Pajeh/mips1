@@ -154,6 +154,12 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
   state_decode: process(currentstate)
   begin
     case currentstate is
+      when sX =>
+      	go1 <= '0';
+      	go2 <= '0';
+      	go3 <= '0';
+      	go4 <= '0';
+      	go5 <= '0';
       when s0 =>
       	instr1 <= instr_in;
       	go1 <= '1';
