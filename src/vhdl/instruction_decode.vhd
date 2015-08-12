@@ -9,6 +9,7 @@
 -- 2015-08-07	Lukas		 added signed/unsigned exceptions for LW-instructions
 -- 2015-08-11   Lukas            fixed some bugs in forwarding
 -- 2015-08-11	Bahri Enis Demirtel added BLEZ, BLTZ, BLTZAL, BNE
+-- 2015-08-12   Lukas           fixed bug in immediate expansion and made it falling clock edge sensitive
 library IEEE;
     use IEEE.std_logic_1164.all;
 	use IEEE.numeric_std.all;
