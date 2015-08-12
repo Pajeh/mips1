@@ -154,8 +154,8 @@ begin
               when shift  => output_buffer <= b"0_00_00_1_00_00_001000_0_0000_0000_11111";
               when beqz   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
               when bnez   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
-              when j      => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
-              when jalx   => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
+              when j      => output_buffer <= b"1_10_00_0_00_00_000000_0_0000_0000_11111";
+              when jalx   => output_buffer <= b"1_10_00_0_00_00_000000_0_0000_0000_11111";
               --when r_type => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
               when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
         end case;
