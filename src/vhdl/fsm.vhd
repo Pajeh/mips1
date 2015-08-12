@@ -110,7 +110,7 @@ begin
         end if;
         when s3 =>                     
         if (instr_stall = '0') then --and data_stall = '0'
-            nextstate <= s4;
+            nextstate <= sX;
         else                          
             nextstate <= s3;
         end if;
@@ -143,7 +143,7 @@ begin
         out_busy <= '0';
       when s0 =>
         out_busy <= '1';
-      when s4 =>
+      when s3 =>
         out_busy <= '0';
       when others =>
         -- do something
