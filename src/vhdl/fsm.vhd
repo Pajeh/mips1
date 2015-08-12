@@ -106,7 +106,7 @@ begin
             nextstate <= s2;
         end if;
         when s3 =>                     
-        if (instr_stall = '0' and data_stall = '0') then
+        if (instr_stall = '0') then --and data_stall = '0'
             nextstate <= s4;
         else                          
             nextstate <= s3;
@@ -117,7 +117,7 @@ begin
         else                          
             nextstate <= s4;
         end if;
-        when others => nextstate <= s0;
+        when others => nextstate <= sX;
     end case;
   end process state_encode;
   
