@@ -88,6 +88,7 @@ begin
           nextstate <= s0;
         else
           nextstate <= sX;
+        end if;
         when s0 =>
         if (instr_stall = '0') then
             nextstate <= s1;
