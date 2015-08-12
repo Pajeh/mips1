@@ -64,7 +64,7 @@ begin
   init : process(rst, currentstate)
   begin
     if rst'event and rst = '0' then     -- reset condition forwarded
-      rst_fsm(4 downto 0) <= (others => '1');
+      rst_fsm(4 downto 0) <= (others => '0');
     else
       -- if all currentstates are zero, we are at the initial condition
       if currentstate(0) = s0 and currentstate(1) = s0 and currentstate(2) = s0 and currentstate(3) = s0 and currentstate(4) = s0 then
@@ -86,22 +86,27 @@ begin
     if (currentstate(0) = s0) then
       id_regdest_mux  <= output_buffer(0) (28 downto 27);
       id_regshift_mux <= output_buffer(0) (26 downto 25);
+      in_mux_pc       <= output_buffer(0) (29);
     elsif (currentstate(1) = s1) then
       id_regdest_mux  <= output_buffer(1) (28 downto 27);
       id_regshift_mux <= output_buffer(1) (26 downto 25);
+      in_mux_pc       <= output_buffer(1) (29);
     elsif (currentstate(2) = s2) then
       id_regdest_mux  <= output_buffer(2) (28 downto 27);
       id_regshift_mux <= output_buffer(2) (26 downto 25);
+      in_mux_pc       <= output_buffer(2) (29);
     elsif (currentstate(3) = s3) then
       id_regdest_mux  <= output_buffer(3) (28 downto 27);
       id_regshift_mux <= output_buffer(3) (26 downto 25);
+      in_mux_pc       <= output_buffer(3) (29);
     elsif (currentstate(4) = s4) then
       id_regdest_mux  <= output_buffer(4) (28 downto 27);
       id_regshift_mux <= output_buffer(4) (26 downto 25);
+      in_mux_pc       <= output_buffer(4) (29);
     end if;
   end process output_s0;
 
-  output_s1 : process(output_buffer, currentstate)
+  output_s1 : process(output_buffer, currentstat0)
   begin
     if (currentstate(0) = s0) then
       exc_mux1          <= output_buffer(0) (23 downto 22);
@@ -136,7 +141,7 @@ begin
     end if;
   end process output_s1;
 
-  output_s2 : process(output_buffer, currentstate)
+  output_s2 : process(output_buffer, currentstat0)
   begin
     if (currentstate(0) = s0) then
       memstg_mux        <= output_buffer(0) (13);
@@ -166,22 +171,22 @@ begin
     end if;
   end process output_s2;
 
-  output_s3 : process(output_buffer, currentstate)
+  output_s3 : process(output_buffer, currentstat0)
   begin
     if (currentstate(0) = s0) then
       stage_control (4) <= output_buffer(0) (4);
     elsif (currentstate(1) = s1) then
       stage_control (4) <= output_buffer(1) (4);
-     elsif (currentstate(2) = s2) then
+    elsif (currentstate(2) = s2) then
       stage_control (4) <= output_buffer(2) (4);
-     elsif (currentstate(3) = s3) then
+    elsif (currentstate(3) = s3) then
       stage_control (4) <= output_buffer(3) (4);
-     elsif (currentstate(4) = s4) then
+    elsif (currentstate(4) = s4) then
       stage_control (4) <= output_buffer(4) (4);
-     end if;
+    end if;
   end process output_s3;
 
-  output_s4 : process(output_buffer, currentstate)
+  output_s4 : process(output_buffer, currentstat0)
   begin
     if (currentstate(0) = s0) then
       id_enable_regs <= output_buffer(0) (24);
