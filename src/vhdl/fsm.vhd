@@ -142,7 +142,16 @@ begin
         out_busy <= '0';
       when s0 =>
         out_busy <= '1';
-        case instr_in (31 downto 26) is
+      when s4 =>
+        out_busy <= '0';
+      when others =>
+        -- do something
+    end case;
+  end process state_decode;
+  
+  out_buff_ctr: process(instr_in)
+  begin
+  case instr_in (31 downto 26) is
               when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
               when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
               when lbu    => output_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
@@ -159,11 +168,6 @@ begin
               when r_type => output_buffer <= b"0_00_00_1_10_00_000000_0_0000_0000_11111";
               when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
         end case;
-      when s4 =>
-        out_busy <= '0';
-      when others =>
-        -- do something
-    end case;
-  end process state_decode;
+  end process;
 
 end architecture behavioral;
