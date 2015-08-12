@@ -70,10 +70,10 @@ architecture behavioral of FSM is
 -- output_buffer (12 downto 9):  rd_mask            : out std_logic_vector(3  downto 0);
 -- output_buffer (8 downto 5):   wr_mask            : out std_logic_vector(3  downto 0);
 -- output_buffer (4 downto 0):   stage_control      : out std_logic_vector(4  downto 0);               
-  signal output_buffer : std_logic_vector(29 downto 0) := (others => '0');
+  signal output_buffer : std_logic_vector(29 downto 0);
   
-  signal currentstate  : std_logic_vector(4 downto 0)  := (others => '0');
-  signal nextstate     : std_logic_vector(4 downto 0)  := (others => '0');
+  signal currentstate  : std_logic_vector(4 downto 0);
+  signal nextstate     : std_logic_vector(4 downto 0);
 
   
   
