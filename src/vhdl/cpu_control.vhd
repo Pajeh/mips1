@@ -101,6 +101,11 @@ begin
 state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
   begin
     case currentstate is
+    	when sX =>
+    	if (busy1 = '0') then
+    	    nextstate <= s0;
+    	else
+    	    nextstate <= sX;
         when s0 =>
         if (busy2 = '0') then
             nextstate <= s1;
@@ -129,9 +134,9 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
         if (busy1 = '0') then
             nextstate <= s0;
         else                          
-            nextstate <= s4;
+            nextstate <= sX;
         end if;
-        when others => nextstate <= s0;
+        when others => nextstate <= sX;
     end case;
   end process state_encode;
   
