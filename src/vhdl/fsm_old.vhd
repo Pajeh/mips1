@@ -229,15 +229,15 @@ begin
           end if;
           
         when s1 =>                      -- Instruction Decode / Register fetch
-          if (nextfsm_busy = '0') and (nextfsm_nextstate > currentstate) then
-            nextstate <= s1;
-          else
-            nextstate <= s2;
-          end if;
+          nextstate <= s2; 
         when s2 =>                      -- Execution
           nextstate <= s3;
         when s3 =>                      -- Memory
-          nextstate <= s4;
+          if (data_stall = '0') then  -- check if a instruction stall is required. Stall if 1.
+            nextstate <= s4;
+          else
+            nextstate <= s3;
+          end if;
         when others => nextstate <= s0;
 
       end case;
@@ -260,7 +260,7 @@ begin
     if rst = '0' then                   -- asynchronous reset (active low)
       currentstate <= s0;  -- reset to first state - Instruction fetch
     elsif clk'event and clk = '1'and (nextfsm_nextstate > (nextstate) or (nextfsm_nextstate <= currentstate)) then  -- rising clock edge
-      currentstate <= nextstate;
+      currentstate     <= nextstate;
       currentstate_out <= currentstate;
     end if;
   end process reset;
