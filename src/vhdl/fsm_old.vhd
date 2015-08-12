@@ -197,7 +197,7 @@ begin
 -- type   : combinational
 -- inputs : instr
 -- outputs: output
-  output : process (instr, currentstate, instr_stall, data_stall)
+  output : process (instr, currentstate, instr_stall, data_stall, rst)
   begin
     
     if (rst = '1') then                      -- if no reset
@@ -245,7 +245,6 @@ begin
       
     else  -- if a  reset was activated, all outputs and internal registers are reseted
       output_buffer <= (others => '0');  -- reinitialize all to zero
-      currentstate  <= b"00000";
       nextstate     <= b"00000";
     end if;
   end process output;
