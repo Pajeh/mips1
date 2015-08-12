@@ -12,7 +12,6 @@ library IEEE;
 library WORK;
   use WORK.all;  
 
-
 entity cpu_control is
   port(
       clk                   	: in  std_logic;
@@ -136,7 +135,7 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
         if (busy1 = '0') then
             nextstate <= s0;
         else                          
-            nextstate <= sX;
+            nextstate <= s4;
         end if;
         when others => nextstate <= sX;
     end case;
