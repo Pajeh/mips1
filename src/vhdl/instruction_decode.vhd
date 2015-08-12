@@ -241,7 +241,7 @@ begin
                                 ip_out <= ip_in;
                         end if;
 		else
-			ip_out <= ip_in;
+			ip_out <= std_logic_vector(to_integer(unsigned(ip_in)) + 4, 32);
 		end if;
 	end process;
 
