@@ -51,9 +51,9 @@ architecture behavioral of MemoryStage is
 			if (rst='0') then                                   -- reset condition
 				writeback <= x"00_00_00_00";
 			else 
-				if (mux_decision ='0') then		-- mux_decision choses between the two possible outputs: the result from ALU of the read memory	
+				if ((falling_edge(clk)) and (mux_decision ='0')) then		-- mux_decision choses between the two possible outputs: the result from ALU of the read memory	
 					writeback <= aluResult_in;	-- output is the aluResult_in
-				else
+				elsif ((falling_edge(clk)) and (mux_decision ='1'))
 					writeback <= data_to_cpu;	-- output is the memory_buffer, which carries the memory read value.
 				end if;
 			end if;
