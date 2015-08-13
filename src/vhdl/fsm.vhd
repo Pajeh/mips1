@@ -128,7 +128,7 @@ begin
   begin
     if (rst = '0') then
         currentstate <= sX;
-    elsif (clk'event and clk = '1') then
+    elsif (clk'event and clk = '0') then
       currentstate <= nextstate;
     end if;
   end process state_register;
