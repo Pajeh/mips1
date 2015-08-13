@@ -67,7 +67,6 @@ begin
         reset <= '0';
         wait for clk_time/2;
         reset <= '1';
-        wait for clk_time/2;
         enable_regs <= '1';
         -- Writing some test values to the register file:
         -- r1 becomes 01234567
@@ -364,6 +363,18 @@ begin
 	-- Test for BGTZ (false)
 	-- ip_out: 01010100
 	instr <= x"1C00AFFE";
+	wait for clk_time;
+	
+	-- Test for BNEZ (true)
+	-- ip_out: 34
+	ip_in <= x"00000050";
+	instr <= x"1440fff8";
+	wait for clk_time;
+	
+	-- Test for BNEZ (true)
+	-- ip_out: 58
+	ip_in <= x"00000050";
+	instr <= x"1400fff8";
 	wait for clk_time;
 
     end process;
