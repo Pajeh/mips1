@@ -88,7 +88,7 @@ begin
             	for i in 0 to 31 loop
                 	register_file(i) <= x"00000000";
             	end loop;
-        	elsif (clk'event and clk = '0') and (enable_regs = '1') then  -- If register file is enabled, write back result
+        	elsif (clk'event and clk = '1') and (enable_regs = '1') then  -- If register file is enabled, write back result
 			if (to_integer(unsigned (writeback_reg)) > 0) then
             			register_file(to_integer(unsigned (writeback_reg))) <= writeback;
 			end if;
