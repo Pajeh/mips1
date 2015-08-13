@@ -82,21 +82,22 @@ begin
     	end process;
 
 	-- Process for clocked writebacks to the register file and the asynchronous reset
-	register_file_write : process (clk,reset) is
+	register_file_write : process (clk,reset,writeback_reg) is
     	begin
     		if (reset= '0') then    -- asynchronous reset
-            	for i in 0 to 31 loop
+					for i in 0 to 31 loop
                 	register_file(i) <= x"00000000";
             	end loop;
-        	elsif (clk'event and clk = '0') and (enable_regs = '1') then  -- If register file is enabled, write back result
-			if (to_integer(unsigned (writeback_reg)) > 0) then
-            			register_file(to_integer(unsigned (writeback_reg))) <= writeback;
+        	elsif (clk'event and clk = '0') then
+				if (enable_regs = '1') then  -- If register file is enabled, write back result
+					if (to_integer(unsigned (writeback_reg)) > 0) then
+									register_file(to_integer(unsigned (writeback_reg))) <= writeback;
+					end if;
+				elsif (internal_wb_flag = '1') then
+					register_file (31) <= internal_writeback;
+				end if;
 			end if;
-		elsif (clk'event and clk = '0') and (internal_wb_flag = '1') then
-			register_file (31) <= internal_writeback;
-        	end if;
     	end process;
-
 	-- Process that defines the branch logic
 	branch_logic : process (instr, ip_in, writeback, alu_result, mem_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux) is
 	variable offset : integer;
