@@ -132,7 +132,7 @@ begin
 			offset := to_integer(signed(instr(25 downto 0)));
 			offset := offset * 4;
 			ip_out <= ip_in (31 downto 28) & std_logic_vector(to_signed(offset,28));
-		elsif ((instr (31 downto 26) = "000011") and (reset = '1'))then --JAL instruction
+		elsif ((instr (31 downto 26) = "000011") or (instr (31 downto 26) = "011101")) then --JAL(X) instruction
 			internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
 			internal_wb_flag <= '1';
 			offset := to_integer(signed(instr(25 downto 0)));

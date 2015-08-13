@@ -99,6 +99,7 @@ architecture structure_cpu_datapath of cpu_datapath is
   signal wb_writeback_out : std_logic_vector(31 downto 0);
   signal wb_destreg_out   : std_logic_vector(4  downto 0);
 
+  signal last_instruction : std_logic_vector( 31 downto 0);
 
 
 begin
@@ -195,12 +196,19 @@ end process;
 
 mux: process(in_mux_pc, id_ip, if_ip)
   begin
-	if (in_mux_pc = '1') then
+	if ((last_instruction(31 downto 26) = "000100") or (last_instruction(31 downto 26) = "000010") or (last_instruction(31 downto 26) = "000101") or (last_instruction(31 downto 26) = "011101"))then
 		mux_pc_out <= id_ip;
 	else
 		mux_pc_out <= if_ip;
 	end if;
   end process;
+  
+last_instruction_proc: process(clk) is
+begin
+        if (clk'event and clk = '1') then
+            last_instruction <= instr_in;
+        end if;
+end process;
 
 
 end architecture structure_cpu_datapath;
