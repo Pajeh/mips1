@@ -137,7 +137,7 @@ begin
   begin
     out_currentstate <= currentstate;
     out_nextstate <= nextstate;
-    --out_buffer <= output_buffer;
+    out_buffer <= output_buffer;
     case currentstate is
       when sX =>
         out_busy <= '0';
@@ -153,21 +153,21 @@ begin
   out_buff_ctr: process(instr_in)
   begin
   case instr_in (31 downto 26) is
-              when lui    => out_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
-              when addiu  => out_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
-              when lbu    => out_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
-              when lw     => out_buffer <= b"0_10_00_1_10_01_100000_1_1111_0000_11111";
-              when sb     => out_buffer <= b"0_10_00_0_10_01_100000_0_0000_0001_11111";
-              when sw     => out_buffer <= b"0_10_00_0_10_01_100000_0_0000_1111_11111";
-              when slti   => out_buffer <= b"0_10_00_1_10_01_001000_0_0000_0000_11111";
-              when andi   => out_buffer <= b"0_10_01_1_00_01_100100_0_0000_0000_11111";
-              when shift  => out_buffer <= b"0_00_00_1_00_00_001000_0_0000_0000_11111";
-              when beqz   => out_buffer <= b"1_10_00_0_00_00_000001_0_0000_0000_11111";
-              when bnez   => out_buffer <= b"1_10_00_0_00_00_000001_0_0000_0000_11111";
-              when j      => out_buffer <= b"1_10_00_0_00_00_000001_0_0000_0000_11111";
-              when jalx   => out_buffer <= b"1_10_00_0_00_00_000001_0_0000_0000_11111";
+              when lui    => output_buffer <= b"0_10_01_1_00_01_000100_0_0000_0000_11111";
+              when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
+              when lbu    => output_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
+              when lw     => output_buffer <= b"0_10_00_1_10_01_100000_1_1111_0000_11111";
+              when sb     => output_buffer <= b"0_10_00_0_10_01_100000_0_0000_0001_11111";
+              when sw     => output_buffer <= b"0_10_00_0_10_01_100000_0_0000_1111_11111";
+              when slti   => output_buffer <= b"0_10_00_1_10_01_001000_0_0000_0000_11111";
+              when andi   => output_buffer <= b"0_10_01_1_00_01_100100_0_0000_0000_11111";
+              when shift  => output_buffer <= b"0_00_00_1_00_00_001000_0_0000_0000_11111";
+              when beqz   => output_buffer <= b"1_10_00_0_00_00_000001_0_0000_0000_11111";
+              when bnez   => output_buffer <= b"1_10_00_0_00_00_000001_0_0000_0000_11111";
+              when j      => output_buffer <= b"1_10_00_0_00_00_000001_0_0000_0000_11111";
+              when jalx   => output_buffer <= b"1_10_00_0_00_00_000001_0_0000_0000_11111";
               --when r_type => output_buffer <= b"0_00_00_1_10_00_000000_0_0000_0000_11111";
-              when others => out_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
+              when others => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
         end case;
   end process;
 
