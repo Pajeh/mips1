@@ -133,11 +133,19 @@ begin
     end if;
   end process state_register;
   
+  out_buffer_ctrl: process(clk)
+  begin
+    if(clk'event and clk = '0') then
+      out_buffer <= output_buffer;
+    end if;
+  end process;
+  
+  
   state_decode: process(currentstate)
   begin
     out_currentstate <= currentstate;
     out_nextstate <= nextstate;
-    out_buffer <= output_buffer;
+    
     case currentstate is
       when sX =>
         out_busy <= '0';
