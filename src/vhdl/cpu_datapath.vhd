@@ -194,9 +194,9 @@ end process;
 
 
 
-mux: process(last_instruction, id_ip, if_ip)
+mux: process(instr_in, id_ip, if_ip)
   begin
-	if ((last_instruction(31 downto 26) = "000100") or (last_instruction(31 downto 26) = "000010") or (last_instruction(31 downto 26) = "000101") or (last_instruction(31 downto 26) = "011101"))then
+	if ((instr_in(31 downto 26) = "000100") or (instr_in(31 downto 26) = "000010") or (instr_in(31 downto 26) = "000101") or (instr_in(31 downto 26) = "011101"))then
 		mux_pc_out <= id_ip;
 	else
 		mux_pc_out <= if_ip;
