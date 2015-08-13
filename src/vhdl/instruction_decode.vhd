@@ -130,7 +130,7 @@ begin
 		if (instr (31 downto 26) = "000010") then -- Jump instruction
 			internal_wb_flag <= '0';
 			offset := to_integer(signed(instr(25 downto 0)));
-			offset := offset * 4;
+			offset := (offset * 4) + 4;
 			ip_out <= ip_in (31 downto 28) & std_logic_vector(to_signed(offset,28));
 		elsif ((instr (31 downto 26) = "000011") or (instr (31 downto 26) = "011101")) then --JAL(X) instruction
 			internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
