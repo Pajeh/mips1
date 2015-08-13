@@ -92,7 +92,7 @@ begin
 			if (to_integer(unsigned (writeback_reg)) > 0) then
             			register_file(to_integer(unsigned (writeback_reg))) <= writeback;
 			end if;
-		elsif (clk'event and clk = '0') and (internal_wb_flag = '1') then
+		elsif (clk'event and clk = '1') and (internal_wb_flag = '1') then
 			register_file (31) <= internal_writeback;
         	end if;
     	end process;
