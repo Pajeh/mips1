@@ -237,7 +237,7 @@ begin
 			if (a /= b) then
                                 offset := to_integer(signed(instr(15 downto 0)));
                                 offset := offset * 4;
-                                offset := offset + to_integer (signed(ip_in));
+                                offset := offset + to_integer (signed(ip_in)) - 4;
                                 ip_out <= std_logic_vector(to_signed(offset,32));
                         else
                                 ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
