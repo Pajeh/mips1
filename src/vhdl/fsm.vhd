@@ -259,11 +259,11 @@ begin
     if rst = '0' then                   -- asynchronous reset (active low)
       currentstate <= s0;  -- reset to first state - Instruction fetch
     elsif clk'event and clk = '1'and (nextfsm_nextstate /= (nextstate)) then  -- rising clock edge
-      currentstate     <= nextstate;
+      currentstate     <= nextstate_out;
       currentstate_out <= currentstate;
     end if;
   end process reset;
-
+nextstate_out <= nextstate;
 
 
 
