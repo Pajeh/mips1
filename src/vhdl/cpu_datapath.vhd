@@ -50,6 +50,7 @@ architecture structure_cpu_datapath of cpu_datapath is
 
   -- -------- PC ==> Instr. Fetch -----------------
   signal mux_out_0       : std_logic_vector(31 downto 0);
+  signal instr_0	 : std_logic_vector(31 downto 0);
 
   -- -------- Instr. Fetch ==> Instr. Decode -----------------
   signal instr_1         : std_logic_vector(31 downto 0);
@@ -106,7 +107,7 @@ architecture structure_cpu_datapath of cpu_datapath is
 begin
 
 -- INSTRUCTION FETCH:
-  instruction_fetch:    entity work.instruction_fetch(behavioral) port map(clk, rst, mux_out_0, instr_in, if_ip,
+  instruction_fetch:    entity work.instruction_fetch(behavioral) port map(clk, rst, mux_out_0, instr_0, if_ip,
                                                                           instr_addr, if_instr);
 
 -- INSTRUCTION DECODE:
@@ -134,8 +135,10 @@ stage0: process(clk, rst)
 begin
   if (rst = '0') then
     mux_out_0 <=  (others => '0');
+    instr_0 <=	  (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
     mux_out_0 <= mux_pc_out;
+    instr_0 <=	 instr_in;
   end if;
 end process;
 
