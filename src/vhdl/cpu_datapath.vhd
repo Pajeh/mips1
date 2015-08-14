@@ -133,7 +133,7 @@ begin
 
 stage0: process(clk, rst)
 begin
-  if (rst = '0') then
+  if (rst = '1') then
     mux_out_0 <=  (others => '0');
     instr_0 <=	  (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
@@ -144,7 +144,7 @@ end process;
 
 stage1: process(clk, rst)
 begin
-  if (rst = '0') then
+  if (rst = '1') then
     instr_1 <= (others => '0');
     ip_1 <= (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (1 downto 1) = "1")) then
@@ -155,7 +155,7 @@ end process;
 
 stage2: process(clk, rst)
 begin
-  if (rst = '0') then
+  if (rst = '1') then
     shift_2 <= (others => '0');
     reg_a_2 <= (others => '0');
     reg_b_2 <= (others => '0');
@@ -174,7 +174,7 @@ end process;
 
 stage3: process(clk, rst)
 begin
-  if (rst = '0') then
+  if (rst = '1') then
     alu_result_3 <= (others => '0');
     data_3 <= (others => '0');
     regdest_3 <= (others => '0');
@@ -187,7 +187,7 @@ end process;
 
 stage4: process(clk, rst)
 begin
-  if (rst = '0') then
+  if (rst = '1') then
     writeback_4 <= (others => '0');
     regdest_4 <= (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (4 downto 4) = "1")) then
