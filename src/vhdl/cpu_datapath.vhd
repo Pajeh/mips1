@@ -131,22 +131,14 @@ begin
   write_back:           entity work.write_back(behavioral) port map(clk, rst, writeback_4, regdest_4,
                                                                   wb_writeback_out, wb_destreg_out);
 
-pc_mux_clk: process (clk, rst)
-begin
-	if (rst = '1') then
-    		mux_out_0 <=  (others => '0');
-	elsif (falling_edge(clk)) then
-		mux_out_0 <= mux_pc_out;
-	end if;
-end process;
 
 stage0: process(clk, rst)
 begin
   if (rst = '1') then
-    --mux_out_0 <=  (others => '0');
+    mux_out_0 <=  (others => '0');
     instr_0 <=	  (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
-    --mux_out_0 <= mux_pc_out;
+    mux_out_0 <= mux_pc_out;
     instr_0 <=	 instr_in;
   end if;
 end process;
