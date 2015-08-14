@@ -4,6 +4,7 @@
 -- 06.08.2015     Patrick Appenheimer    ports and entities added
 -- 10.08.2015     Patrick Appenheimer    minor changes
 -- 12.08.2015     Patrick Appenheimer    changed rising_edge to falling_edge
+-- 14.08.2015     Patrick Appenheimer    changed pc_mux control
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
