@@ -106,7 +106,7 @@ begin
 	if ((instr_stall = '0') and (data_stall = '0')) then
 		stall <= '0';
 	else
-		stall = '1';
+		stall <= '1';
 	end if;
 end process;
 	
