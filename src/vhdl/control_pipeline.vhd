@@ -156,4 +156,13 @@ architecture behavioural of control_pipeline is
             end if;
     end process;
     
+    stall: process (data_stall, instr_stall) is
+    begin
+            if (data_stall = '1' or instr_stall = '1') then
+                    stage_control = "00000";
+            else
+                    stage_control = "11111";
+            end if;
+    end;
+    
 end architecture;

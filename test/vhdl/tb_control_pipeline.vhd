@@ -1,5 +1,6 @@
 -- Revision history:
 -- 2015-08-12       Lukas Jaeger        created
+-- 2015-08-14       Lukas Jaeger        added test cases
 
 library IEEE;
 use IEEE.std_logic_1164.all;
