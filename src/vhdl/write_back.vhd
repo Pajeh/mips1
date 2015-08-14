@@ -27,7 +27,7 @@ begin
 process (rst, clk, writeback_in, regdest_in) is
 	begin
 
-		if(rst = '0') then
+		if(rst = '1') then
 		writeback_out <= x"0000_0000";		
 		regdest_out <= b"00000";
 		
