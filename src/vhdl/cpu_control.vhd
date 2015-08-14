@@ -4,6 +4,7 @@
 -- 11.08.2015     Patrick Appenheimer    main fsm
 -- 11.08.2015     Patrick Appenheimer    5 instr fsm
 -- 12.08.2015     Patrick Appenheimer    minor changes
+-- 14.08.2015   Patrick Appenheimer    stall logic changed
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
