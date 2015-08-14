@@ -31,7 +31,7 @@ entity control_pipeline is
 end entity control_pipeline;
 
 architecture behavioural of control_pipeline is
-    signal instr_1, instr_2, instr_3, instr_4, instr_5 : std_logic_vector (31 downto 0);
+    signal instr_1, instr_2, instr_3, instr_4: std_logic_vector (31 downto 0);
    
     begin
     
@@ -42,13 +42,12 @@ architecture behavioural of control_pipeline is
                     instr_2 <= x"00000000";
                     instr_3 <= x"00000000";
                     instr_4 <= x"00000000";
-                    instr_5 <= x"00000000";
+                    stage_control <= "11111";
             elsif (rising_edge(clk)) then
                     instr_1 <= instr_in;
                     instr_2 <= instr_1;
                     instr_3 <= instr_2;
                     instr_4 <= instr_3;
-                    instr_5 <= instr_4;
             end if;
     end process;
     
@@ -159,10 +158,10 @@ architecture behavioural of control_pipeline is
     stall: process (data_stall, instr_stall) is
     begin
             if (data_stall = '1' or instr_stall = '1') then
-                    stage_control = "00000";
+                    stage_control <= "00000";
             else
-                    stage_control = "11111";
+                    stage_control <= "11111";
             end if;
-    end;
+    end process;
     
 end architecture;
