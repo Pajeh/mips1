@@ -81,7 +81,7 @@ architecture behavioral of FSM is
   
 begin
 
-  state_encode: process(currentstate, instr_stall, data_stall, in_go)
+  state_encode: process(currentstate, stall, in_go)
   begin
     case currentstate is
         when sX =>
