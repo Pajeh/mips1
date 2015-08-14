@@ -35,29 +35,18 @@ end entity instruction_fetch;
 
 
 architecture behavioral of instruction_fetch is
-
-
-	begin
+begin
 
 	process (rst, clk, PC, InstrData) is
 	begin
-
 		if(rst = '0') then
-		InstrAddr <= X"0000_0000";	    --If reset comes PC goes to the beginning, its value is 0000_0000
-		IR <= X"0000_0000";				--If reset all coming signals are 0000_0000
-		Instr <= X"0000_0000";			--If reset all coming signals are 0000_0000
-		
-		
-			else
-						--elsif (rising_edge(clk)) then  
-						--if(StallData='0') then
-		
-		
-				InstrAddr <= PC;  		  --We can the value of PC to the memory adress
-				IR <= PC + X"0000_0004";  --IR value is always PC+4;
-				Instr <= InstrData;		  --Instr value is always equal to InstrData value
-				
-			
+			InstrAddr <= X"0000_0000";	--If reset comes PC goes to the beginning, its value is 0000_0000
+			IR <= X"0000_0000";		--If reset all coming signals are 0000_0000
+			Instr <= X"0000_0000";		--If reset all coming signals are 0000_0000
+		elsif (clk'event and clk = '1') then	--elsif (rising_edge(clk)) then 
+			InstrAddr <= PC;  		--We can the value of PC to the memory adress
+			IR <= PC + X"0000_0004";  	--IR value is always PC+4;
+			Instr <= InstrData;		--Instr value is always equal to InstrData value
 		end if;
 	end process ;
 
