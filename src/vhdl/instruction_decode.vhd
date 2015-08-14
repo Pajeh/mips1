@@ -10,7 +10,7 @@
 -- 2015-08-11   Lukas            fixed some bugs in forwarding
 -- 2015-08-11	Bahri Enis Demirtel added BLEZ, BLTZ, BLTZAL, BNE
 -- 2015-08-12   Lukas           fixed bug in immediate expansion and made it falling clock edge sensitive
--- 2015-08-14   Lukas           minor changes
+-- 2015-08-14   Patrick           minor changes
 library IEEE;
     use IEEE.std_logic_1164.all;
 	use IEEE.numeric_std.all;
