@@ -4,6 +4,7 @@
 -- 10.08.2015   Carlos Minamisava Faria & Patrick Appenheimer     Instructions added 
 -- 11.08.2015   Patrick Appenheimer         added state_register and state_decode 
 -- 12.08.2015   Patrick Appenheimer    minor changes
+-- 14.08.2015   Patrick Appenheimer    stall logic changed
 
 library IEEE;
 use IEEE.std_logic_1164.all;
