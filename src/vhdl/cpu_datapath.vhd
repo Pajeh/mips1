@@ -137,7 +137,7 @@ begin
     mux_out_0 <=  (others => '0');
     instr_0 <=	  (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
-    mux_out_0 <= mux_pc_out;
+    mux_out_0 <= if_ip;
     instr_0 <=	 instr_in;
   end if;
 end process;
@@ -201,7 +201,7 @@ mux: process(in_mux_pc, id_ip, if_ip)
 	if (in_mux_pc = '1')then
 		mux_pc_out <= id_ip;
 	else
-		mux_pc_out <= if_ip;
+		mux_pc_out <= mux_out_0;
 	end if;
   end process;
 
