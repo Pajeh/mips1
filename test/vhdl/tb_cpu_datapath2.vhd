@@ -58,10 +58,10 @@ architecture behav_tb_cpu_datapath of tb_cpu_datapath is
   begin
     sim_finish   <= '0';
     
-	rst <= '0';
+	rst <= '1';
 	test_stage_control <= b"11111";
         wait for 2*CLK_TIME;
-        rst <= '1';	
+        rst <= '0';	
 	wait for CLK_TIME;
 	-- ADDI ==> Opcode: 0010_00 rs: 0_0001 rt: 0_0010 im: 0000_0000_0000_0001
 	test_instr_in <= b"0010_00_00_001_0_0010_0000_0000_0000_0001";
