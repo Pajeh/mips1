@@ -5,6 +5,7 @@
 -- 10.08.2015     Patrick Appenheimer    minor changes
 -- 12.08.2015     Patrick Appenheimer    changed rising_edge to falling_edge
 -- 14.08.2015     Patrick Appenheimer    changed pc_mux control
+-- 14.08.2015     Patrick Appenheimer    minor changes
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -132,14 +133,23 @@ begin
                                                                   wb_writeback_out, wb_destreg_out);
 
 
-stage0: process(clk, rst)
+instr0: process(clk, rst)
+begin
+  if (rst = '1') then    
+    instr_0 <=	  (others => '0');
+  elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then    
+    instr_0 <=	 instr_in;
+  end if;
+end process;
+
+mux0: process(clk, rst)
 begin
   if (rst = '1') then
     mux_out_0 <=  (others => '0');
-    instr_0 <=	  (others => '0');
+  elsif ((in_mux_pc = '1') and (stage_control (0 downto 0) = "1")) then
+    mux_out_0 <= mux_pc_out;      
   elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
-    mux_out_0 <= mux_pc_out;
-    instr_0 <=	 instr_in;
+    mux_out_0 <= mux_pc_out;    
   end if;
 end process;
 
