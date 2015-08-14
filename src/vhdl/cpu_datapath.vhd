@@ -193,25 +193,25 @@ begin
   end if;
 end process;
 
---mux: process(in_mux_pc, id_ip, if_ip)
---  begin
---	if (in_mux_pc = '1')then
---		mux_pc_out <= id_ip;
---	else
---		mux_pc_out <= if_ip;
---	end if;
---  end process;
-
-mux: process(instr_in, id_ip, if_ip, clk)
+mux: process(in_mux_pc, id_ip, if_ip)
   begin
-  	if (clk'event and clk = '1') then
-		if ((instr_in(31 downto 26) = "000100") or (instr_in(31 downto 26) = "000010") or (instr_in(31 downto 26) = "000101") or (instr_in(31 downto 26) = "011101"))then
-			mux_pc_out <= id_ip;
-		else
-			mux_pc_out <= if_ip;
-		end if;
+	if (in_mux_pc = '1')then
+		mux_pc_out <= id_ip;
+	else
+		mux_pc_out <= if_ip;
 	end if;
   end process;
+
+--mux: process(instr_in, id_ip, if_ip, clk)
+--  begin
+--  	if (clk'event and clk = '1') then
+--		if ((instr_in(31 downto 26) = "000100") or (instr_in(31 downto 26) = "000010") or (instr_in(31 downto 26) = "000101") or (instr_in(31 downto 26) = "011101"))then
+--			mux_pc_out <= id_ip;
+--		else
+--			mux_pc_out <= if_ip;
+--		end if;
+--	end if;
+--  end process;
   
 last_instruction_proc: process(clk) is
 begin
