@@ -14,13 +14,13 @@ library WORK;
 
 entity instruction_fetch is
 	port(
-	clk : in std_logic;
-	rst : in std_logic;
-	PC : in std_logic_vector(31 downto 0);                             	
-	InstrData : in std_logic_vector(31 downto 0);
-	IP : out std_logic_vector(31 downto 0);	
-	InstrAddr: out std_logic_vector(31 downto 0);
-	Instr : out std_logic_vector(31 downto 0)
+	clk		: in std_logic;
+	rst		: in std_logic;
+	PC		: in std_logic_vector(31 downto 0);                             	
+	InstrData	: in std_logic_vector(31 downto 0);
+	IP		: out std_logic_vector(31 downto 0);	
+	InstrAddr	: out std_logic_vector(31 downto 0);
+	Instr		: out std_logic_vector(31 downto 0)
 	);
 
 end entity instruction_fetch;
