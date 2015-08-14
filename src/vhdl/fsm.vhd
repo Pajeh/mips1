@@ -187,7 +187,7 @@ architecture behavioral of FSM is
   constant r_type : std_logic_vector(5 downto 0) := b"0000_00";  -- Type R      
 
 
-  signal opcode       : std_logic_vector(5 downto 0);
+--  signal opcode       : std_logic_vector(5 downto 0);
   signal nextstate    : std_logic_vector(4 downto 0)  := (others => '0');
   signal currentstate : std_logic_vector(4 downto 0)  := (others => '0');
   signal instruction  : std_logic_vector(31 downto 0) := (others => '0');
@@ -259,10 +259,10 @@ begin
     if rst = '0' then                   -- asynchronous reset (active low)
       currentstate <= s0;  -- reset to first state - Instruction fetch
     elsif clk'event and clk = '1'and (nextfsm_nextstate /= (nextstate)) then  -- rising clock edge
-      currentstate     <= nextstate_out;
-      currentstate_out <= currentstate;
+      currentstate     <= nextstate;
     end if;
   end process reset;
+currentstate_out <= currentstate;
 nextstate_out <= nextstate;
 
 
