@@ -84,7 +84,7 @@ begin
 	-- Process for clocked writebacks to the register file and the asynchronous reset
 	register_file_write : process (clk,reset,writeback_reg) is
     	begin
-    		if (reset= '0') then    -- asynchronous reset
+    		if (reset= '1') then    -- asynchronous reset
 					for i in 0 to 31 loop
                 	register_file(i) <= x"00000000";
             	end loop;
