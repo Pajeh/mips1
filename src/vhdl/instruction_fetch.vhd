@@ -42,7 +42,7 @@ architecture behavioral of instruction_fetch is
 	process (rst, clk, PC, InstrData) is
 	begin
 
-		if(rst = '0') then
+		if(rst = '1') then
 		InstrAddr <= X"0000_0000";	    --If reset comes PC goes to the beginning, its value is 0000_0000
 		IR <= X"0000_0000";				--If reset all coming signals are 0000_0000
 		Instr <= X"0000_0000";			--If reset all coming signals are 0000_0000
