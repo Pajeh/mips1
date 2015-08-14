@@ -107,7 +107,7 @@ architecture structure_cpu_datapath of cpu_datapath is
 begin
 
 -- INSTRUCTION FETCH:
-  instruction_fetch:    entity work.instruction_fetch(behavioral) port map(clk, rst, mux_out_0, instr_0, if_ip,
+  instruction_fetch:    entity work.instruction_fetch(behavioral) port map(clk, rst, mux_pc_out, instr_0, if_ip,
                                                                           instr_addr, if_instr);
 
 -- INSTRUCTION DECODE:
