@@ -131,13 +131,24 @@ begin
   write_back:           entity work.write_back(behavioral) port map(clk, rst, writeback_4, regdest_4,
                                                                   wb_writeback_out, wb_destreg_out);
 
+pc_mux_clk: process (clk, rst, in_mux_pc)
+begin
+	if (rst = '1') then
+    		mux_out_0 <=  (others => '0');
+	elsif(in_mux_pc = '1') then
+		mux_out_0 <= mux_pc_out;
+	elsif (rising_edge(clk)) then
+		mux_out_0 <= mux_pc_out;
+	end if;
+end process;
+
 stage0: process(clk, rst)
 begin
   if (rst = '1') then
-    mux_out_0 <=  (others => '0');
+    --mux_out_0 <=  (others => '0');
     instr_0 <=	  (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
-    mux_out_0 <= mux_pc_out;
+    --mux_out_0 <= mux_pc_out;
     instr_0 <=	 instr_in;
   end if;
 end process;
@@ -216,12 +227,12 @@ mux: process(in_mux_pc, id_ip, if_ip)
 --	end if;
 --  end process;
   
-last_instruction_proc: process(clk) is
-begin
-        if (clk'event and clk = '1') then
-            last_instruction <= instr_in;
-        end if;
-end process;
+--last_instruction_proc: process(clk) is
+--begin
+--       if (clk'event and clk = '1') then
+--            last_instruction <= instr_in;
+--        end if;
+--end process;
 
 
 end architecture structure_cpu_datapath;
