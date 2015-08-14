@@ -18,8 +18,7 @@ entity FSM is
     clk                     : in std_logic;
     rst                     : in std_logic;
     instr_in                : in  std_logic_vector(31 downto 0);
-    instr_stall             : in  std_logic;
-    data_stall              : in  std_logic;
+    stall                   : in  std_logic;
     out_currentstate        : out std_logic_vector(4 downto 0);
     out_nextstate           : out std_logic_vector(4 downto 0);
     out_buffer              : out std_logic_vector(29 downto 0);
@@ -91,31 +90,31 @@ begin
           nextstate <= sX;
         end if;
         when s0 =>
-        if (instr_stall = '0') then
+        if (stall = '0') then
             nextstate <= s1;
         else                          
             nextstate <= s0;
         end if;
         when s1 =>                     
-        if (instr_stall = '0') then
+        if (stall = '0') then
             nextstate <= s2;
         else                          
             nextstate <= s1;
         end if;
         when s2 =>                      
-        if (instr_stall = '0') then
+        if (stall = '0') then
             nextstate <= s3;
         else                          
             nextstate <= s2;
         end if;
         when s3 =>                     
-        if (instr_stall = '0') then --and data_stall = '0'
+        if (stall = '0') then
             nextstate <= sX;
         else                          
             nextstate <= s3;
         end if;
         when s4 =>                     
-        if (instr_stall = '0') then
+        if (stall = '0') then
             nextstate <= sX;
         else                          
             nextstate <= s4;
