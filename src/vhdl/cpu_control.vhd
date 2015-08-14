@@ -183,121 +183,121 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
   begin
   	stage_control <= b"11111";
   	case currentstate1 is
-		when s0 =>
+		when sX =>
 			id_regdest_mux <= output_buffer1 (28 downto 27);
 			id_regshift_mux <= output_buffer1 (26 downto 25);
 			
 			
-		when s1 =>
+		when s0 =>
 			exc_mux1 <= output_buffer1 (23 downto 22);
 			exc_mux2 <= output_buffer1 (21 downto 20);
 			alu_op <= output_buffer1 (19 downto 14);
 			
 			stage_control (2) <= output_buffer1 (2);
-		when s2 =>
+		when s1 =>
 			memstg_mux <= output_buffer1 (13);
 			rd_mask <= output_buffer1 (12 downto 9);
 			wr_mask <= output_buffer1 (8 downto 5);
 			stage_control (3) <= output_buffer1 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer1 (29);
 		when s3 =>
+			--in_mux_pc <= output_buffer1 (29);
+		when s2 =>
 			id_enable_regs <= output_buffer1 (24);
 		when others =>
 			--do nothing
 	end case;
 	
 	case currentstate2 is
-		when s0 =>
+		when sX =>
 			id_regdest_mux <= output_buffer2 (28 downto 27);
 			id_regshift_mux <= output_buffer2 (26 downto 25);
 			
-		when s1 =>
+		when s0 =>
 			exc_mux1 <= output_buffer2 (23 downto 22);
 			exc_mux2 <= output_buffer2 (21 downto 20);
 			alu_op <= output_buffer2 (19 downto 14);
 			
 			stage_control (2) <= output_buffer2 (2);
-		when s2 =>
+		when s1 =>
 			memstg_mux <= output_buffer2(13);
 			rd_mask <= output_buffer2 (12 downto 9);
 			wr_mask <= output_buffer2 (8 downto 5);
 			stage_control (3) <= output_buffer2 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer2 (29);
 		when s3 =>
+			--in_mux_pc <= output_buffer2 (29);
+		when s2 =>
 			id_enable_regs <= output_buffer2 (24);
 		when others =>
 			--do nothing
 	end case;
 	
 	case currentstate3 is
-		when s0 =>
+		when sX =>
 			id_regdest_mux <= output_buffer3 (28 downto 27);
 			id_regshift_mux <= output_buffer3 (26 downto 25);
 			
-		when s1 =>
+		when s0 =>
 			exc_mux1 <= output_buffer3 (23 downto 22);
 			exc_mux2 <= output_buffer3 (21 downto 20);
 			alu_op <= output_buffer3 (19 downto 14);
 			
 			stage_control (2) <= output_buffer3 (2);
-		when s2 =>
+		when s1 =>
 			memstg_mux <= output_buffer3 (13);
 			rd_mask <= output_buffer3 (12 downto 9);
 			wr_mask <= output_buffer3 (8 downto 5);
 			stage_control (3) <= output_buffer3 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer3 (29);
 		when s3 =>
+			--in_mux_pc <= output_buffer3 (29);
+		when s2 =>
 			id_enable_regs <= output_buffer3 (24);
 		when others =>
 			--do nothing
 	end case;
 	
 	case currentstate4 is
-		when s0 =>
+		when sX =>
 			id_regdest_mux <= output_buffer4 (28 downto 27);
 			id_regshift_mux <= output_buffer4 (26 downto 25);
 			
-		when s1 =>
+		when s0 =>
 			exc_mux1 <= output_buffer4 (23 downto 22);
 			exc_mux2 <= output_buffer4 (21 downto 20);
 			alu_op <= output_buffer4 (19 downto 14);
 			
 			stage_control (2) <= output_buffer4 (2);
-		when s2 =>
+		when s1 =>
 			memstg_mux <= output_buffer4 (13);
 			rd_mask <= output_buffer4 (12 downto 9);
 			wr_mask <= output_buffer4 (8 downto 5);
 			stage_control (3) <= output_buffer4 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer4 (29);
 		when s3 =>
+			--in_mux_pc <= output_buffer4 (29);
+		when s2 =>
 			id_enable_regs <= output_buffer4 (24);
 		when others =>
 			--do nothing
 	end case;
 	
 	case currentstate5 is
-		when s0 =>
+		when sX =>
 			id_regdest_mux <= output_buffer5 (28 downto 27);
 			id_regshift_mux <= output_buffer5 (26 downto 25);
 			
-		when s1 =>
+		when s0 =>
 			exc_mux1 <= output_buffer5 (23 downto 22);
 			exc_mux2 <= output_buffer5 (21 downto 20);
 			alu_op <= output_buffer5 (19 downto 14);
 			
 			stage_control (2) <= output_buffer5 (2);
-		when s2 =>
+		when s1 =>
 			memstg_mux <= output_buffer5 (13);
 			rd_mask <= output_buffer5 (12 downto 9);
 			wr_mask <= output_buffer5 (8 downto 5);
 			stage_control (3) <= output_buffer5 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer5 (29);
 		when s3 =>
+			--in_mux_pc <= output_buffer5 (29);
+		when s2 =>
 			id_enable_regs <= output_buffer5 (24);
 		when others =>
 			--do nothing
