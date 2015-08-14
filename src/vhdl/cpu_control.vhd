@@ -317,20 +317,22 @@ state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
 	
   end process fsm_ctrl;
   
-  mux_pc_ctrl: process(output_buffer1, output_buffer2, output_buffer3, output_buffer4, output_buffer5)
+  mux_pc_ctrl: process(clk, output_buffer1, output_buffer2, output_buffer3, output_buffer4, output_buffer5)
   begin
-  if (currentstate1 = sX) then
-  	in_mux_pc <= output_buffer1 (29);
-  elsif (currentstate2 = sX) then
-  	in_mux_pc <= output_buffer2 (29);
-  elsif (currentstate3 = sX) then
-  	in_mux_pc <= output_buffer3 (29);
-  elsif (currentstate4 = sX) then
-  	in_mux_pc <= output_buffer4 (29);
-  elsif (currentstate5 = sX) then
-  	in_mux_pc <= output_buffer5 (29);
-  else
-  	in_mux_pc <= '0';
+  if (clk'event and clk = '1') then
+  	if (currentstate1 = sX) then
+  		in_mux_pc <= output_buffer1 (29);
+  	elsif (currentstate2 = sX) then
+  		in_mux_pc <= output_buffer2 (29);
+  	elsif (currentstate3 = sX) then
+  		in_mux_pc <= output_buffer3 (29);
+  	elsif (currentstate4 = sX) then
+  		in_mux_pc <= output_buffer4 (29);
+  	elsif (currentstate5 = sX) then
+  		in_mux_pc <= output_buffer5 (29);
+  	else
+  		in_mux_pc <= '0';
+  	end if;
   end if;
   end process;
 	
