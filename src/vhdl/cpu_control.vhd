@@ -229,9 +229,9 @@ begin
       output(12 downto 9) <= output_buffer(0) (12 downto 9);
       output(8 downto 5)  <= output_buffer(0) (8 downto 5);
       if currentstate(0) /= nextstate(0) then
-        output_buffer(3) <= '1';
+       output(3) <= '1';
       else
-        stage_control (3) <= '0';
+       output(3) <= '0';
       end if;
     elsif (currentstate(1) = s3) then
       output(13)          <= output_buffer(1) (13);
@@ -240,34 +240,34 @@ begin
       if currentstate(0) /= nextstate(0) then
         output(3) <= '1';
       else
-        stage_control (3) <= '0';
+       output(3) <= '0';
       end if;
     elsif (currentstate(2) = s3) then
       output(13)          <= output_buffer(2) (13);
       output(12 downto 9) <= output_buffer(2) (12 downto 9);
       output(8 downto 5)  <= output_buffer(2) (8 downto 5);
       if currentstate(0) /= nextstate(0) then
-        output_buffer(3) <= '1';
+        output(3) <= '1';
       else
-        stage_control (3) <= '0';
+       output(3) <= '0';
       end if;
     elsif (currentstate(3) = s3) then
       output(13)          <= output_buffer(3) (13);
       output(12 downto 9) <= output_buffer(3) (12 downto 9);
       output(8 downto 5)  <= output_buffer(3) (8 downto 5);
       if currentstate(0) /= nextstate(0) then
-        output_buffer(3) <= '1';
+        output(3) <= '1';
       else
-        stage_control (3) <= '0';
+       output(3) <= '0';
       end if;
     elsif (currentstate(4) = s3) then
       output(13)          <= output_buffer(4) (13);
       output(12 downto 9) <= output_buffer(4) (12 downto 9);
       output(8 downto 5)  <= output_buffer(4) (8 downto 5);
       if currentstate(0) /= nextstate(0) then
-        output_buffer(3) <= '1';
+        output(3) <= '1';
       else
-        output_buffer(3) <= '0';
+       output(3) <= '0';
       end if;
     end if;
   end process output_me;
@@ -276,37 +276,37 @@ begin
   output_wb : process(output_buffer, currentstate)
   begin
     if (currentstate(0) = s4) then
-      output_buffer(24) <= output_buffer(0) (24);
+      output(24) <= output_buffer(0) (24);
       if currentstate(0) /= nextstate(0) then
-        output_buffer(3) <= '1';
+        output(4) <= '1';
       else
-        output_buffer(4) <= '0';
+       output(4) <= '0';
       end if;
     elsif (currentstate(1) = s4) then
       output(24) <= output_buffer(1) (24);
       if currentstate(1) /= nextstate(1) then
-        output(3) <= '1';
+        output(4) <= '1';
       else
-        output(4) <= '0';
+       output(4) <= '0';
       end if;
     elsif (currentstate(2) = s4) then
       output(24) <= output_buffer(2) (24);
       if currentstate(2) /= nextstate(2) then
-        output(3) <= output_buffer(4) (3);
+        output(4) <= output_buffer(4) (3);
       else
         output(4) <= '0';
       end if;
     elsif (currentstate(3) = s4) then
       output(24) <= output_buffer(3) (24);
       if currentstate(3) /= nextstate(3) then
-        output(3) <= '1';
+        output(4) <= '1';
       else
         output(4) <= '0';
       end if;
     elsif (currentstate(4) = s4) then
       output(24) <= output_buffer(4) (24);
       if currentstate(4) /= nextstate(4) then
-        output(3) <= '1';
+        output(4) <= '1';
       else
         output(4) <= '0';
       end if;
