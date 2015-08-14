@@ -22,7 +22,7 @@ InstrData : in std_logic_vector(31 downto 0);			--InstrData : in std_logic_vecto
 
 --StallData : in std_logic;
 
-IR : out std_logic_vector(31 downto 0);    --IR : out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);   					    --IR, Next PC goes to Execution Stage(32 bit)
+IP : out std_logic_vector(31 downto 0);    --IR : out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);   					    --IR, Next PC goes to Execution Stage(32 bit)
 InstrAddr: out std_logic_vector(31 downto 0); --InstrAddr: out std_logic_vector(CPU_ADDR_WIDTH-1 downto 0);  					--InstrAddr, PC goes to Memory(32 bit)
 Instr : out std_logic_vector(31 downto 0)	--Instr : out std_logic_vector(CPU_DATA_WIDTH-1 downto 0);				    	--Instr, Adress information from Memory goes to Instruction Decoder(32 bit)
 
@@ -37,16 +37,24 @@ end entity instruction_fetch;
 architecture behavioral of instruction_fetch is
 begin
 
-	process (rst, clk, PC, InstrData) is
+	proc1: process (rst, clk, PC, InstrData) is
+	begin
+		if(rst = '0') then
+			IP <= X"0000_0000";		--If reset all coming signals are 0000_0000
+			Instr <= X"0000_0000";		--If reset all coming signals are 0000_0000
+		elsif (clk'event and clk = '1') then	--elsif (rising_edge(clk)) then
+			IP <= PC + X"0000_0004";  	--IR value is always PC+4;
+			Instr <= InstrData;		--Instr value is always equal to InstrData value
+		end if;
+	end process ;
+	
+	proc2: process (rst, PC, InstrData) is
 	begin
 		if(rst = '0') then
 			InstrAddr <= X"0000_0000";	--If reset comes PC goes to the beginning, its value is 0000_0000
-			IR <= X"0000_0000";		--If reset all coming signals are 0000_0000
-			Instr <= X"0000_0000";		--If reset all coming signals are 0000_0000
-		elsif (clk'event and clk = '1') then	--elsif (rising_edge(clk)) then 
+		else					--else 
 			InstrAddr <= PC;  		--We can the value of PC to the memory adress
-			IR <= PC + X"0000_0004";  	--IR value is always PC+4;
-			Instr <= InstrData;		--Instr value is always equal to InstrData value
+
 		end if;
 	end process ;
 
