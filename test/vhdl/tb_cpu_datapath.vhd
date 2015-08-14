@@ -73,9 +73,9 @@ architecture behavioural of tb_cpu_datapath is
         data_proc : process
         begin
             	-- Reset
-            	rst <= '0';
-            	wait for clk_time;
             	rst <= '1';
+            	wait for clk_time;
+            	rst <= '0';
 
 		--usually the first instruction address should be dropping out at
 		-- instr_addr and it should be 00000000, so we return an instruction
