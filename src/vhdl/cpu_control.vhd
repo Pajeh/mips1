@@ -83,20 +83,31 @@ architecture structure_cpu_control of cpu_control is
   signal currentstate  : std_logic_vector(4 downto 0);
   signal nextstate     : std_logic_vector(4 downto 0);
   
+  signal stall     : std_logic := '0';
+  
 begin
 
-	fsm1:	entity work.fsm(behavioral) port map(clk, rst, instr1, instr_stall, data_stall,
+	fsm1:	entity work.fsm(behavioral) port map(clk, rst, instr1, stall,
 	currentstate1, nextstate1, output_buffer1, busy1, go1);
-	fsm2:	entity work.fsm(behavioral) port map(clk, rst, instr2, instr_stall, data_stall,
+	fsm2:	entity work.fsm(behavioral) port map(clk, rst, instr2, stall,
 	currentstate2, nextstate2, output_buffer2, busy2, go2);
-	fsm3:	entity work.fsm(behavioral) port map(clk, rst, instr3, instr_stall, data_stall,
+	fsm3:	entity work.fsm(behavioral) port map(clk, rst, instr3, stall,
 	currentstate3, nextstate3, output_buffer3, busy3, go3);
-	fsm4:	entity work.fsm(behavioral) port map(clk, rst, instr4, instr_stall, data_stall,
+	fsm4:	entity work.fsm(behavioral) port map(clk, rst, instr4, stall,
 	currentstate4, nextstate4, output_buffer4, busy4, go4);
-	fsm5:	entity work.fsm(behavioral) port map(clk, rst, instr5, instr_stall, data_stall,
+	fsm5:	entity work.fsm(behavioral) port map(clk, rst, instr5, stall,
 	currentstate5, nextstate5, output_buffer5, busy5, go5);
 
 	--stage_control (1 downto 0) <= b"11";
+
+stall_ctrl: process(instr_stall, data_stall)
+begin
+	if ((instr_stall = '0') and (data_stall = '0')) then
+		stall <= '0';
+	else
+		stall = '1';
+	end if;
+end process;
 	
 state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
   begin
