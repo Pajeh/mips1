@@ -199,6 +199,7 @@ end process;
 mux: process(in_mux_pc, id_ip, if_ip)
   begin
 	if (in_mux_pc = '1')then
+		mux_pc_out <= id_ip;
 		mux_out_0 <= id_ip;
 	else
 		mux_pc_out <= if_ip;
