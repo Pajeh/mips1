@@ -135,25 +135,41 @@ begin
       output(26 downto 25) <= output_buffer(0) (26 downto 25);
       output(29)           <= output_buffer(0) (29);
       if currentstate(0) /= nextstate(4) then
+<<<<<<< HEAD
         output(2) <= '1';
       else
         output (2) <= '0';
+=======
+        output(1) <= '1';
+      else
+        output (1) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     elsif (currentstate(1) = s1) then
       output(28 downto 27) <= output_buffer(1) (28 downto 27);
       output(26 downto 25) <= output_buffer(1) (26 downto 25);
       output(29)           <= output_buffer(1) (29);
       if currentstate(1) /= nextstate(0) then
+<<<<<<< HEAD
         output(2) <= '1';
       else
         output (2) <= '0';
+=======
+        output(1) <= '1';
+      else
+        output (1) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     elsif (currentstate(2) = s1) then
       output(28 downto 27) <= output_buffer(2) (28 downto 27);
       output(26 downto 25) <= output_buffer(2) (26 downto 25);
       output(29)           <= output_buffer(2) (29);
       if currentstate(2) /= nextstate(1) then
+<<<<<<< HEAD
         output(2) <= '1';
+=======
+        output(1) <= '1';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       else
         output(2) <= '0';
       end if;
@@ -162,18 +178,30 @@ begin
       output(26 downto 25) <= output_buffer(3) (26 downto 25);
       output(29)           <= output_buffer(3) (29);
       if currentstate(3) /= nextstate(2) then
+<<<<<<< HEAD
         output(2) <= '1';
       else
         output (2) <= '0';
+=======
+        output(1) <= '1';
+      else
+        output (1) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     elsif (currentstate(4) = s1) then
       output(28 downto 27) <= output_buffer(4) (28 downto 27);
       output(26 downto 25) <= output_buffer(4) (26 downto 25);
       output(29)           <= output_buffer(4) (29);
       if currentstate(4) /= nextstate(3) then
+<<<<<<< HEAD
         output(2) <= '1';
       else
         output (2) <= '0';
+=======
+        output(1) <= '1';
+      else
+        output (1) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     end if;
   end process output_ID;
@@ -185,18 +213,30 @@ begin
       output(21 downto 20) <= output_buffer(0) (21 downto 20);
       output(19 downto 14) <= output_buffer(0) (19 downto 14);
       if currentstate(0) /= nextstate(4) then
+<<<<<<< HEAD
         output(3) <= output_buffer(0) (2);
       else
         output (3) <= '0';
+=======
+        output(2) <= output_buffer(0) (2);
+      else
+        output (2) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     elsif (currentstate(1) = s2) then
       output(23 downto 22) <= output_buffer(1) (23 downto 22);
       output(21 downto 20) <= output_buffer(1) (21 downto 20);
       output(19 downto 14) <= output_buffer(1) (19 downto 14);
       if currentstate(1) /= nextstate(0) then
+<<<<<<< HEAD
         output(3) <= output_buffer(1) (2);
       else
         output (3) <= '0';
+=======
+        output(2) <= output_buffer(1) (2);
+      else
+        output (2) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
 
     elsif (currentstate(2) = s2) then
@@ -204,9 +244,15 @@ begin
       output(21 downto 20) <= output_buffer(2) (21 downto 20);
       output(19 downto 14) <= output_buffer(2) (19 downto 14);
       if currentstate(2) /= nextstate(1) then
+<<<<<<< HEAD
         output(3) <= output_buffer(2) (2);
       else
         output (3) <= '0';
+=======
+        output(2) <= output_buffer(2) (2);
+      else
+        output (2) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
 
     elsif (currentstate(3) = s2) then
@@ -214,9 +260,15 @@ begin
       output(21 downto 20) <= output_buffer(3) (21 downto 20);
       output(19 downto 14) <= output_buffer(3) (19 downto 14);
       if currentstate(3) /= nextstate(2) then
+<<<<<<< HEAD
         output(3) <= output_buffer(3) (2);
       else
         output (3) <= '0';
+=======
+        output(2) <= output_buffer(3) (2);
+      else
+        output (2) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
 
     elsif (currentstate(4) = s2) then
@@ -224,9 +276,15 @@ begin
       output(21 downto 20) <= output_buffer(4) (21 downto 20);
       output(19 downto 14) <= output_buffer(4) (19 downto 14);
       if currentstate(4) /= nextstate(3) then
+<<<<<<< HEAD
         output(3) <= output_buffer(4) (2);
       else
         output (3) <= '0';
+=======
+        output(2) <= output_buffer(4) (2);
+      else
+        output (2) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
 
     end if;
@@ -239,45 +297,75 @@ begin
       output(12 downto 9) <= output_buffer(0) (12 downto 9);
       output(8 downto 5)  <= output_buffer(0) (8 downto 5);
       if currentstate(0) /= nextstate(4) then
+<<<<<<< HEAD
        output(4) <= '1';
       else
        output(4) <= '0';
+=======
+       output(3) <= '1';
+      else
+       output(3) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     elsif (currentstate(1) = s3) then
       output(13)          <= output_buffer(1) (13);
       output(12 downto 9) <= output_buffer(1) (12 downto 9);
       output(8 downto 5)  <= output_buffer(1) (8 downto 5);
       if currentstate(1) /= nextstate(0) then
+<<<<<<< HEAD
         output(4) <= '1';
       else
        output(4) <= '0';
+=======
+        output(3) <= '1';
+      else
+       output(3) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     elsif (currentstate(2) = s3) then
       output(13)          <= output_buffer(2) (13);
       output(12 downto 9) <= output_buffer(2) (12 downto 9);
       output(8 downto 5)  <= output_buffer(2) (8 downto 5);
       if currentstate(2) /= nextstate(1) then
+<<<<<<< HEAD
         output(4) <= '1';
       else
        output(4) <= '0';
+=======
+        output(3) <= '1';
+      else
+       output(3) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     elsif (currentstate(3) = s3) then
       output(13)          <= output_buffer(3) (13);
       output(12 downto 9) <= output_buffer(3) (12 downto 9);
       output(8 downto 5)  <= output_buffer(3) (8 downto 5);
       if currentstate(3) /= nextstate(2) then
+<<<<<<< HEAD
         output(4) <= '1';
       else
        output(4) <= '0';
+=======
+        output(3) <= '1';
+      else
+       output(3) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     elsif (currentstate(4) = s3) then
       output(13)          <= output_buffer(4) (13);
       output(12 downto 9) <= output_buffer(4) (12 downto 9);
       output(8 downto 5)  <= output_buffer(4) (8 downto 5);
       if currentstate(4) /= nextstate(3) then
+<<<<<<< HEAD
         output(4) <= '1';
       else
        output(4) <= '0';
+=======
+        output(3) <= '1';
+      else
+       output(3) <= '0';
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
       end if;
     end if;
   end process output_me;
@@ -287,6 +375,7 @@ begin
   begin
     if (currentstate(0) = s4) then
       output(24) <= output_buffer(0) (24);
+<<<<<<< HEAD
     elsif (currentstate(1) = s4) then
       output(24) <= output_buffer(1) (24);
     elsif (currentstate(2) = s4) then
@@ -295,6 +384,41 @@ begin
       output(24) <= output_buffer(3) (24);
     elsif (currentstate(4) = s4) then
       output(24) <= output_buffer(4) (24);
+=======
+      if currentstate(0) /= nextstate(4) then
+        output(4) <= '1';
+      else
+       output(4) <= '0';
+      end if;
+    elsif (currentstate(1) = s4) then
+      output(24) <= output_buffer(1) (24);
+      if currentstate(1) /= nextstate(0) then
+        output(4) <= '1';
+      else
+       output(4) <= '0';
+      end if;
+    elsif (currentstate(2) = s4) then
+      output(24) <= output_buffer(2) (24);
+      if currentstate(2) /= nextstate(1) then
+        output(4) <= output_buffer(4) (3);
+      else
+        output(4) <= '0';
+      end if;
+    elsif (currentstate(3) = s4) then
+      output(24) <= output_buffer(3) (24);
+      if currentstate(3) /= nextstate(2) then
+        output(4) <= '1';
+      else
+        output(4) <= '0';
+      end if;
+    elsif (currentstate(4) = s4) then
+      output(24) <= output_buffer(4) (24);
+      if currentstate(4) /= nextstate(3) then
+        output(4) <= '1';
+      else
+        output(4) <= '0';
+      end if;
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
     end if;
   end process output_wb;
 
@@ -309,6 +433,11 @@ begin
     exc_mux2                   <= output(21 downto 20);
     alu_op                     <= output(19 downto 14);
     memstg_mux                 <= output(13);
+<<<<<<< HEAD
+=======
+    rd_mask                    <= output(12 downto 9);
+    wr_mask                    <= output(8 downto 5);
+>>>>>>> 30d450e361eedf5d60b7b2dee1794a88f7e40ca7
     stage_control  <= output(4 downto 0);
   end process;
   
