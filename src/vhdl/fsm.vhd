@@ -187,7 +187,7 @@ architecture behavioral of FSM is
   constant r_type : std_logic_vector(5 downto 0) := b"0000_00";  -- Type R      
 
 
-  signal opcode       : std_logic_vector(5 downto 0);
+--  signal opcode       : std_logic_vector(5 downto 0);
   signal nextstate    : std_logic_vector(4 downto 0)  := (others => '0');
   signal currentstate : std_logic_vector(4 downto 0)  := (others => '0');
   signal instruction  : std_logic_vector(31 downto 0) := (others => '0');
@@ -211,13 +211,13 @@ begin
               when addiu  => output_buffer <= b"0_10_00_1_10_01_100000_0_0000_0000_11111";
               when lbu    => output_buffer <= b"0_10_00_1_10_01_100000_1_0001_0000_11111";
               when lw     => output_buffer <= b"0_10_00_1_10_01_100000_1_1111_0000_11111";
-              when sb     => output_buffer <= b"0_10_00_0_10_01_100000_0_0001_0000_11111";
-              when sw     => output_buffer <= b"0_10_00_0_10_01_100000_0_1111_0000_11111";
+              when sb     => output_buffer <= b"0_10_00_0_10_01_100000_0_0000_0001_11111";
+              when sw     => output_buffer <= b"0_10_00_0_10_01_100000_0_0000_1111_11111";
               when slti   => output_buffer <= b"0_10_00_1_10_01_001000_0_0000_0000_11111";
               when andi   => output_buffer <= b"0_10_01_1_00_01_100100_0_0000_0000_11111";
               when shift  => output_buffer <= b"0_00_00_1_00_00_001000_0_0000_0000_11111";
-              when beqz   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
-              when bnez   => output_buffer <= b"0_10_00_0_00_00_000000_0_0000_0000_11111";
+              when beqz   => output_buffer <= b"1_10_00_0_00_00_000000_0_0000_0000_11111";
+              when bnez   => output_buffer <= b"1_10_00_0_00_00_000000_0_0000_0000_11111";
               when j      => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
               when jalx   => output_buffer <= b"1_10_00_1_00_00_000000_0_0000_0000_11000";
               --when r_type => output_buffer <= b"0_00_00_0_00_00_000000_0_0000_0000_11111";
@@ -260,10 +260,10 @@ begin
       currentstate <= s0;  -- reset to first state - Instruction fetch
     elsif clk'event and clk = '1'and (nextfsm_nextstate /= (nextstate)) then  -- rising clock edge
       currentstate     <= nextstate;
-      currentstate_out <= currentstate;
     end if;
   end process reset;
-
+currentstate_out <= currentstate;
+nextstate_out <= nextstate;
 
 
 
