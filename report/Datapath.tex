@@ -1,6 +1,12 @@
 \section{Datapath}
-This chapter describes the datapath and its internal elements. The datapath is the component that connects the pipeline components within itself as well as with cpu inputs and outputs and the controlpath.
+This section describes the datapath and its internal elements. The datapath is the component that connects the pipeline components within itself as well as with cpu inputs and outputs and the controlpath.
 
 This MIPS implementation works with a 5 stage pipeline in order to achieve a fast clock. The datapath consists of instruction fetch, instructino decode, execution, memory stage and writeback.
-The datapath controls the information flow from one pipeline stage to the next with registers. These writing process occurs on the positive edge of the clock when the pipeline stage input from the controlpath
-allows it. That is, the registers forwards information synchronously.
+The datapath controls the information flow from one pipeline stage to the nextwith registers. 
+These writing process occurs 
+on the positive edge of the clock when the pipeline stage input from the controlpath
+allows it. That is, the registers forwards information synchronously. 
+
+The controlpath has
+
+For 
