@@ -1,6 +1,11 @@
 \chapter{Design}
 % input Design sections for no auto new page
-This chapter describes the design of a MIPS 1 microcontroller. The microcontroller design is shown \autoref{fig:overview}.
+This chapter describes the design of a MIPS 1 microcontroller. A microcontroller consists mostly of a processor core, memory and programmable inputs/outputs peripherals. 
+This design implementation focus only on the processor core design.
+
+This laboratory requires a microcontroller structure of at least a CPU containing a controlpath, datapath and an ALU. The created design uses this base with a 5-staged pipeline.
+The CPU interacts with two external memories and has also a clock and a reset input. All of which are considered external to this design.
+The CPU is divided in two base components: a control and a datapath block, as shown  in \autoref{fig:overview}.
 
 \begin{figure}[h]
 \centering{
@@ -8,9 +13,9 @@ This chapter describes the design of a MIPS 1 microcontroller. The microcontroll
 \caption{CPU overview}
 \label{fig:overview}
 }
-\end{figure}
+\end{figure} 
 
-The CPU is divided in a control and a datapath blocks. In the datapath there is the pipeline made of five blocks:
+In the datapath there is the pipeline made of five blocks:
 \begin{itemize}
  \item IF: Instruction fetch
  \item ID: Instruction decode
@@ -19,7 +24,8 @@ The CPU is divided in a control and a datapath blocks. In the datapath there is 
  \item WB: Writeback
 \end{itemize}
 
-The CPU interacts with two external memories and has also a clock and a reset input.
+The following sections describe the central component ALU and the two base components: datapath and controlpath.
+
 \input{ALU}
 	\input{Datapath}
 	\input{Controlpath}
