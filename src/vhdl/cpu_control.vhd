@@ -1,6 +1,7 @@
 -- Revision history:
 -- 2015-08-12       Lukas Jaeger        created
 -- 2015-08-16	    Lukas Jaeger	fixed all bugs and made it working with the cpu
+-- 2015-08-17       Lukas Jaeger    added stall functionality
 
 library IEEE;
 use IEEE.std_logic_1164.all;
@@ -44,7 +45,7 @@ architecture structure_cpu_control of cpu_control is
                     instr_3 <= x"00000000";
                     instr_4 <= x"00000000";
                     stage_control <= "11111";
-            elsif (rising_edge(clk)) then
+            elsif (rising_edge(clk) and instr_stall /= '1' and data_stall /= '1') then
                     instr_1 <= instr_in;
                     instr_2 <= instr_1;
                     instr_3 <= instr_2;
