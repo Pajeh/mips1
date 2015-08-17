@@ -1,20 +1,16 @@
--- revision history:
--- 06.07.2015     Alex Schönberger    	 created
--- 10.08.2015     Patrick Appenheimer    entity
--- 11.08.2015     Patrick Appenheimer    main fsm
--- 11.08.2015     Patrick Appenheimer    5 instr fsm
--- 12.08.2015     Patrick Appenheimer    minor changes
--- 14.08.2015   Patrick Appenheimer    stall logic changed
+-- Revision history:
+-- 2015-08-12       Lukas Jaeger        created
+-- 2015-08-16	    Lukas Jaeger	fixed all bugs and made it working with the cpu
 
 library IEEE;
-  use IEEE.std_logic_1164.ALL;
-  USE IEEE.numeric_std.ALL;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 
 library WORK;
-  use WORK.all;  
+use WORK.all;
 
 entity cpu_control is
-  port(
+    port(
       clk                   	: in  std_logic;
       rst                   	: in  std_logic;
       rd_mask   	        : out std_logic_vector(3  downto 0);
@@ -33,307 +29,140 @@ entity cpu_control is
       in_mux_pc             	: out std_logic;
       stage_control		: out std_logic_vector (4 downto 0)
     );
-
 end entity cpu_control;
 
 architecture structure_cpu_control of cpu_control is
-
-  constant s0    : std_logic_vector(4 downto 0) := b"00000";
-  constant s1    : std_logic_vector(4 downto 0) := b"00001";
-  constant s2    : std_logic_vector(4 downto 0) := b"00010";
-  constant s3    : std_logic_vector(4 downto 0) := b"00011";
-  constant s4    : std_logic_vector(4 downto 0) := b"00100";
-  constant sX    : std_logic_vector(4 downto 0) := b"11111";
-
-  signal instr1         : std_logic_vector(31 downto 0);
-  signal instr2         : std_logic_vector(31 downto 0);
-  signal instr3         : std_logic_vector(31 downto 0);
-  signal instr4         : std_logic_vector(31 downto 0);
-  signal instr5         : std_logic_vector(31 downto 0);
-
-  signal currentstate1         : std_logic_vector(4 downto 0);
-  signal currentstate2         : std_logic_vector(4 downto 0);
-  signal currentstate3         : std_logic_vector(4 downto 0);
-  signal currentstate4         : std_logic_vector(4 downto 0);
-  signal currentstate5         : std_logic_vector(4 downto 0);
-  
-  signal nextstate1         : std_logic_vector(4 downto 0);
-  signal nextstate2         : std_logic_vector(4 downto 0);
-  signal nextstate3         : std_logic_vector(4 downto 0);
-  signal nextstate4         : std_logic_vector(4 downto 0);
-  signal nextstate5         : std_logic_vector(4 downto 0);
-  
-  signal output_buffer1 : std_logic_vector(29 downto 0);
-  signal output_buffer2 : std_logic_vector(29 downto 0);
-  signal output_buffer3 : std_logic_vector(29 downto 0);
-  signal output_buffer4 : std_logic_vector(29 downto 0);
-  signal output_buffer5 : std_logic_vector(29 downto 0);
-  
-  signal busy1      : std_logic;
-  signal busy2      : std_logic;
-  signal busy3      : std_logic;
-  signal busy4      : std_logic;
-  signal busy5      : std_logic;
-  
-  signal go1      : std_logic;
-  signal go2      : std_logic;
-  signal go3      : std_logic;
-  signal go4      : std_logic;
-  signal go5      : std_logic;
-
-  signal currentstate  : std_logic_vector(4 downto 0);
-  signal nextstate     : std_logic_vector(4 downto 0);
-  
-  signal stall     : std_logic := '0';
-  
-begin
-
-	fsm1:	entity work.fsm(behavioral) port map(clk, rst, instr1, stall,
-	currentstate1, nextstate1, output_buffer1, busy1, go1);
-	fsm2:	entity work.fsm(behavioral) port map(clk, rst, instr2, stall,
-	currentstate2, nextstate2, output_buffer2, busy2, go2);
-	fsm3:	entity work.fsm(behavioral) port map(clk, rst, instr3, stall,
-	currentstate3, nextstate3, output_buffer3, busy3, go3);
-	fsm4:	entity work.fsm(behavioral) port map(clk, rst, instr4, stall,
-	currentstate4, nextstate4, output_buffer4, busy4, go4);
-	fsm5:	entity work.fsm(behavioral) port map(clk, rst, instr5, stall,
-	currentstate5, nextstate5, output_buffer5, busy5, go5);
-
-	--stage_control (1 downto 0) <= b"11";
-
-stall_ctrl: process(instr_stall, data_stall)
-begin
-	if ((instr_stall = '0') and (data_stall = '0')) then
-		stall <= '0';
-	else
-		stall <= '1';
-	end if;
-end process;
-	
-state_encode: process(currentstate, busy1, busy2, busy3, busy4, busy5)
-  begin
-    case currentstate is
-    	when sX =>
-    	if (busy1 = '0') then
-    	    nextstate <= s0;
-    	else
-    	    nextstate <= sX;
-    	end if;
-        when s0 =>
-        if (busy2 = '0') then
-            nextstate <= s1;
-        else                          
-            nextstate <= s0;
-        end if;
-        when s1 =>                     
-        if (busy3 = '0') then
-            nextstate <= s2;
-        else                          
-            nextstate <= s1;
-        end if;
-        when s2 =>                      
-        if (busy4 = '0') then
-            nextstate <= s3;
-        else                          
-            nextstate <= s2;
-        end if;
-        when s3 =>                     
-        if (busy5 = '0') then
-            nextstate <= s4;
-        else                          
-            nextstate <= s3;
-        end if;
-        when s4 =>                     
-        if (busy1 = '0') then
-            nextstate <= s0;
-        else                          
-            nextstate <= sX;
-        end if;
-        when others => nextstate <= sX;
-    end case;
-  end process state_encode;
-  
-  state_register: process(rst, clk)
-  begin
-    if (rst = '1') then
-      currentstate <= sX;
-    elsif (clk'event and clk = '1') then
-      currentstate <= nextstate;
-    end if;
-  end process state_register;
-  
-  state_decode: process(currentstate)
-  begin
-    case currentstate is
-      when sX =>
-      	go1 <= '0';
-      	go2 <= '0';
-      	go3 <= '0';
-      	go4 <= '0';
-      	go5 <= '0';
-      when s0 =>
-      	instr1 <= instr_in;
-      	go1 <= '1';
-      when s1 =>
-      	instr2 <= instr_in;
-      	go2 <= '1';
-      when s2 =>
-      	instr3 <= instr_in;
-      	go3 <= '1';
-      when s3 =>
-      	instr4 <= instr_in;
-      	go4 <= '1';
-      when s4 =>
-      	instr5 <= instr_in;
-      	go5 <= '1';
-      when others =>
-        -- do something
-    end case;
-  end process state_decode;
-  
-  fsm_ctrl: process(currentstate1, currentstate2, currentstate3, currentstate4, currentstate5)
-  begin
-  	stage_control <= b"11111";
-  	case currentstate1 is
-		when s0 =>
-			id_regdest_mux <= output_buffer1 (28 downto 27);
-			id_regshift_mux <= output_buffer1 (26 downto 25);
-			
-			
-		when s1 =>
-			exc_mux1 <= output_buffer1 (23 downto 22);
-			exc_mux2 <= output_buffer1 (21 downto 20);
-			alu_op <= output_buffer1 (19 downto 14);
-			
-			stage_control (2) <= output_buffer1 (2);
-		when s2 =>
-			memstg_mux <= output_buffer1 (13);
-			rd_mask <= output_buffer1 (12 downto 9);
-			wr_mask <= output_buffer1 (8 downto 5);
-			stage_control (3) <= output_buffer1 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer1 (29);
-		when s3 =>
-			id_enable_regs <= output_buffer1 (24);
-		when others =>
-			--do nothing
-	end case;
-	
-	case currentstate2 is
-		when s0 =>
-			id_regdest_mux <= output_buffer2 (28 downto 27);
-			id_regshift_mux <= output_buffer2 (26 downto 25);
-			
-		when s1 =>
-			exc_mux1 <= output_buffer2 (23 downto 22);
-			exc_mux2 <= output_buffer2 (21 downto 20);
-			alu_op <= output_buffer2 (19 downto 14);
-			
-			stage_control (2) <= output_buffer2 (2);
-		when s2 =>
-			memstg_mux <= output_buffer2(13);
-			rd_mask <= output_buffer2 (12 downto 9);
-			wr_mask <= output_buffer2 (8 downto 5);
-			stage_control (3) <= output_buffer2 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer2 (29);
-		when s3 =>
-			id_enable_regs <= output_buffer2 (24);
-		when others =>
-			--do nothing
-	end case;
-	
-	case currentstate3 is
-		when s0 =>
-			id_regdest_mux <= output_buffer3 (28 downto 27);
-			id_regshift_mux <= output_buffer3 (26 downto 25);
-			
-		when s1 =>
-			exc_mux1 <= output_buffer3 (23 downto 22);
-			exc_mux2 <= output_buffer3 (21 downto 20);
-			alu_op <= output_buffer3 (19 downto 14);
-			
-			stage_control (2) <= output_buffer3 (2);
-		when s2 =>
-			memstg_mux <= output_buffer3 (13);
-			rd_mask <= output_buffer3 (12 downto 9);
-			wr_mask <= output_buffer3 (8 downto 5);
-			stage_control (3) <= output_buffer3 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer3 (29);
-		when s3 =>
-			id_enable_regs <= output_buffer3 (24);
-		when others =>
-			--do nothing
-	end case;
-	
-	case currentstate4 is
-		when s0 =>
-			id_regdest_mux <= output_buffer4 (28 downto 27);
-			id_regshift_mux <= output_buffer4 (26 downto 25);
-			
-		when s1 =>
-			exc_mux1 <= output_buffer4 (23 downto 22);
-			exc_mux2 <= output_buffer4 (21 downto 20);
-			alu_op <= output_buffer4 (19 downto 14);
-			
-			stage_control (2) <= output_buffer4 (2);
-		when s2 =>
-			memstg_mux <= output_buffer4 (13);
-			rd_mask <= output_buffer4 (12 downto 9);
-			wr_mask <= output_buffer4 (8 downto 5);
-			stage_control (3) <= output_buffer4 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer4 (29);
-		when s3 =>
-			id_enable_regs <= output_buffer4 (24);
-		when others =>
-			--do nothing
-	end case;
-	
-	case currentstate5 is
-		when s0 =>
-			id_regdest_mux <= output_buffer5 (28 downto 27);
-			id_regshift_mux <= output_buffer5 (26 downto 25);
-			
-		when s1 =>
-			exc_mux1 <= output_buffer5 (23 downto 22);
-			exc_mux2 <= output_buffer5 (21 downto 20);
-			alu_op <= output_buffer5 (19 downto 14);
-			
-			stage_control (2) <= output_buffer5 (2);
-		when s2 =>
-			memstg_mux <= output_buffer5 (13);
-			rd_mask <= output_buffer5 (12 downto 9);
-			wr_mask <= output_buffer5 (8 downto 5);
-			stage_control (3) <= output_buffer5 (3);
-		when sX =>
-			--in_mux_pc <= output_buffer5 (29);
-		when s3 =>
-			id_enable_regs <= output_buffer5 (24);
-		when others =>
-			--do nothing
-	end case;
-	
-  end process fsm_ctrl;
-  
-  mux_pc_ctrl: process(clk, output_buffer1, output_buffer2, output_buffer3, output_buffer4, output_buffer5)
-  begin
-  if (clk'event and clk = '1') then
-  	if (currentstate1 = sX) then
-  		in_mux_pc <= output_buffer1 (29);
-  	elsif (currentstate2 = sX) then
-  		in_mux_pc <= output_buffer2 (29);
-  	elsif (currentstate3 = sX) then
-  		in_mux_pc <= output_buffer3 (29);
-  	elsif (currentstate4 = sX) then
-  		in_mux_pc <= output_buffer4 (29);
-  	elsif (currentstate5 = sX) then
-  		in_mux_pc <= output_buffer5 (29);
-  	else
-  		in_mux_pc <= '0';
-  	end if;
-  end if;
-  end process;
-	
-end architecture structure_cpu_control;
+    signal instr_1, instr_2, instr_3, instr_4: std_logic_vector (31 downto 0);
+   
+    begin
+    
+    pipeline: process(clk, rst) is
+    begin
+            if (rst = '1') then
+                    instr_1 <= x"00000000";
+                    instr_2 <= x"00000000";
+                    instr_3 <= x"00000000";
+                    instr_4 <= x"00000000";
+                    stage_control <= "11111";
+            elsif (rising_edge(clk)) then
+                    instr_1 <= instr_in;
+                    instr_2 <= instr_1;
+                    instr_3 <= instr_2;
+                    instr_4 <= instr_3;
+            end if;
+    end process;
+    
+    id: process (instr_1) is
+    begin
+            if (instr_1(31 downto 26) = "000000") then -- R-type instructions
+                    id_regdest_mux <= "00";
+                    id_regshift_mux <= "00";
+                    if (instr_1(20 downto 0) = "000000000000000001000") then -- JR-instruction
+                            in_mux_pc <= '1';
+                    else
+                            in_mux_pc <= '0';
+                    end if;
+            else    -- I-Type- and J-Type instructions. They can go together, because nobody cares about
+                    -- the alu-result of a J-Type, so it does not matter, which value is yielded to ex
+                    id_regdest_mux <= "10";
+                    if (instr_1(31 downto 26) = "001111") then  -- LUI needs a shift
+                            id_regshift_mux <= "01";
+                    elsif ((instr_1(31 downto 26) = "000010") -- J
+                        or (instr_1 (31 downto 26) = "000011") -- JAL
+                        or (instr_1 (31 downto 26) = "011101") -- JALX
+                        or (instr_1 (31 downto 26) = "000100") -- BEQ
+                        or (instr_1 (31 downto 26) = "000001") -- BGEZ
+                        or (instr_1 (31 downto 26) = "000111") -- BGTZ
+                        or (instr_1 (31 downto 26) = "000110") -- BLEZ
+                        or (instr_1 (31 downto 26) = "000101") -- BEQZ
+                        ) then
+                            id_regshift_mux <= "00";
+                            in_mux_pc <= '1';                    
+                        else 
+                            id_regshift_mux <= "00";
+                            in_mux_pc <= '0';
+                    end if;                
+            end if;
+                
+    end process;
+    
+    ex: process (instr_2) is
+    begin
+            if (instr_2 (31 downto 26) = "001111") then --LUI
+                    exc_mux1 <= "00";
+                    exc_mux2 <= "01";
+                    alu_op <="000100";
+            elsif ((instr_2 (31 downto 26) = "001001") --ADDIU 
+                or (instr_2 (31 downto 26) = "100011") --LW
+                or (instr_2 (31 downto 26) = "101011") --SW
+                or (instr_2 (31 downto 26) = "101000") --SB
+                or (instr_2 (31 downto 26) = "100100") --LBU
+                )then
+                    exc_mux1 <="10";
+                    exc_mux2 <="01";
+                    alu_op <="100000";
+            elsif (instr_2 (31 downto 26) = "001010") then --SLTI
+                    exc_mux1 <="10";
+                    exc_mux2 <="01";
+                    alu_op <="001000";
+            elsif (instr_2 (31 downto 26) = "001100") then --ANDI
+                    exc_mux1 <="10";
+                    exc_mux2 <="01";
+                    alu_op <="100100";
+            else --if (instr_2 (31 downto 26) = "000000") then -- NOP and other R-types and Ops, where the result does not matter
+                    exc_mux1 <= "10";
+                    exc_mux2 <= "00";
+                    alu_op <= "000100";
+            end if;            
+    end process;
+    
+    mem: process (instr_3) is
+    begin
+            if (instr_3 (31 downto 26) = "100011") then --LW
+                    memstg_mux <= '1';
+                    rd_mask <= "1111";
+                    wr_mask <= "0000";
+            elsif (instr_3 (31 downto 26) = "100100") then --LBU
+                    memstg_mux <= '1';
+                    rd_mask <= "0001";
+                    wr_mask <= "0000";
+            elsif (instr_3 (31 downto 26) = "101011") then --SW
+                    memstg_mux <= '0';
+                    rd_mask <= "0000";
+                    wr_mask <= "1111";
+            elsif (instr_3 (31 downto 26) = "101000") then --SB
+                    memstg_mux <= '0';
+                    rd_mask <= "0000";
+                    wr_mask <= "0001";
+            else 
+                    memstg_mux <= '0';
+                    rd_mask <= "0000";
+                    wr_mask <= "0000";
+            end if;
+    end process;
+    
+    wb: process (instr_4) is
+    begin
+            if ((instr_4 (31 downto 26) = "001111") or --LUI
+            (instr_4 (31 downto 26) = "001001") or --ADDIU
+            (instr_4 (31 downto 26) = "100011") or --LW
+            (instr_4 (31 downto 26) = "100100") or --LBU
+            (instr_4 (31 downto 26) = "001010") or --SLTI
+            (instr_4 (31 downto 26) = "001100") --ANDI
+            ) then
+                    id_enable_regs <= '1';
+            else
+                    id_enable_regs <= '0';
+            end if;
+    end process;
+    
+    stall: process (data_stall, instr_stall) is
+    begin
+            if (data_stall = '1' or instr_stall = '1') then
+                    stage_control <= "00000";
+            else
+                    stage_control <= "11111";
+            end if;
+    end process;
+    
+end architecture;
