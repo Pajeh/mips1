@@ -38,6 +38,6 @@ begin
   spo <= ram(conv_integer(a));
   dpo <= ram(conv_integer(dpra));
 
-  leds  <= ram(132);
+  leds  <= ram(127);
 
 end architecture structure_ram;
