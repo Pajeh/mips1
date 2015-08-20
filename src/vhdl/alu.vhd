@@ -58,7 +58,7 @@ begin
     r_uns := std_logic_vector(unsigned(a_uns) - unsigned(b_uns));
     -- and
     when b"10_0100" =>    
-    r_uns := in_a and in_b;--std_logic_vector(unsigned(a_uns) AND unsigned(b_uns));
+    r_uns := std_logic_vector(unsigned(a_uns) AND unsigned(b_uns));
     -- or
     when b"10_0101" =>    
     r_uns := std_logic_vector(unsigned(a_uns) OR unsigned(b_uns));

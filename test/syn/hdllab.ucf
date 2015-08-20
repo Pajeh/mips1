@@ -17,7 +17,7 @@ NET "rx"                                         LOC = "AG15" ;
 NET "tx"                                         LOC = "AG20" ;
 
 # LEDs
-NET  "leds[0]"                                   LOC = "H18"  ; 
+NET  "leds[0]"                                   LOC = "L18"  ; 
 NET  "leds[1]"                                   LOC = "L18"  ; 
 NET  "leds[2]"                                   LOC = "G15"  ; 
 NET  "leds[3]"                                   LOC = "AD26" ; 

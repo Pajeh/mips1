@@ -60,7 +60,7 @@ begin ---------------- BEGIN ------------------ BEGIN -------------------------
   -- GENERAL CONTROL SIGNAL
   --
   clk   <= not clk      after CLK_TIME;
-  rst   <= '1', '0'     after RST_TIME;
+  rst   <= '0', '1'     after RST_TIME;
 
   -- ____ ___  _  _ 
   -- |    |__] |  | 

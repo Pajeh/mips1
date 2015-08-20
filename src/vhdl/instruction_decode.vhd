@@ -9,7 +9,6 @@
 -- 2015-08-07	Lukas		 added signed/unsigned exceptions for LW-instructions
 -- 2015-08-11   Lukas            fixed some bugs in forwarding
 -- 2015-08-11	Bahri Enis Demirtel added BLEZ, BLTZ, BLTZAL, BNE
--- 2015-08-12   Lukas           fixed bug in immediate expansion and made it falling clock edge sensitive
 library IEEE;
     use IEEE.std_logic_1164.all;
 	use IEEE.numeric_std.all;
@@ -82,22 +81,21 @@ begin
     	end process;
 
 	-- Process for clocked writebacks to the register file and the asynchronous reset
-	register_file_write : process (clk,reset,writeback_reg) is
+	register_file_write : process (clk,reset) is
     	begin
-    		if (reset= '1') then    -- asynchronous reset
-					for i in 0 to 31 loop
+    		if (reset= '0') then    -- asynchronous reset
+            	for i in 0 to 31 loop
                 	register_file(i) <= x"00000000";
             	end loop;
-        	elsif (clk'event and clk = '0') then
-				if (enable_regs = '1') then  -- If register file is enabled, write back result
-					if (to_integer(unsigned (writeback_reg)) > 0) then
-									register_file(to_integer(unsigned (writeback_reg))) <= writeback;
-					end if;
-				elsif (internal_wb_flag = '1') then
-					register_file (31) <= internal_writeback;
-				end if;
+        	elsif (clk = '1') and (enable_regs = '1') then  -- If register file is enabled, write back result
+			if (to_integer(unsigned (writeback_reg)) > 0) then
+            			register_file(to_integer(unsigned (writeback_reg))) <= writeback;
 			end if;
+		elsif (clk = '1') and (internal_wb_flag = '1') then
+			register_file (31) <= internal_writeback;
+        	end if;
     	end process;
+
 	-- Process that defines the branch logic
 	branch_logic : process (instr, ip_in, writeback, alu_result, mem_result, writeback_reg, regdest_ex, regdest_mem, regdest_mux, regshift_mux) is
 	variable offset : integer;
@@ -130,9 +128,9 @@ begin
 		if (instr (31 downto 26) = "000010") then -- Jump instruction
 			internal_wb_flag <= '0';
 			offset := to_integer(signed(instr(25 downto 0)));
-			offset := (offset * 4);
+			offset := offset * 4;
 			ip_out <= ip_in (31 downto 28) & std_logic_vector(to_signed(offset,28));
-		elsif ((instr (31 downto 26) = "000011") or (instr (31 downto 26) = "011101")) then --JAL(X) instruction
+		elsif ((instr (31 downto 26) = "000011") and (reset = '1'))then --JAL instruction
 			internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
 			internal_wb_flag <= '1';
 			offset := to_integer(signed(instr(25 downto 0)));
@@ -156,102 +154,109 @@ begin
                 elsif (instr (31 downto 26) = "000100") then        --BEQ
                         internal_wb_flag <= '0';
                         if (a = b) then
-                                offset := to_integer(signed(instr(15 downto 0)));
+                                offset := to_integer(unsigned(instr(15 downto 0)));
                                 offset := offset * 4;
-                                offset := offset + to_integer (signed(ip_in));
-                                ip_out <= std_logic_vector(to_signed(offset,32));
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
-                                ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
+                                ip_out <= ip_in;
                         end if;
 		elsif ((instr (31 downto 26) = "000001") and (instr (20 downto 16) = "00001")) then --BGEZ instruction
 			internal_wb_flag <= '0';
 			b :=0;
                         if (a >= b) then
-                                offset := to_integer(signed(instr(15 downto 0)));
+                                offset := to_integer(unsigned(instr(15 downto 0)));
                                 offset := offset * 4;
-                                offset := offset + to_integer (signed(ip_in));
-                                ip_out <= std_logic_vector(to_signed(offset,32));
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
-                                ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
+                                ip_out <= ip_in;
                         end if;
 		elsif ((instr (31 downto 26) = "000001") and (instr (20 downto 16) = "10001")) then --BGEZAL instruction
 			internal_wb_flag <= '1';
 			internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
 			b :=0;
                         if (a >= b) then
-                                offset := to_integer(signed(instr(15 downto 0)));
+                                offset := to_integer(unsigned(instr(15 downto 0)));
                                 offset := offset * 4;
-                                offset := offset + to_integer (signed(ip_in));
-                                ip_out <= std_logic_vector(to_signed(offset,32));
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
-                                ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
+                                ip_out <= ip_in;
                         end if;
 		elsif ((instr (31 downto 26) = "000111")and(instr (20 downto 16)="00000")) then -- BGTZ
 			internal_wb_flag <= '0';
 			b :=0;
 			report "The value of 'a' is " & integer'image(a);
 			if (a > b) then
-                                offset := to_integer(signed(instr(15 downto 0)));
+                                offset := to_integer(unsigned(instr(15 downto 0)));
                                 offset := offset * 4;
-                                offset := offset + to_integer (signed(ip_in));
-                                ip_out <= std_logic_vector(to_signed(offset,32));
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
-                                ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
+                                ip_out <= ip_in;
                         end if;		
 		elsif ((instr (31 downto 26) = "000110")and(instr (20 downto 16)="00000")) then -- BLEZ
 			internal_wb_flag <= '0';
 			b :=0;
 			if (a <= b) then
-                                offset := to_integer(signed(instr(15 downto 0)));
+                                offset := to_integer(unsigned(instr(15 downto 0)));
                                 offset := offset * 4;
-                                offset := offset + to_integer (signed(ip_in));
-                                ip_out <= std_logic_vector(to_signed(offset,32));
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
-                                ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
+                                ip_out <= ip_in;
                         end if;		
 		elsif ((instr (31 downto 26) = "000001")and(instr (20 downto 16)="00000")) then -- BLTZ
 			internal_wb_flag <= '0';
 			b :=0;
 			if (a < b) then
-                                offset := to_integer(signed(instr(15 downto 0)));
+                                offset := to_integer(unsigned(instr(15 downto 0)));
                                 offset := offset * 4;
-                                offset := offset + to_integer (signed(ip_in));
-                                ip_out <= std_logic_vector(to_signed(offset,32));
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
-                                ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
+                                ip_out <= ip_in;
                         end if;
 		elsif ((instr (31 downto 26) = "000001")and(instr (20 downto 16)="10000")) then -- BLTZAL
 			internal_wb_flag <= '1';
 			internal_writeback <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4,32));
 			b :=0;
 			if (a < b) then
-                                offset := to_integer(signed(instr(15 downto 0)));
+                                offset := to_integer(unsigned(instr(15 downto 0)));
                                 offset := offset * 4;
-                                offset := offset + to_integer (signed(ip_in));
-                                ip_out <= std_logic_vector(to_signed(offset,32));
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
-                                ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
+                                ip_out <= ip_in;
                         end if;							
 		elsif (instr (31 downto 26) = "000101") then -- BNE
 			internal_wb_flag <= '0';
 			if (a /= b) then
-                                offset := to_integer(signed(instr(15 downto 0)));
+                                offset := to_integer(unsigned(instr(15 downto 0)));
                                 offset := offset * 4;
-                                offset := offset + to_integer (signed(ip_in));
-                                ip_out <= std_logic_vector(to_signed(offset,32));
+                                offset := offset + to_integer (unsigned(ip_in));
+                                ip_out <= std_logic_vector(to_unsigned(offset,32));
                         else
-                                ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
+                                ip_out <= ip_in;
                         end if;
 		else
-			ip_out <= std_logic_vector(to_unsigned(to_integer(unsigned(ip_in)) + 4, 32));
+			ip_out <= ip_in;
 		end if;
 	end process;
 
 	imm_expand : process (instr) is
 	begin
-                imm <= std_logic_vector(to_signed(to_integer(signed (instr (15 downto 0))),32));
+		if ((instr (26) = '1') and (instr(31 downto 26) /= "100011") and (instr(31 downto 26) /="101011")) then	-- unsigned op with LW-exception
+			imm <= X"0000" & instr (15 downto 0);
+		else				-- signed op
+			imm <= std_logic_vector(to_signed(to_integer(signed (instr (15 downto 0))),32));
+		end if;
 	end process;
 end architecture;
+
+--TODO forwarding von r0 verhindern
+
 
 -- FSM-signal-Howto:
 --

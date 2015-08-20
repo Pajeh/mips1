@@ -206,7 +206,7 @@ begin ---------------- BEGIN ------------------ BEGIN -------------------------
   -- connects control signal to TB or CPU
   --
   i_instr_stall   <= instr_stall    when cpu_switch = '1' else '1';                                       -- instruction stall -> stops CPU 
-  i_data_addr     <= data_addr      when cpu_switch = '1' else x"0000_00" & std_logic_vector(addr.val);   -- memory address
+  i_data_addr     <= data_addr      when cpu_switch = '1' else x"0000_00" & std_logic_vector(mem_addr);   -- memory address
   i_wr_mask       <= wr_mask        when cpu_switch = '1' else "0001";                                    -- write bytes to memory
   i_data_from_cpu <= data_from_cpu  when cpu_switch = '1' else std_logic_vector(r_data) &                 -- data to memory
                                                                std_logic_vector(r_data) & 

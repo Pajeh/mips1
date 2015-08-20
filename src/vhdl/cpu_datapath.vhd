@@ -3,8 +3,6 @@
 -- 05.08.2015     Patrick Appenheimer    first try
 -- 06.08.2015     Patrick Appenheimer    ports and entities added
 -- 10.08.2015     Patrick Appenheimer    minor changes
--- 12.08.2015     Patrick Appenheimer    changed rising_edge to falling_edge
--- 14.08.2015     Patrick Appenheimer    changed pc_mux control
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;
@@ -100,7 +98,6 @@ architecture structure_cpu_datapath of cpu_datapath is
   signal wb_writeback_out : std_logic_vector(31 downto 0);
   signal wb_destreg_out   : std_logic_vector(4  downto 0);
 
-  signal last_instruction : std_logic_vector( 31 downto 0);
 
 
 begin
@@ -130,10 +127,9 @@ begin
   write_back:           entity work.write_back(behavioral) port map(clk, rst, writeback_4, regdest_4,
                                                                   wb_writeback_out, wb_destreg_out);
 
-
 stage0: process(clk, rst)
 begin
-  if (rst = '1') then
+  if (rst = '0') then
     mux_out_0 <=  (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (0 downto 0) = "1")) then
     mux_out_0 <= mux_pc_out;
@@ -142,7 +138,7 @@ end process;
 
 stage1: process(clk, rst)
 begin
-  if (rst = '1') then
+  if (rst = '0') then
     instr_1 <= (others => '0');
     ip_1 <= (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (1 downto 1) = "1")) then
@@ -153,7 +149,7 @@ end process;
 
 stage2: process(clk, rst)
 begin
-  if (rst = '1') then
+  if (rst = '0') then
     shift_2 <= (others => '0');
     reg_a_2 <= (others => '0');
     reg_b_2 <= (others => '0');
@@ -172,7 +168,7 @@ end process;
 
 stage3: process(clk, rst)
 begin
-  if (rst = '1') then
+  if (rst = '0') then
     alu_result_3 <= (others => '0');
     data_3 <= (others => '0');
     regdest_3 <= (others => '0');
@@ -185,7 +181,7 @@ end process;
 
 stage4: process(clk, rst)
 begin
-  if (rst = '1') then
+  if (rst = '0') then
     writeback_4 <= (others => '0');
     regdest_4 <= (others => '0');
   elsif ((rising_edge(clk)) and (stage_control (4 downto 4) = "1")) then
@@ -194,32 +190,16 @@ begin
   end if;
 end process;
 
+
+
 mux: process(in_mux_pc, id_ip, if_ip)
   begin
-	if (in_mux_pc = '1')then
+	if (in_mux_pc = '1') then
 		mux_pc_out <= id_ip;
 	else
 		mux_pc_out <= if_ip;
 	end if;
   end process;
-
---mux: process(instr_in, id_ip, if_ip, clk)
---  begin
---  	if (clk'event and clk = '1') then
---		if ((instr_in(31 downto 26) = "000100") or (instr_in(31 downto 26) = "000010") or (instr_in(31 downto 26) = "000101") or (instr_in(31 downto 26) = "011101"))then
---			mux_pc_out <= id_ip;
---		else
---			mux_pc_out <= if_ip;
---		end if;
---	end if;
---  end process;
-  
---last_instruction_proc: process(clk) is
---begin
---       if (clk'event and clk = '1') then
---            last_instruction <= instr_in;
---        end if;
---end process;
 
 
 end architecture structure_cpu_datapath;
