@@ -68,6 +68,7 @@ architecture structure_cpu_control of cpu_control is
                     id_regdest_mux <= "10";
                     if (instr_1(31 downto 26) = "001111") then  -- LUI needs a shift
                             id_regshift_mux <= "01";
+                            in_mux_pc <= '0';
                     elsif ((instr_1(31 downto 26) = "000010") -- J
                         or (instr_1 (31 downto 26) = "000011") -- JAL
                         or (instr_1 (31 downto 26) = "011101") -- JALX
