@@ -7,13 +7,15 @@ This laboratory requires a microcontroller structure of at least a CPU containin
 The CPU interacts with two external memories and has also a clock and a reset input. All of which are considered external to this design.
 The CPU is divided in two base components: a control and a datapath block, as shown  in \autoref{fig:overview}.
 
-\begin{figure}[h]
-\centering{
-\resizebox{100mm}{!}{\input{design.pdf_tex}}
-\caption{CPU overview}
-\label{fig:overview}
-}
-\end{figure} 
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figure/overview.png}
+  \caption{Datapath pipeline}
+  \label{fig:overview}
+\end{figure}
+
 
 In the datapath there is the pipeline made of five blocks: instruction fetch (IF), instruction decode (ID), execution (EX), memory stage (Me) and writeback (WB).
 
