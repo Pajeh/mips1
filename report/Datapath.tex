@@ -8,7 +8,7 @@ The datapath forwards the controlpath signals asynchronously, contrary to the pi
 
 
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \includegraphics[width=0.8\textwidth]{figure/datapath.png}
   \caption{Datapath pipeline}
@@ -18,9 +18,7 @@ The datapath forwards the controlpath signals asynchronously, contrary to the pi
 The program counter (PC) is programmed into the datapath. Its function is the store the current program address, which is mostly counted up.
 It has a multiplexer controlled by the controlpath to choose the input. The two possible inputs are to count up (PC+4) from instruction fetch
 and the jump or branch from instruction decode. The controlpath chooses always the instruction decode input in the case of jump or branch. 
-On the jump command, PC will receive the jump value. In case of a branch, PC will receive either the branch value or PC+4, 
-depending on the instruction decode decision. This behaviour allows for the controlpath always to 
-activate the instruction decode input in cases of jumps and branches.
+
 
 The following subsections describe the pipeline components as well as its functions and IOs. 
 
@@ -33,6 +31,29 @@ with the actual 32-bit instruction. This value is directly forwarded to the pipe
 The program counter is also incremented by four, because the used memory is 8-bit long. This incremented value is given back to PC.
 \subsection{Instruction decode}
 The second block of the pipeline if the instruction decode. Its main tasks are to divide the instruction into its pieces, manage the register file and manage branches.
+
+The main input is the instruction from the instruction fetch stage. This instruction is 32-bit long and can be of three types. These are shown in \autoref{tab:instr type}.
+
+\begin{table}[h!]
+	\centering
+	 \caption{MIPS instruction types}	
+	\begin{tabular}{ccccccc}
+		\toprule[2pt]
+		\textbf{Type} & \multicolumn{6}{c}{\textbf{format (bits) }}   \\
+		\toprule[2pt]
+		R & opcode (6) & rs (5) & rt (5)   & rd (5) & shat (5) & funct (6) \\
+		I & opcode (6) & rs (5) & rt (5)   & \multicolumn{3}{c}{ immediate (16)} \\
+		J & opcode (6) & \multicolumn{5}{c}{ address (26)} \\	
+		\bottomrule[2pt]
+	\end{tabular} 
+	\label{tab:instr type}
+\end{table}
+
+The \textbf{opcode} indicates the operation or arithmetic family of operations. Opcode equals zero are the R-type operations. The field \textbf{funct} provides an specific operation.
+\textbf{rs}, \textbf{rt} and \textbf{rd} provide sources or destinations register addresses. \textbf{shamt} indicates the shift amount for shift operations. \textbf{immediate} carries
+a relative address or constant, which is zero or sign extended to 32-bits. \textbf{address} is an absolute address.
+
+The main outputs are register A, register B, shift, immediate and IP. Other than IP, all outputs depend on the instruction decoding.
 
 \subsubsection{Register File}
 The register file is a set of 32 general purpose 32-bit registers. These have the advantage, comparing to the ram memory, that they can always be accessed within one clock cycle.
@@ -62,15 +83,30 @@ The registers are numbered from \$0 through \$31. There is also a convention for
 		\$31 & \$ra & Return Address \\
 		\bottomrule[2pt]
 	\end{tabular} 
-	\label{tab:iu_Kennlinie}
+	\label{tab:mips registers}
 \end{table}
 
 This implementation of MIPS does not have a FPU. In case of FPUs another 32 32-bit register set is used.
-\subsubsection{Forwarding}
+
+The register file is writen on the clock's negative edge with writeback information. The register file require a 5-bit destination register address and the 32-bit word to be written into the register.
 \subsubsection{Branch Logic}
+The branch and jump instructions require just one clock between instruction fetch and the jump itself. Due to this constrain, there is the need of a branch logic inside
+the instruction decode part. The output of this operation is the next instruction address for PC. 
+
+On the jump command, PC will receive the jump value. 
+In case of a branch, PC will receive either the branch value or PC+4, depending on the instruction decode decision. This behaviour allows for the controlpath always to 
+activate the instruction decode input in cases of jumps and branches.
+\subsubsection{Forwarding}
+Often calculated or memory read values are used in the following instructions. Due to the pipeline, the values are not ready in the register file, causing a data hazard. In order to avoid this conflict
+a data forwarding system is integrated. The data forwarding provide separeted inputs for the 5-bit destination register address and the 32-bit word for the ALU, memory stage and writeback.
 
 
 \subsection{Execution}
+This stage of the pipeline takes care of the actual mathematical operations. It provides two main multiplexers, one for each value input of the ALU.
+The inputs of the first multiplexer are the zero padded shift input, the number four (32-bit) and the register A from instructino decode. The second multiplexer provides register B, 
+the immediate value and IP as inputs.
+
+Both multiplexers are controlled by the controlpath.
 \subsection{Memory Stage}
 The memory stage is the fourth block of the pipeline and has the main task of fetch or save in the memory. 
 
