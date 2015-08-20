@@ -112,10 +112,10 @@ architecture structure_cpu_control of cpu_control is
                     exc_mux1 <="10";
                     exc_mux2 <="01";
                     alu_op <="100101";
-				elsif ((instr_2 (31 downto 26) = "000000") and (instr_2(10 downto 0) = "00000101010")) then
-						  exc_mux1 <= "10";
-						  exc_mux2 <= "00";
-						  alu_op <= "001000";
+	elsif ((instr_2 (31 downto 26) = "000000") and (instr_2(10 downto 0) = "00000101010")) then
+			  exc_mux1 <= "10";
+			  exc_mux2 <= "00";
+			  alu_op <= "001000";
             else --if (instr_2 (31 downto 26) = "000000") then -- NOP and other R-types and Ops, where the result does not matter
                     exc_mux1 <= "10";
                     exc_mux2 <= "00";
