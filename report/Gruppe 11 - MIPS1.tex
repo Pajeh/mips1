@@ -58,6 +58,8 @@
   \usepackage{multicol} 
   \usepackage{circuitikz}
   \usepackage{tikz}
+\usetikzlibrary{trees}
+  
   \usepackage{graphicx}
   %\usetikzlibrary{shapes.arrows,chains}
   \usetikzlibrary{pgfplots.groupplots}
@@ -166,6 +168,13 @@
 	{solid,tud2b,thick},
 }
 
+%\usepackage[style=numeric-comp, sorting=none, alldates=short, abbreviate=false, maxcitenames=2, maxbibnames=99, eprint=false, hyperref=auto, backend=bibtex]{biblatex} 
+%\usepackage[style=apa, backend=biber]{biblatex} 
+%\usepackage[super]{natbib}
+%\bibliographystyle{unsrtnat}
+%\usepackage[backend=bibtex]{biblatex}
+%\bibliography{myref} %.bib-Datei, falls biblatex benutzt wird
+
 %---- Dokument ----%
 \begin{document}
 \pagenumbering{roman}  
@@ -181,14 +190,26 @@
 %\listoffigures 
 %\addcontentsline{toc}{chapter}{\listfigurename}
 
+
 %\setcounter{chapter}{-1}
 
 \include{Introduction}
-
 \include{Design}
-
 \include{Evaluation}
 \include{Synthesis}
 \include{Conclusion}
+	%************* Verzeichnisse ************
+	\clearpage
+\bibliographystyle{unsrt}
+\bibliography{myref}
+	  %\bibliography{myref} %.bib-Datei, falls biblatex benutzt wird
+	%\printbibliography %Literatur
+	%\listoffigures %Abbildungen
+	%****************************************
 
+	%****************************************
+	%Anhang
+	%****************************************	
+	%\appendix
+	%\addcontentsline{toc}{chapter}{Anhang}
 \end{document}

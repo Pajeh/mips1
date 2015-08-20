@@ -15,17 +15,37 @@ The CPU is divided in two base components: a control and a datapath block, as sh
 }
 \end{figure} 
 
-In the datapath there is the pipeline made of five blocks:
-\begin{itemize}
- \item IF: Instruction fetch
- \item ID: Instruction decode
- \item Ex: Execution
- \item Me: Memory stage
- \item WB: Writeback
-\end{itemize}
+In the datapath there is the pipeline made of five blocks: instruction fetch (IF), instruction decode (ID), execution (EX), memory stage (Me) and writeback (WB).
 
 The following sections describe the central component ALU and the two base components: datapath and controlpath.
+The cpu components structure is shown in \autoref{fig:cpu structure}:
+\begin{figure}[h!]
+\begin{center}
+ \tikzstyle{every node}=[draw=black,thick,anchor=west]
+\tikzstyle{selected}=[draw=red,fill=red!30]
+\tikzstyle{optional}=[dashed,fill=gray!50]
+\begin{tikzpicture}[%
+  grow via three points={one child at (0.5,-0.7) and
+  two children at (0.5,-0.7) and (0.5,-1.4)},
+  edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+  \node {cpu}
+    child { node {controlpath}}		
+    child { node {datapath}
+      child { node {Instruction Fetch}}
+      child { node {Instruction Decode}}      
+      child { node  {Execution}
+	%child { node {ALU}}
+	}
+      child { node {Memory Stage}}
+      child { node {Writeback}}
+    };
+\end{tikzpicture}
+\caption{CPU component structure}
+\label{fig:cpu structure}
+\end{center}
+\end{figure}
 
-\input{ALU}
+	\input{ALU}
 	\input{Datapath}
 	\input{Controlpath}
+	

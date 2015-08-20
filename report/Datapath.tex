@@ -32,7 +32,7 @@ The program counter is also incremented by four, because the used memory is 8-bi
 \subsection{Instruction decode}
 The second block of the pipeline if the instruction decode. Its main tasks are to divide the instruction into its pieces, manage the register file and manage branches.
 
-The main input is the instruction from the instruction fetch stage. This instruction is 32-bit long and can be of three types. These are shown in \autoref{tab:instr type}.
+The main input is the instruction from the instruction fetch stage. This instruction is 32-bit long and can be of three types. These are shown in \autoref{tab:instr type} \cite{mips32}.
 
 \begin{table}[h!]
 	\centering
@@ -60,7 +60,8 @@ The register file is a set of 32 general purpose 32-bit registers. These have th
 The access to these registers is made with five bits, which allows multiple registers to be referenced per instruction. All loaded memory values are stored in a register
 for later use.
 
-The registers are numbered from \$0 through \$31. There is also a convention for using these registers, which must be enforced by assembly language and follow \autoref{tab:mips registers}:
+The registers are numbered from \$0 through \$31. There is also a convention for using these registers, which must be enforced by assembly language and follow \autoref{tab:mips registers} 
+\cite{regfiles}:
 
 \begin{table}[h!]
 	\centering
