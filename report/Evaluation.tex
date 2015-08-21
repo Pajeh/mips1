@@ -1,8 +1,14 @@
 \chapter{Evaluation}
-The cpu evaluation is done with Modelsim from MentorGraphics. Individual testbenches were created to test each separate cpu component as well as for the complete cpu.
+The cpu evaluation is done with Modelsim from MentorGraphics. The simulations provide a timed analysis of the code. It provides information
+about the timing relations and allows for bug identification still in a simulation environment, without the need of a complete synthesis
+and programming of the FPGA. This is a powerful tool to speed up the development process evaluating the design in an early stage.
 
-The complete cpu passed the complete simulation with a simulated perfect memory, that means without either instruction or data access stalls. Furthermore it also passed 
-the simulation with a simulated real memory.
+Individual testbenches test each separate cpu components on all hierarchical levels up to the complete cpu.
+All component's simulation passed, including the complete cpu with a simulated perfect memory. Furthermore the
+simulation with a simulated real memory passed. The tests prove the complete implementation up to real conflict cases of instruction and data access stalls.
 
-For the implementation on the fpga a hdllab code was prepared with the cpu, memory, uart and pll components already integrated as well as the LEDs, clock and reset interface
-with the fpga. The cpu passed this simulation with the counter program, outputing the counter value to the LEDs output.
+For the implementation on the FPGA a hdllab code was prepared with the cpu, memory, UART and pll components as well as LEDs, clock and reset interface
+with the FPGA already integrated. The cpu passed this simulation with the counter program, outputting the counter value to the LEDs output. 
+
+The evaluation phase was successful, proving exhaustively the correct behaviour of each component separately and as a piece of the whole cpu. The functional
+test of a counter program serve also as a prove of concept. 
