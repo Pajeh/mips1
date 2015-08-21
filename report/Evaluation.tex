@@ -1,14 +1,14 @@
 \chapter{Evaluation}
-The cpu evaluation is done with Modelsim from MentorGraphics. The simulations provide a timed analysis of the code. It provides information
+The CPU evaluation is done with Modelsim from MentorGraphics. The simulations provide a timed analysis of the code. It provides information
 about the timing relations and allows for bug identification still in a simulation environment, without the need of a complete synthesis
 and programming of the FPGA. This is a powerful tool to speed up the development process evaluating the design in an early stage.
 
-Individual testbenches test each separate cpu components on all hierarchical levels up to the complete cpu.
-All component's simulation passed, including the complete cpu with a simulated perfect memory. Furthermore the
+Individual test-benches test each separate CPU components on all hierarchical levels up to the complete CPU.
+All component's simulation passed, including the complete CPU with a simulated perfect memory. Furthermore the
 simulation with a simulated real memory passed. The tests prove the complete implementation up to real conflict cases of instruction and data access stalls.
 
-For the implementation on the FPGA a hdllab code was prepared with the cpu, memory, UART and pll components as well as LEDs, clock and reset interface
-with the FPGA already integrated, as shown in \autoref{fig:hdllab}. The cpu passed this simulation with the counter program, outputting the counter value to the LEDs output. 
+For the implementation on the FPGA a hdllab code was prepared with the CPU, memory, UART and pll components as well as LEDs, clock and reset interface
+with the FPGA already integrated, as shown in \autoref{fig:hdllab}. The CPU passed this simulation with the counter program, outputting the counter value to the LEDs output. 
 
 \begin{figure}[h!]
 \begin{center}
@@ -52,5 +52,5 @@ with the FPGA already integrated, as shown in \autoref{fig:hdllab}. The cpu pass
 \label{fig:hdllab}
 \end{center}
 \end{figure}
-The evaluation phase was successful, proving exhaustively the correct behaviour of each component separately and as a piece of the whole cpu. The functional
+The evaluation phase was successful, proving exhaustively the correct behavior of each component separately and as a piece of the whole CPU. The functional
 test of a counter program serve also as a prove of concept. 

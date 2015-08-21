@@ -1,14 +1,14 @@
 \chapter{Conclusion}
-In this laboratory a 32-bit MIPS I cpu with restricted instruction set is successfully designed in vhdl, implemented, synthesized and test a MIPS-I specified processor core on FPGA. 
-The required components of ALU, datapath and controlpath are present.
+In this laboratory a 32-bit MIPS I CPU with restricted instruction set is successfully designed in vhdl, implemented, synthesized and test a MIPS-I specified processor core on FPGA. 
+The required components of ALU, data-path and control-path are present.
 The implementation on the FPGA passed a functional test with the counter sample program, running at the desired speed of 50 MHz and blinking the LEDs with the 8-bit counter value.
 
-The cpu design comprises a controlpath and a datapath with five pipeline stages.  Each component was designed and simulated separately and
-together up to as a complete cpu. The simulations in Modelsim included test cases for a perfect memory and a real one with instruction and data stalls.
+The CPU design comprises a control-path and a data-path with five pipeline stages.  Each component was designed and simulated separately and
+together up to as a complete CPU. The simulations in Modelsim included test cases for a perfect memory and a real one with instruction and data stalls.
 The simulation of a functional test with the program counter passed outputting the counter value as an 8-bit LED array.
 
 The synthesis is done with Xilinx ISE for the FPGA Virtex5. With configurations for the fastest clock, the synthesis reports a maximum running
-frequency of over 70\,MHz. The clock configuration for the on board test is set at 50 Mhz. The synthesized code passes the functional test with
+frequency of over 70\,MHz. The clock configuration for the on board test is set at 50 MHz. The synthesized code passes the functional test with
 the counter program on the Virtex5. This counter uses the planned instruction set.
 
 This work shows an implementation of a restricted MIPS instruction set. The expansion of this instructions is expected to lead to a full MIPS 32-bit compliant microcontroller.
