@@ -27,9 +27,14 @@ The cpu components structure is shown in \autoref{fig:cpu structure}:
 \tikzstyle{selected}=[draw=red,fill=red!30]
 \tikzstyle{optional}=[dashed,fill=gray!50]
 \begin{tikzpicture}[%
-  grow via three points={one child at (0.5,-0.7) and
-  two children at (0.5,-0.7) and (0.5,-1.4)},
-  edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+   grow via three points={
+        one child at (0.8,-0.7) and two children at (0.8,-0.7) and (0.8,-1.4)
+    },
+    edge from parent path={
+        ($(\tikzparentnode\tikzparentanchor)+(.4cm,0pt)$) |- (\tikzchildnode\tikzchildanchor)
+    },
+    growth parent anchor=west,
+    parent anchor=south west,]
   \node {cpu}
     child { node {controlpath}}		
     child { node {datapath}

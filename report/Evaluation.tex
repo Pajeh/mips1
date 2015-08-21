@@ -8,7 +8,49 @@ All component's simulation passed, including the complete cpu with a simulated p
 simulation with a simulated real memory passed. The tests prove the complete implementation up to real conflict cases of instruction and data access stalls.
 
 For the implementation on the FPGA a hdllab code was prepared with the cpu, memory, UART and pll components as well as LEDs, clock and reset interface
-with the FPGA already integrated. The cpu passed this simulation with the counter program, outputting the counter value to the LEDs output. 
+with the FPGA already integrated, as shown in \autoref{fig:hdllab}. The cpu passed this simulation with the counter program, outputting the counter value to the LEDs output. 
 
+\begin{figure}[h!]
+\begin{center}
+ \tikzstyle{every node}=[draw=black,thick,anchor=west]
+\tikzstyle{selected}=[draw=red,fill=red!30]
+\tikzstyle{optional}=[dashed,fill=gray!50]
+\begin{tikzpicture}[ grow via three points={
+        one child at (0.8,-0.7) and two children at (0.8,-0.7) and (0.8,-1.4)
+    },
+    edge from parent path={
+        ($(\tikzparentnode\tikzparentanchor)+(.4cm,0pt)$) |- (\tikzchildnode\tikzchildanchor)
+    },
+    growth parent anchor=west,
+    parent anchor=south west,]
+  \node {hdllab}
+  child { node {cpu}	
+    child { node {controlpath}}		
+    child { node {datapath}
+      child { node {Instruction Fetch}}
+      child { node {Instruction Decode}}      
+      child { node  {Execution}
+	%child { node {ALU}}
+	}
+      child { node {Memory Stage}}
+      child { node {Writeback}}
+    }    
+    }
+    child [missing] {}				
+    child [missing] {}				
+    child [missing] {}
+    child [missing] {}				
+    child [missing] {}				
+    child [missing] {}			
+    child [missing] {}
+  child { node {pll}}	
+  child { node {memory}}	
+  child { node {uart}}	
+  ;
+\end{tikzpicture}
+\caption{CPU component structure}
+\label{fig:hdllab}
+\end{center}
+\end{figure}
 The evaluation phase was successful, proving exhaustively the correct behaviour of each component separately and as a piece of the whole cpu. The functional
 test of a counter program serve also as a prove of concept. 
