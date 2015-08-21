@@ -1,7 +1,6 @@
 -- Revision history:
 -- 2015-08-12       Lukas Jaeger        created
 -- 2015-08-16	    Lukas Jaeger	fixed all bugs and made it working with the cpu
--- 2015-08-17       Lukas Jaeger    added stall functionality
 
 library IEEE;
 use IEEE.std_logic_1164.all;
@@ -44,7 +43,6 @@ architecture structure_cpu_control of cpu_control is
                     instr_2 <= x"00000000";
                     instr_3 <= x"00000000";
                     instr_4 <= x"00000000";
-                    stage_control <= "11111";
             elsif (rising_edge(clk) and instr_stall /= '1' and data_stall /= '1') then
                     instr_1 <= instr_in;
                     instr_2 <= instr_1;
@@ -68,7 +66,6 @@ architecture structure_cpu_control of cpu_control is
                     id_regdest_mux <= "10";
                     if (instr_1(31 downto 26) = "001111") then  -- LUI needs a shift
                             id_regshift_mux <= "01";
-                            in_mux_pc <= '0';
                     elsif ((instr_1(31 downto 26) = "000010") -- J
                         or (instr_1 (31 downto 26) = "000011") -- JAL
                         or (instr_1 (31 downto 26) = "011101") -- JALX
@@ -111,6 +108,14 @@ architecture structure_cpu_control of cpu_control is
                     exc_mux1 <="10";
                     exc_mux2 <="01";
                     alu_op <="100100";
+				elsif (instr_2 (31 downto 26) = "001101") then --ORI
+                    exc_mux1 <="10";
+                    exc_mux2 <="01";
+                    alu_op <="100101";
+	elsif ((instr_2 (31 downto 26) = "000000") and (instr_2(10 downto 0) = "00000101010")) then
+			  exc_mux1 <= "10";
+			  exc_mux2 <= "00";
+			  alu_op <= "001000";
             else --if (instr_2 (31 downto 26) = "000000") then -- NOP and other R-types and Ops, where the result does not matter
                     exc_mux1 <= "10";
                     exc_mux2 <= "00";
@@ -150,7 +155,9 @@ architecture structure_cpu_control of cpu_control is
             (instr_4 (31 downto 26) = "100011") or --LW
             (instr_4 (31 downto 26) = "100100") or --LBU
             (instr_4 (31 downto 26) = "001010") or --SLTI
-            (instr_4 (31 downto 26) = "001100") --ANDI
+            (instr_4 (31 downto 26) = "001100") or --ANDI
+            (instr_4 (31 downto 26) = "001101") or --ORI
+            (instr_4 (31 downto 26) = "000000") and (instr_4(10 downto 0) = "00000101010")) --SLT
             ) then
                     id_enable_regs <= '1';
             else
