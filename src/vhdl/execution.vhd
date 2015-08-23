@@ -10,7 +10,7 @@ library IEEE;
 library WORK;
   use WORK.all;
 
--- -- MUX Steuereingänge: -- --
+-- -- MUX Steuereingaenge: -- --
 -- mux1:
 -- 00: out <= Zero Extend
 -- 01: out <= 4

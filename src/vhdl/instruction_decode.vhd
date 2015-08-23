@@ -1,7 +1,7 @@
 -- Implementation of a 5-stage pipelined MIPS processor's instruction decode stage
--- 2015-08-03   Lukas Jäger     created
--- 2015-08-04   Lukas Jäger     added architecture and started to implement both processes
--- 2015-08-04   Lukas Jäger     added asynchronous reset
+-- 2015-08-03   Lukas Jaeger     created
+-- 2015-08-04   Lukas Jaeger     added architecture and started to implement both processes
+-- 2015-08-04   Lukas Jaeger     added asynchronous reset
 -- 2015-08-05	Lukas Jaeger	 fixed bugs that resulted from me not knowing any VHDL
 -- 2015-08-05	Lukas Jaeger	 added functionality for branch logic
 -- 2015-08-06	Lukas, Carlos 	 fixed bug in JAL-instruction-decode
@@ -142,7 +142,7 @@ begin
 			internal_wb_flag <= '0';
 			offset := to_integer(signed(instr(25 downto 0)));
 			offset := offset * 4;
-			-- VHDL code d�j�-vu?
+			-- VHDL code de ja-vu?
 			-- This is the same forwarding logic as above for reg_a
                         if ((instr (25 downto 21) = regdest_ex) and (instr (25 downto 21) /= "00000")) then 
 				ip_out <= alu_result;

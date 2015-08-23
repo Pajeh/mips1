@@ -1,5 +1,5 @@
 -- revision history:
--- 06.07.2015     Alex Schönberger    created
+-- 06.07.2015     Alex Schoenberger    created
 -- 07.08.2015     Patrick Appenheimer   cpu_datapath instanciated
 -- 10.08.2015     Bahri Enis Demirtel cpu_control added
 

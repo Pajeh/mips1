@@ -1,5 +1,5 @@
 -- revision history:
--- 06.07.2015     Alex Schönberger    created
+-- 06.07.2015     Alex Schoenberger    created
 
 library IEEE;
   use IEEE.std_logic_1164.ALL;

@@ -1,5 +1,5 @@
 -- revision history:
--- 06.07.2015     Alex Schönberger    created
+-- 06.07.2015     Alex Schoenberger    created
 -- 05.08.2015     Patrick Appenheimer    first try
 -- 06.08.2015     Patrick Appenheimer    ports and entities added
 -- 10.08.2015     Patrick Appenheimer    minor changes
